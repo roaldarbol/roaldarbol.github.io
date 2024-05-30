@@ -1,0 +1,43 @@
+[
+  
+    {
+      "title"    : "Beginning the journey!",
+      "category" : "",
+      "tags"     : "PhD, Science, Neuroscience, Biology",
+      "url"      : "/blog/beginning-the-journey/",
+      "date"     : "2020-09-30 10:00:00 +0000"
+    } ,
+  
+    {
+      "title"    : "SportsMechanist",
+      "category" : "",
+      "tags"     : "Science, Sports Science, Biomechanics, Data Science, Pose Estimation",
+      "url"      : "/projects/sportsmechanist/",
+      "date"     : "2020-07-26 19:17:00 +0000"
+    } ,
+  
+    {
+      "title"    : "VR for Wood Ants",
+      "category" : "",
+      "tags"     : "Science, Neuroscience, Behaviour",
+      "url"      : "/projects/vr-woodants/",
+      "date"     : "2020-06-20 19:17:00 +0000"
+    } ,
+  
+    {
+      "title"    : "spikr",
+      "category" : "",
+      "tags"     : "Science, Open Software, Data Science",
+      "url"      : "/projects/spikr/",
+      "date"     : "2020-06-20 11:32:20 +0000"
+    } ,
+  
+    {
+      "title"    : "Behavioural Equipment for Rodents",
+      "category" : "",
+      "tags"     : "Engineering, Open Hardware, Neuroscience, Behaviour",
+      "url"      : "/projects/rodent-behaviour/",
+      "date"     : "2020-06-20 11:32:20 +0000"
+    } 
+  
+]
