@@ -107,7 +107,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
-<meta name="quarto:status" content="draft">
 
 
 <meta property="og:title" content="Benchmarking rolling functions in R | Mikkel Roald-Arbøl">
@@ -122,7 +121,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top quarto-banner"><div id="quarto-draft-alert" class="alert alert-warning"><i class="bi bi-pencil-square"></i>Draft</div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
@@ -144,21 +143,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link" href="../../../../../../blog/index.html"> 
 <span class="menu-text">Blog</span></a>
   </li>  
-  <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-about" role="link" data-bs-toggle="dropdown" aria-expanded="false">
- <span class="menu-text">About</span>
-    </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-about">    
-        <li>
-    <a class="dropdown-item" href="../../../../../../pages/about.html">
- <span class="dropdown-text">Who am I</span></a>
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../../../pages/about.html"> 
+<span class="menu-text">About</span></a>
   </li>  
-        <li>
-    <a class="dropdown-item" href="../../../../../../pages/contact.qmd">
- <span class="dropdown-text">Contact me</span></a>
-  </li>  
-    </ul>
-  </li>
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
@@ -361,24 +349,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">times =</span> n_times)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: milliseconds
-                       expr         min          lq       mean      median
-      data.table::frollmean    2.241879    2.340252   11.07247    2.713214
-            roll::roll_mean   11.808366   12.351446   14.35429   12.473165
- RollingWindow::RollingMean   16.977660   17.465734   33.28365   23.602618
-      runstats::RunningMean   14.769024   16.227194   44.86687   25.787892
-         slider::slide_mean   73.969034   74.136307   76.08521   75.195895
-        RcppRoll::roll_mean  125.844943  127.134127  129.67824  129.576611
-              zoo::rollmean  256.682808  313.302683  346.79951  322.212449
-           runner::mean_run 1198.164818 1228.970005 1369.71537 1285.969585
+                       expr        min         lq        mean     median
+      data.table::frollmean   4.364765   4.386955    5.545144   4.908773
+            roll::roll_mean  16.512173  16.640832   29.042056  17.433780
+ RollingWindow::RollingMean  17.750571  18.664875   22.966375  20.585845
+      runstats::RunningMean  12.640257  18.126632   22.707550  19.553610
+         slider::slide_mean  72.315159  72.536251   73.982968  72.965772
+        RcppRoll::roll_mean 163.385982 163.733190  165.119325 164.247679
+              zoo::rollmean 124.375120 131.965586  214.200296 182.230702
+           runner::mean_run 792.513469 868.069718 1010.502657 994.701654
           uq        max neval
-    6.031607   79.03656    10
-   14.610513   24.02796    10
-   26.719363  128.51629    10
-   94.260361  108.86306    10
-   77.303700   80.14807    10
-  131.924998  135.28932    10
-  367.791690  531.82976    10
- 1547.052810 1606.93501    10</code></pre>
+    6.120136   10.26725    10
+   18.590567  133.23819    10
+   23.713303   43.36674    10
+   24.478930   54.73269    10
+   75.259317   78.62419    10
+  164.631264  174.28505    10
+  300.922531  399.41005    10
+ 1184.272346 1216.75740    10</code></pre>
 </div>
 </div>
 </section>
@@ -395,17 +383,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: milliseconds
                          expr        min         lq       mean     median
-      data.table::frollmedian   69.04398   71.51425   89.17143   73.78828
- RollingWindow::RollingMedian   57.11521   57.80190   65.25114   64.92265
-              zoo::rollmedian  316.62932  352.47701  356.72934  359.56134
-            roll::roll_median  501.02063  503.81910  541.68486  526.72164
-        RcppRoll::roll_median 1407.80392 1409.40807 1536.79857 1466.03330
+      data.table::frollmedian   46.95643   47.04934   47.64099   47.21878
+ RollingWindow::RollingMedian   78.35552   79.23443   79.81651   79.59221
+              zoo::rollmedian  171.48053  235.88828  251.83165  262.54601
+            roll::roll_median  332.58490  333.10088  334.09220  333.36676
+        RcppRoll::roll_median 1626.88751 1627.90477 1629.27343 1628.26628
          uq        max neval
-   77.92332  225.23769    10
-   69.99089   77.45782    10
-  365.43327  396.97943    10
-  538.86600  665.62833    10
- 1633.18224 1909.33519    10</code></pre>
+   47.91003   49.86699    10
+   79.73876   81.82230    10
+  269.75400  344.67020    10
+  334.68866  337.16799    10
+ 1630.14684 1635.75588    10</code></pre>
 </div>
 </div>
 </section>
@@ -421,18 +409,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">times =</span> n_times)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: milliseconds
-                      expr        min         lq        mean      median
-      data.table::frollmin   5.411031   5.517803    5.827558    5.792026
-            roll::roll_min  22.984927  23.445202   23.864652   23.630812
- RollingWindow::RollingMin  44.843584  46.259335   52.213656   48.525513
-        RcppRoll::roll_min 349.503761 350.284608  355.950302  352.792411
-           runner::min_run 798.355932 855.048846 1050.799176 1080.054734
-          uq         max neval
-    6.037268    6.309239    10
-   24.170740   25.898749    10
-   56.849840   67.821354    10
-  359.726967  371.640967    10
- 1174.581112 1313.950563    10</code></pre>
+                      expr        min         lq       mean     median
+      data.table::frollmin   2.772657   3.935705   4.034611   4.063057
+            roll::roll_min  14.716236  14.768653  15.359277  14.801615
+ RollingWindow::RollingMin  38.746409  38.873316  42.214788  41.115850
+        RcppRoll::roll_min 182.293719 182.481539 184.006824 183.809320
+           runner::min_run 623.080778 832.823174 869.807306 866.939281
+         uq       max neval
+   4.173648   5.80073    10
+  16.321087  16.48661    10
+  44.808897  50.25288    10
+ 184.213558 188.45613    10
+ 948.181418 970.83446    10</code></pre>
 </div>
 </div>
 </section>
@@ -449,20 +437,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">times =</span> n_times)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: milliseconds
-                      expr         min          lq       mean      median
-      data.table::frollmax    5.044174    5.610125   17.85473    6.502458
-            roll::roll_max   22.839600   24.028406   26.71447   26.783014
- RollingWindow::RollingMax   46.142606   48.621133   57.48825   49.863125
-        RcppRoll::roll_max  350.372535  356.682585  371.96263  369.004938
-           runner::max_run  784.649671  812.671187 1032.20082  973.548273
-              zoo::rollmax 1147.328909 1241.116590 1351.98079 1347.271621
-          uq        max neval
-    9.949318  106.67906    10
-   29.236878   31.57566    10
-   52.198837  124.78942    10
-  386.567315  401.79024    10
- 1283.828536 1409.76538    10
- 1477.122353 1548.25293    10</code></pre>
+                      expr        min         lq      mean     median        uq
+      data.table::frollmax   2.776204   2.800969  30.28713   4.287586  91.96609
+            roll::roll_max  14.774925  14.829417  24.80525  15.820533  16.39667
+ RollingWindow::RollingMax  38.377491  38.550455  41.72589  41.703284  44.49210
+        RcppRoll::roll_max 182.552762 183.488316 193.01026 183.712564 185.24436
+           runner::max_run 591.282848 606.012578 785.71499 769.814727 913.56181
+              zoo::rollmax 796.422154 806.075764 929.93900 890.516161 991.11317
+        max neval
+   92.68472    10
+  106.44814    10
+   46.45146    10
+  274.50541    10
+ 1061.44790    10
+ 1293.14918    10</code></pre>
 </div>
 </div>
 </section>
@@ -481,24 +469,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">times =</span> n_times)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: milliseconds
-                        expr         min          lq        mean      median
-  data.table::frollsum, fast    2.523604    2.659571    5.861422    3.063187
-              roll::roll_sum    6.436056    6.642563    9.666256    8.289517
-   RollingWindow::RollingSum   17.793522   19.836219   26.065329   20.714188
-           slider::slide_sum   76.570577   78.599420   90.508191   83.782619
- data.table::frollsum, exact   36.971424   38.606730   40.628789   39.484406
-          RcppRoll::roll_sum  126.439986  131.928438  132.967029  134.275092
-                zoo::rollsum  325.665040  379.251710  480.714105  450.228940
-             runner::sum_run 1289.769892 1418.957973 1525.079449 1517.706760
-          uq        max neval
-    4.499823   18.11897    10
-   12.717016   16.84787    10
-   33.918532   43.64378    10
-   88.895235  126.26658    10
-   40.049148   54.13022    10
-  135.329135  136.40403    10
-  608.734517  696.18947    10
- 1658.419845 1761.18214    10</code></pre>
+                        expr        min         lq       mean     median
+  data.table::frollsum, fast   4.260019   4.275067   5.293635   4.297149
+              roll::roll_sum  10.977157  11.180897  11.831820  11.203980
+   RollingWindow::RollingSum  17.217027  17.288199  18.518973  17.338423
+           slider::slide_sum  68.654099  68.698620  69.386720  68.761290
+ data.table::frollsum, exact  30.538623  30.693632  32.318619  31.276273
+          RcppRoll::roll_sum 159.624762 160.084029 161.473492 161.308797
+                zoo::rollsum 126.401016 150.845291 223.895339 227.482385
+             runner::sum_run 813.588916 823.596967 982.712552 984.822039
+          uq         max neval
+    4.332615    9.759388    10
+   11.242792   15.799886    10
+   20.012045   23.051700    10
+   68.945369   74.645052    10
+   31.560787   41.129050    10
+  161.870088  165.097842    10
+  295.677797  318.265462    10
+ 1127.114302 1178.581020    10</code></pre>
 </div>
 </div>
 </section>
@@ -513,16 +501,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">times =</span> n_times)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: milliseconds
-                      expr        min         lq       mean     median
-             roll::roll_sd   56.31893   56.64948   61.66736   57.28845
- RollingWindow::RollingStd   31.00776   33.04170   42.24170   33.54361
-       runstats::RunningSd   59.02132   67.17997   92.24908   85.79771
-         RcppRoll::roll_sd 1205.79275 1217.69071 1292.22611 1294.74142
-         uq        max neval
-   61.82976   79.94232    10
-   40.37113  107.05237    10
-  113.36480  163.73572    10
- 1322.65637 1440.68273    10</code></pre>
+                      expr       min        lq      mean    median        uq
+             roll::roll_sd  49.08483  49.35531  50.47896  49.43263  49.55413
+ RollingWindow::RollingStd  33.10656  33.26814  34.93685  34.86965  36.12318
+       runstats::RunningSd  33.63855  35.41987  46.49156  36.48988  42.15114
+         RcppRoll::roll_sd 877.01068 878.71188 901.26831 887.11328 901.59613
+       max neval
+  57.55106    10
+  38.33700    10
+ 127.55715    10
+ 964.59497    10</code></pre>
 </div>
 </div>
 </section>
@@ -535,12 +523,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">times =</span> n_times)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: seconds
-                   expr       min        lq      mean    median        uq
- data.table::frollapply  3.682705  3.903462  4.026611  4.053144  4.202986
-         zoo::rollapply 11.452357 11.715537 12.500304 12.427262 13.319937
-       max neval
-  4.230897    10
- 14.040575    10</code></pre>
+                   expr      min       lq     mean   median       uq      max
+ data.table::frollapply 2.428530 2.522191 2.663296 2.625027 2.745117 2.979905
+         zoo::rollapply 7.268567 7.588804 7.775560 7.774598 7.932003 8.316724
+ neval
+    10
+    10</code></pre>
 </div>
 </div>
 
