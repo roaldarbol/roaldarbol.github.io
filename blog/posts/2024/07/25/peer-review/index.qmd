@@ -17,4 +17,4 @@ Some good content goes here...
 
 ## What 
 
-A tool that collates all the Github contributions into a file (or data-format which the user can serve how they want to).
+A tool that collates all the Github contributions into a file (or data-format which the user can serve how they want to). Check.
