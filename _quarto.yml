@@ -47,11 +47,7 @@ website:
       - text: "Blog"
         href: blog/index.qmd
       - text: "About"
-        menu:
-        - text: "Who am I"
-          href: pages/about.qmd
-        - text: "Contact me"
-          href: pages/contact.qmd
+        href: pages/about.qmd
 
     right:
       - text: "{{< iconify bi rss size=1.1em title='RSS' >}}"

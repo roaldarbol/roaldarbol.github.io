@@ -5,19 +5,10 @@ categories:
     - r
     - rolling
     - stats
-author:
-  - name: Mikkel Roald-Arbøl
-    url: https://roald-arboel.com
-    orcid: 0000-0002-9998-0058
-    affiliation: PhD Student in Neuroscience & Animal Behaviour @ University of Sussex
-    affiliation-url: https://sussex.ac.uk
 date: 2024-10-03
 image: "pretty-r.png"
 image-alt: Two cute balls decorating the R logo.
-toc: true
-draft: true
-citation: true
-# include-before-body: benchmark.html
+draft: false
 ---
 
 ```{r}
