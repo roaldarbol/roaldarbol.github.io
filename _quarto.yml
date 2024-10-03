@@ -28,7 +28,7 @@ website:
   repo-actions: [issue]
   open-graph: true
   reader-mode: true
-  draft-mode: visible #gone
+  draft-mode: gone #visible
 
   body-footer: |
     <!-- 100% privacy-first analytics -->
