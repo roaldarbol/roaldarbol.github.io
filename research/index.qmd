@@ -42,7 +42,7 @@ listing:
         description: |
           an R package to interface with pixi
         categories: [pixi, conda, r, software]
-      - path: https://github.com/roaldarbol/rpix
+      - path: https://github.com/BeeHive-org/BeeHive
         title: "BeeHive"
         description: |
           A flexible platform for connecting different sensors and actuators
