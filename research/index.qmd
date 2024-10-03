@@ -24,24 +24,29 @@ listing:
     categories: false
     sort-ui: false
     filter-ui: false
-    page-size: 3
+    page-size: 12
     feed: true
     contents: 
       - path: https://github.com/roaldarbol/animovement
         title: "animovement"
         description: |
           An R toolbox for analysing animal movement across space and time.
-        categories: [r, animal movement]
+        categories: [r, animal movement, software]
       - path: https://github.com/lapreprint/lapreprint
         title: "LaPreprint"
         description: |
           Template
-        categories: [LaTeX, typesetting, preprint]
+        categories: [LaTeX, typesetting, preprint, software]
       - path: https://github.com/roaldarbol/rpix
         title: "rpix"
         description: |
           an R package to interface with pixi
-        categories: [pixi, conda, r]
+        categories: [pixi, conda, r, software]
+      - path: https://github.com/roaldarbol/rpix
+        title: "BeeHive"
+        description: |
+          A flexible platform for connecting different sensors and actuators
+        categories: [hardware, microcontroller, micropython]
 ---
 
 ![Small wasp](images/small-wasp.png)
