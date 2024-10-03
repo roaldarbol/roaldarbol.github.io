@@ -1,0 +1,16 @@
+---
+title: "data.table, polars and duckDB"
+description: |
+  Working with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. 
+categories: 
+  - AI
+  - large language models   
+  - machine learning
+date: 06/04/2024
+# image: ""
+# image-alt: 
+draft: true
+---
+
+{{< video https://www.youtube.com/embed/SoOoj9iUTM0 >}}
+

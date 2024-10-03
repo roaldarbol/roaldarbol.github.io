@@ -1,0 +1,22 @@
+---
+title: "About me"
+subtitle: What I think I'm doing, where I think I'm from, and where I think I'm going.
+sidebar: false
+page-layout: article
+toc: false
+title-block-banner: true
+lightbox: auto
+listing:
+  - id: research
+    contents: 
+    - "CV.qmd"
+    - "scientific-journey.qmd"
+    - "joys.qmd"
+    # sort: "date desc"
+    type: grid
+    categories: false
+    sort-ui: false
+    filter-ui: false
+    page-size: 3
+
+---

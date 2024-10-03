@@ -1,0 +1,19 @@
+title-block-banner: true
+sidebar: false
+page-layout: article
+draft: false
+citation: true
+toc: true
+
+# Default author
+author:
+  - name: Mikkel Roald-Arbøl
+    url: https://roald-arboel.com
+    orcid: 0000-0002-9998-0058
+    affiliation: PhD Student in Neuroscience & Animal Behaviour @ University of Sussex
+    affiliation-url: https://sussex.ac.uk
+
+comments:
+  giscus:
+      repo: roaldarbol/quarto-website
+      category: General

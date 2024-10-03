@@ -1,0 +1,18 @@
+---
+title: "CV"
+subtitle: What I think I'm doing, where I think I'm from, and where I think I'm going.
+sidebar: false
+page-layout: article
+toc: false
+title-block-banner: true
+lightbox: auto
+---
+
+# Journey in bullet points
+If you're here for the science and prefer the minimal story (in a **traditional** CV style), these are my degrees:
+ 
+- **BSc in Exercise and Sports Science** (2016), University of Copenhagen
+- **MSc in Human Biology** (2019), University of Copenhagen
+- **PhD in Biology** (2024), University of Sussex
+
+And you can find some more detail in my traditional CV [here]().

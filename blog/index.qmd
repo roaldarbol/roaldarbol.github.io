@@ -1,0 +1,26 @@
+---
+pagetitle: Blog | Mikkel Roald-Arbøl
+title: Blog
+search: true
+repo-actions: false
+listing:
+  - id: posts_2024
+    contents: "posts/2024/**/index.qmd"
+    sort: "date desc"
+    # template: ../html/blog/listing.ejs
+    categories: true
+    image-height: 12em
+page-layout: full
+toc-title: Year
+toc-location: right
+# date-format: "MMMM D, YYYY"
+# code-tools: false
+# comments: false
+# engine: knitr
+# freeze: false
+---
+
+## 2024
+
+:::{#posts_2024}
+:::

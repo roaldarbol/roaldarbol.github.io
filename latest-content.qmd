@@ -1,0 +1,18 @@
+---
+title: Latest blog posts
+description: ""
+title-block-banner: false
+sidebar: false
+search: false
+page-layout: article  
+listing:
+  contents:
+  - /blog/posts/
+  sort: "date desc"
+  type: grid
+  categories: false
+  sort-ui: false
+  filter-ui: false
+  page-size: 3
+  feed: false
+---

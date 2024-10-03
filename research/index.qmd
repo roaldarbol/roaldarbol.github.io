@@ -1,0 +1,69 @@
+---
+pagetitle: Research | Mikkel Roald-Arbøl
+title: Research
+subtitle: |
+  From studying human motor learning to contemplating the evolution of consciousness, it's been a windy road. My work is comparative and interdisciplinary by nature: Animal behaviour, behavioural ecology, neuroethology, comparative neuroscience, movement ecology. 
+# subtitle: "The concepts, tools and methods that make data science possible."
+search: false
+repo-actions: false
+listing:
+  - id: research
+    contents: 
+    - /projects
+    - "!index.qmd"
+    - "!Template.qmd"
+    # sort: "date desc"
+    type: grid
+    categories: false
+    sort-ui: false
+    filter-ui: false
+    page-size: 3
+    feed: true
+  - id: openscience
+    type: grid
+    categories: false
+    sort-ui: false
+    filter-ui: false
+    page-size: 3
+    feed: true
+    contents: 
+      - path: https://github.com/roaldarbol/animovement
+        title: "animovement"
+        description: |
+          An R toolbox for analysing animal movement across space and time.
+        categories: [r, animal movement]
+      - path: https://github.com/lapreprint/lapreprint
+        title: "LaPreprint"
+        description: |
+          Template
+        categories: [LaTeX, typesetting, preprint]
+      - path: https://github.com/roaldarbol/rpix
+        title: "rpix"
+        description: |
+          an R package to interface with pixi
+        categories: [pixi, conda, r]
+---
+
+![Small wasp](images/small-wasp.png)
+
+## Research projects
+
+**Animal minds.** Animals are constantly interacting with their environment, however, neuroscientific studies often omit the environmental relevance... Developing tools for monitoring and controlling natural environmental factors, such as realistic light changes and temperature and humidity; the olfactory landscape. Create ecologically relevant tasks, studying the inner workings of an animal's brain whilst it is interacting with (a close proxy of) its natural habitat.
+
+::: {#research}
+:::
+
+
+## Open science
+
+**Open science.** Open hardware, open software. The majority of my work in this space happens by collaborating on pre-existing projects; open science is team science, and "lone wolf" projects too often whither away. *Quantification of animal behaviour*. Testing and trialing software for animal tracking (through video). *Statistics*. Making statistical ... more accessible, making the 
+
+::: {#openscience}
+:::
+
+
+## Other research interests
+Unfortunately, time is limited, and I don't have time to work on more projects I find deeply fascinating. Not all living beings have brains, yet the manage to function coherently as s single organism. Plants are able to perform goal-directed behaviour; bacteria can coalesce into biofilms. And it seems a common factor shared across organisms is that they rely heavily on electrical signalling to function as an organism rather than an assembly of individual cells.
+
+## Collaborations
+I am always looking to make new connections, both within, but certainly also across disciplines, so if you think we could work on some fun, interesting questions together, please reach out!

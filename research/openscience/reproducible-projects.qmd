@@ -1,0 +1,16 @@
+---
+title: "Reproducible Projects"
+description: |
+  Having reproducible research projects is important. I work on making that easier and prettier, especially by incorporating existing tools in new ways and writing templates that employ best practices.
+categories: 
+  - open source
+  - pixi
+  - R
+  - python
+author: Mikkel Roald-Arbøl
+# image: ../../images/logo.png
+# image-alt: "" 
+toc: true
+---
+
+

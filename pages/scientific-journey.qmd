@@ -1,0 +1,53 @@
+---
+title: "Scientific journey"
+subtitle: What I think I'm doing, where I think I'm from, and where I think I'm going.
+sidebar: false
+page-layout: article
+toc: false
+title-block-banner: true
+lightbox: auto
+---
+
+:::{.column-body}
+![](../assets/images/Mikkel-2048.jpeg)
+:::
+
+# Journey in words
+Conversely, if you're here to hear how I've ended up doing what I do, here's the **narrative** version.
+With a background in elite sports and sports science, working on understanding animal minds I quite an unlikely path. 
+
+#### Elite sports
+I've grown up in the world of athletics, and my discipline was the **triple jump**. My time as an elite athlete was short, but brought me some great experiences; most notably I moved to **Cuba** in 2010 to train with the Cuban jumpers (if you follow athletics, you may know my former team-mate Pedro Pichardo). But after a few years I realised that, despite my efforts, I wouldn't make it to the international stage, so I quit. But I wasn't done with elite sports. I had already as an athlete read all the research I could get my hands on, from specific triple jump biomechanics, periodisation, human physiology, and trainng theory. So the switch to **coaching** was a small one. Coaching elite sports was also the reason I enrolled in my undergraduate (see above). I started as a junior jumps coach in Sparta, the largest Danish athletics club, where I had the privelege to coach some amazing young athletes. The national federation hired me for a regional youth ... (funnily enough, my greatest experience as a coach came slightly later when I was asked to be the delegated jumps coach for the Danish National team for the 2019 Universiade in Naples - also known as the Olympics for university students).
+
+#### Science 101
+One of our courses in the undergraduate was "Motor Learning", or "how we learn movements". Until now, my focus had been on muscle physiology, but here I was introduced to the study of the brain, **neuroscience**, for the very first time, and instantly my interest was piqued! I took all the related electives I possibly could and got more and more fascinated. I did my first research project with Jesper Lundbye-Jensen on cortical excitability during motor learning, which included a bunch of techniques, *transcranial magnetic stimulation* (TMS), electroencephalography (EEG) and electromyography (EMG). It also included behavioural work in the form of teaching participants to play a game by squeezing a small metal block (which was a *force transducer*, so it measured how hard they were squeezing).
+
+After having spent the first 20+ years of my life thinking that sports was life, I was now at a cross-roads. I had found this thing that made me more excited, intelectually stimulated, than I had ever experienced before, but if I was to pursue that, it meant leaving all of my sports-life behind (or at least on the shelf). I had never even considered that I could be a scientist. 
+
+After finishing the undergraduate, I buggered off to Australia for a year. To get away, get some perspective, and discover who was without athletics in my life. The plan was to work at coffee shops and bana plantations, but, well... things turned out differently, and I ended up working in two labs at University of Queensland. My first couple of months I spent in a Neuromechanics lab, working primarily on foot biomechanics assisting with ..., and developing a setup that combined ultrasound imaging, force application and local anaesthetic in the ... nerve (along with being Guinea pig for a bunch of other studies). After my contract in the lab ended, I travelled to Tasmania where I spent a wonderful couple of months, before returning to work with Tim Carroll who worked on motor control. Here I also got the chance to work on a variety of setups, most of them reaching. But it was also here I realised that every living organism has to sense their surrounds and take action to make the best of the situation.
+
+#### Non-human?
+One morning I went to jump on my bike when I noticed that a sling plant had wrapped itself around my bike frame. Not being trained in "allround" biology all I knew about plants was that they grew towards the sunlight. But that could surely not have been causing this wrapping!? Perplexed, I started ... I read about quantum physics, information theory, comparative neuroscience. I read Principles of Neural Design by Simon Laughlin and Peter Sterling. 
+
+# The fun stuff!
+Okay, science is cool, but life is so much more! If it wasn't obvious, I love doing **sports**... every type of sports pretty much. I've recently taken to open water swimming, and rock climbing (and bouldering) has been a long-standing favourite of mine. I also enjoy running and a good (Olympic) weightlifting session. Badminton, squash or tennis when the opportunity presents itself. 
+
+Music also plays a big role in my life. I grew up playing the **piano**, where I was part of a jazz band. Later on I started **singing** and writing my own songs (I took on the guitar for that, but never got very good). In Brighton, I've been singing with the amazing [Soul of the City Choir](https://soulofthecitychoir.com/), and had a yearly performance at our Sussex Neuroscience Christmas Party (either solo or with an awesome CRPC band). These days, I mostly improvise some jazzy/ambient tunes on the piano and sing popular cover songs at home. 
+
+Although I've always enjoyed being **outdoors**, I didn't always *really* appreciate it fully. However, that changed during my undergraduate when we had a course in "Outdoor Life" (friluftsliv in Danish). Now I appreciate all the time I can get outside, paying attention to both the grandiose and the minute details of nature (which probably plays a part in my ending up working with animal behaviour). From camp life through hiking, preferably for multiple days, backcountry skiing, kayaking, rock climbing, mountaineering... any way that takes me through the wonderful nature that surrounds us!
+
+Oh, and I love reading **books**, especially old classics! 
+
+My most recent hobby is **photography**. Catching the beauty of a moment, whether a wide natural landscape or a macro of an insect going about its business. I picked up my first camera (a Canon Powershot G9) in Australia, just to document my year there. But the photos from that year inspired me in a way I hadn't expected. Now, I've invested in some more professional gear, but alas, the PhD has not allowed me much time to make the most of it - let's see in a year! Until then, you can find a selection of my photos here.
+
+**Some more photography**
+
+::: {layout-ncol=3}
+
+![Photo by <a href="https://unsplash.com/@hush52?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Hush Naidoo Jade Photography</a> on <a href="https://unsplash.com/photos/white-flower-in-clear-glass-vase-SutAduhzdRQ?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a>](https://quarto.org/docs/output-formats/images/lightbox/hush-naidoo-jade-photography-SutAduhzdRQ-unsplash.jpg){group="lightbulbs" fig-alt="A photo of a lightbulb with a flower growing inside against a black background."}
+
+![Photo by <a href="https://unsplash.com/@ale_s_bianchi?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Alessandro Bianchi</a> on <a href="https://unsplash.com/photos/light-bulb-illustration-_kdTyfnUFAc?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a>](https://quarto.org/docs/output-formats/images/lightbox/hush-naidoo-jade-photography-SutAduhzdRQ-unsplash.jpg){group="lightbulbs" fig-alt="A photo of a lightbulb with a glowing filament against a black background."}
+
+![Photo by <a href="https://unsplash.com/@ajoshuamelo?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Joshua Melo</a> on <a href="https://unsplash.com/photos/powered-on-edison-light-bulbs-peFHn8r4t1o?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a>](https://quarto.org/docs/output-formats/images/lightbox/hush-naidoo-jade-photography-SutAduhzdRQ-unsplash.jpg){group="lightbulbs" fig-alt="A photo of a lightbulb with a glowing filament in front of a background of other lightbulbs."}
+
+:::

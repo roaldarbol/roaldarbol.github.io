@@ -1,0 +1,20 @@
+---
+title: "Peer Review on Github"
+description: |
+  "Modern science relies on (open source) software and hardware, but whereas creating tools (writing code) can be turned into academic currency (papers), there is currently no incentive for researchers to provide feedback and improvement suggestions for tools despite how valuable these contributions are to the scientific community as a whole. One possible way forward would be to treat "issue creation" and other Git-based activity as an acceptable form of peer review."
+categories:
+  - AI
+  - large language models
+  - machine learning
+date: 06/04/2024
+# image: ""
+# image-alt: 
+draft: true
+---
+
+# What is peer review? 
+Some good content goes here...
+
+## What 
+
+A tool that collates all the Github contributions into a file (or data-format which the user can serve how they want to).

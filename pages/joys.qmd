@@ -1,0 +1,32 @@
+---
+title: "Joys in life"
+subtitle: What I think I'm doing, where I think I'm from, and where I think I'm going.
+sidebar: false
+page-layout: article
+toc: false
+title-block-banner: true
+lightbox: auto
+---
+
+# The fun stuff!
+Okay, science is cool, but life is so much more! If it wasn't obvious, I love doing **sports**... every type of sports pretty much. I've recently taken to open water swimming, and rock climbing (and bouldering) has been a long-standing favourite of mine. I also enjoy running and a good (Olympic) weightlifting session. Badminton, squash or tennis when the opportunity presents itself. 
+
+Music also plays a big role in my life. I grew up playing the **piano**, where I was part of a jazz band. Later on I started **singing** and writing my own songs (I took on the guitar for that, but never got very good). In Brighton, I've been singing with the amazing [Soul of the City Choir](https://soulofthecitychoir.com/), and had a yearly performance at our Sussex Neuroscience Christmas Party (either solo or with an awesome CRPC band). These days, I mostly improvise some jazzy/ambient tunes on the piano and sing popular cover songs at home. 
+
+Although I've always enjoyed being **outdoors**, I didn't always *really* appreciate it fully. However, that changed during my undergraduate when we had a course in "Outdoor Life" (friluftsliv in Danish). Now I appreciate all the time I can get outside, paying attention to both the grandiose and the minute details of nature (which probably plays a part in my ending up working with animal behaviour). From camp life through hiking, preferably for multiple days, backcountry skiing, kayaking, rock climbing, mountaineering... any way that takes me through the wonderful nature that surrounds us!
+
+Oh, and I love reading **books**, especially old classics! 
+
+My most recent hobby is **photography**. Catching the beauty of a moment, whether a wide natural landscape or a macro of an insect going about its business. I picked up my first camera (a Canon Powershot G9) in Australia, just to document my year there. But the photos from that year inspired me in a way I hadn't expected. Now, I've invested in some more professional gear, but alas, the PhD has not allowed me much time to make the most of it - let's see in a year! Until then, you can find a selection of my photos here.
+
+**Some more photography**
+
+::: {layout-ncol=3}
+
+![Photo by <a href="https://unsplash.com/@hush52?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Hush Naidoo Jade Photography</a> on <a href="https://unsplash.com/photos/white-flower-in-clear-glass-vase-SutAduhzdRQ?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a>](https://quarto.org/docs/output-formats/images/lightbox/hush-naidoo-jade-photography-SutAduhzdRQ-unsplash.jpg){group="lightbulbs" fig-alt="A photo of a lightbulb with a flower growing inside against a black background."}
+
+![Photo by <a href="https://unsplash.com/@ale_s_bianchi?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Alessandro Bianchi</a> on <a href="https://unsplash.com/photos/light-bulb-illustration-_kdTyfnUFAc?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a>](https://quarto.org/docs/output-formats/images/lightbox/hush-naidoo-jade-photography-SutAduhzdRQ-unsplash.jpg){group="lightbulbs" fig-alt="A photo of a lightbulb with a glowing filament against a black background."}
+
+![Photo by <a href="https://unsplash.com/@ajoshuamelo?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Joshua Melo</a> on <a href="https://unsplash.com/photos/powered-on-edison-light-bulbs-peFHn8r4t1o?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a>](https://quarto.org/docs/output-formats/images/lightbox/hush-naidoo-jade-photography-SutAduhzdRQ-unsplash.jpg){group="lightbulbs" fig-alt="A photo of a lightbulb with a glowing filament in front of a background of other lightbulbs."}
+
+:::

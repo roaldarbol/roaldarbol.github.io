@@ -1,0 +1,14 @@
+---
+title: "LaPreprint"
+description: |
+  Having reproducible research projects is important. I work on making that easier and prettier, especially by incorporating existing tools in new ways and writing templates that employ best practices.
+categories: 
+author:
+  name: Mikkel Roald-Arbøl
+  orcid: 0000-0002-9998-0058
+  url: https://roald-arboel.com
+# image: 
+# image-alt: "The panel clockwise from top left: Ali Al-Sherbaz, Janet Bastiman, Fatemeh Torabi and Jonathan Gillard" 
+toc: true
+path: "https://github.com/lapreprint/lapreprint/"
+---

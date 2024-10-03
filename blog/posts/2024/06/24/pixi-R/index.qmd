@@ -1,0 +1,36 @@
+---
+title: "Pixi + R: Better project management in R"
+description: |
+  Pixi is the best tool for managing your R projects. If it isn't already, it will soon be.
+categories: 
+  - R
+  - Reproducibility 
+  - Pixi
+author:
+  - name: Mikkel Roald-Arbøl
+    url: https://roald-arboel.com
+    orcid: 0000-0002-9998-0058
+    affiliation: PhD Student in Neuroscience & Animal Behaviour @ University of Sussex
+    affiliation-url: https://sussex.ac.uk
+date: 06/04/2024
+date-modified: 06/04/2024
+image: rpix.png
+image-alt: "Pixi's logo, a " 
+toc: true
+draft: false
+appendix-cite-as: display
+citation: true
+  # type: article-journal
+  # container-title: "Journal of Data Science Software"
+  # doi: "10.23915/reprodocs.00010"
+  # url: https://example.com/summarizing-output
+---
+
+## TL;DR
+- Create project: `pixi exec copier copy gh:roaldarbol/r-template my-new-project && cd my-new-project`
+- Open IDE: `pixi run rstudio`
+- Add dependencies: `rpix::add("tidyverse")`
+- Start analysing your data!
+
+## Project template
+

@@ -1,0 +1,16 @@
+---
+title: "R Packages"
+description: |
+  Packages that I have developed to assist analysis of animal behaviour and physiology, especially with data from videos and respirometry. 
+categories: 
+  - open source   
+  - R
+  - data analysis
+  - animal behaviour
+author: Mikkel Roald-Arbøl
+# image: ../../images/logo.png
+# image-alt: "" 
+toc: true
+---
+
+

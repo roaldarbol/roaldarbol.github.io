@@ -1,0 +1,91 @@
+project:
+  type: website
+
+  preview:
+    port: 5555
+    browser: true
+    watch-inputs: true
+    navigate: true
+
+  render:
+    - "*.qmd"
+    - "*.md"
+    - "!_leftover/"
+
+  resources:
+    - "assets/**"
+
+# Metadata stuff
+pagetitle: "{{< meta title >}} | Mikkel Roald-Arbøl"
+author-meta: "Mikkel Roald-Arbøl"
+
+website:
+  title: "Mikkel Roald-Arbøl"
+  description: "Mikkel Roald-Arbøl is a PhD student at the University of Sussex. My work lies at the intersection of neuroethology, quantitative ethology and behavioural ecology."
+  favicon: images/mra-favicon.png
+  site-url: https://roald-arboel.com
+  repo-url: https://github.com/roaldarbol/roaldarbol.github.io
+  repo-actions: [issue]
+  open-graph: true
+  reader-mode: true
+  draft-mode: visible #gone
+
+  body-footer: |
+    <!-- 100% privacy-first analytics -->
+    <script async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+    <noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript>
+
+  navbar:
+    page-navigation: true
+    back-to-top-navigation: false
+    toggle-position: right
+    collapse-below: lg
+
+    left:
+      - text: "Research"
+        href: research/index.qmd
+      - text: "Blog"
+        href: blog/index.qmd
+      - text: "About"
+        menu:
+        - text: "Who am I"
+          href: pages/about.qmd
+        - text: "Contact me"
+          href: pages/contact.qmd
+
+    right:
+      - text: "{{< iconify bi rss size=1.1em title='RSS' >}}"
+        href: feeds.html
+      - text: "{{< iconify bi envelope size=1.1em title='E-mail' >}}"
+        href: "mailto:website.ul7o3@passmail.net"
+      - text: "{{< iconify bi mastodon size=1.1em title='Mastodon' >}}"
+        href: https://neuromatch.social/@roaldarboel
+        rel: me
+      - text: "{{< iconify bi github size=1.1em title='GitHub' >}}"
+        href: https://github.com/roaldarbol
+        rel: me
+      - text: "{{< iconify fa brands orcid size=1.15em title='Orcid' >}}"
+        href: https://orcid.org/0000-0002-9998-0058
+
+  page-footer:
+    left: |
+      [Copyright &copy; 2024 Mikkel Roald-Arbøl](/LICENCE.md)
+    right: This website is built with {{< fa heart title="a heart" >}}, [{{< fa brands github title="GitHub octocat logo" >}}](https://github.com/roaldarbol/roaldarbol.github.io){target=_blank}, [{{< fa brands r-project title="R Project" >}}](https://www.r-project.org/about.html){target=_blank} and [Quarto](https://quarto.org/){target=_blank}
+
+format:
+  html:
+    theme:
+      light: [flatly, theme-light.scss]
+      # dark: flatly
+    toc: true
+    grid:
+      body-width: 900px
+    code-link: true
+    anchor-sections: true
+    fig-cap-location: margin
+    reference-location: margin
+    footnotes-hover: true
+    highlight-style: monokai
+
+execute:
+  freeze: auto

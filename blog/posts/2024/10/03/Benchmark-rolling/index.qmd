@@ -1,0 +1,245 @@
+---
+title: Benchmarking rolling functions in R
+description: I set out to benchmark the speed of rolling functions from R packages
+categories: 
+    - r
+    - rolling
+    - stats
+author:
+  - name: Mikkel Roald-Arbøl
+    url: https://roald-arboel.com
+    orcid: 0000-0002-9998-0058
+    affiliation: PhD Student in Neuroscience & Animal Behaviour @ University of Sussex
+    affiliation-url: https://sussex.ac.uk
+date: 2024-10-03
+image: "pretty-r.png"
+image-alt: Two cute balls decorating the R logo.
+toc: true
+draft: true
+citation: true
+# include-before-body: benchmark.html
+---
+
+```{r}
+#| eval: true 
+#| echo: false
+#| fig-align: "center"
+#| out-width: "75%" 
+#| fig-alt: "A fuzzy monster in a beret and scarf, critiquing their own column graph on a canvas in front of them while other assistant monsters (also in berets) carry over boxes full of elements that can be used to customize a graph (like themes and geometric shapes). In the background is a wall with framed data visualizations. Stylized text reads \"ggplot2: build a data masterpiece.\""
+knitr::include_graphics("pretty-r.png")
+```
+
+::: {.gray-italic .center-text}
+Art by [Allison Horst](https://allisonhorst.com/)
+:::
+
+---
+
+
+I'll write a bit about the benchmarks here.
+
+Can run on a normal vector (precludes `polars`).
+
+Here are the packages under consideration (if you have additions, please open an issue on Github):
+
+-   data.table
+-   zoo
+-   RcppRoll
+-   runner
+-   slider
+-   RollingWindow
+-   roll
+-   runstats
+-   polars
+
+We are considering the following computations
+
+-   Mean
+-   Median
+-   Min
+-   Max
+-   Sum
+-   Product
+-   SD
+-   MAD
+-   Correlation
+-   Covariance
+-   Skew
+-   Custom functions
+
+We also keep track of various features:
+
+- Alignment
+- NA handling
+- Weight
+
+Install `data.table` form the `rollmedian` branch:
+
+```{r eval=FALSE, include=FALSE}
+renv::install('devtools', prompt = FALSE)
+renv::install('microbenchmark', prompt = FALSE)
+renv::install('dplyr', prompt = FALSE)
+renv::install('tibble', prompt = FALSE)
+renv::install('zoo', prompt = FALSE)
+renv::install('RcppRoll', prompt = FALSE)
+renv::install('runner', prompt = FALSE)
+renv::install('slider', prompt = FALSE)
+renv::install('runstats', prompt = FALSE)
+devtools::install_github("Rdatatable/data.table", ref = "rollmedian")
+devtools::install_github("jasonjfoster/roll")
+devtools::install_github("andrewuhl/RollingWindow")
+```
+
+
+-   `devtools::install_github("Rdatatable/data.table", ref = "rollmedian")`
+
+Install `roll` from Github:
+
+-   `devtools::install_github("jasonjfoster/roll")`
+
+Install `RollingWindow` from Github:
+
+-   `devtools::install_github("andrewuhl/RollingWindow")`
+
+```{r message=FALSE, warning=FALSE}
+library(tibble)
+library(dplyr)
+library(microbenchmark)
+
+library(slider)
+library(runner)
+library(zoo)
+library(RollingWindow)
+library(RcppRoll)
+library(roll)
+library(data.table)
+library(runstats)
+```
+
+```{r}
+df <- tibble(x = rnorm(1000000))
+n <- 51
+n_times <- 10
+n_half <- floor(n/2)
+```
+
+## Mean
+
+```{r}
+microbenchmark(
+  "data.table::frollmean" = data.table::frollmean(df$x, n),
+  "roll::roll_mean" = roll::roll_mean(df$x, width = n),
+  "RollingWindow::RollingMean" = RollingWindow::RollingMean(df$x, n),
+  "runstats::RunningMean" = runstats::RunningMean(df$x, W = n),
+  "slider::slide_mean" = slider::slide_mean(df$x, before = n_half, after = n_half),
+  "RcppRoll::roll_mean" = RcppRoll::roll_mean(df$x, n = n, fill = NA),
+  "zoo::rollmean" = zoo::rollmean(df$x, k = n, fill = NA),
+  "runner::mean_run" = runner::mean_run(df$x, k = n, na_pad = TRUE),
+  times = n_times)
+```
+
+## Median
+
+```{r}
+microbenchmark(
+  "data.table::frollmedian" = data.table::frollmedian(df$x, n),
+  "RollingWindow::RollingMedian" = RollingWindow::RollingMedian(df$x, n),
+  "zoo::rollmedian" = zoo::rollmedian(df$x, k = n, fill = NA),
+  "roll::roll_median" = roll::roll_median(df$x, width = n),
+  "RcppRoll::roll_median" = RcppRoll::roll_median(df$x, n = n, fill = NA),
+  times = n_times)
+```
+
+## Min
+
+```{r}
+microbenchmark(
+  "data.table::frollmin" = data.table::frollmin(df$x, n),
+  "roll::roll_min" = roll::roll_min(df$x, width = n),
+  "RollingWindow::RollingMin" = RollingWindow::RollingMin(df$x, n),
+  "RcppRoll::roll_min" = RcppRoll::roll_min(df$x, n = n, fill = NA),
+  "runner::min_run" = runner::min_run(df$x, k = n, na_pad = TRUE),
+  times = n_times)
+```
+
+## Max
+
+```{r}
+microbenchmark(
+  "data.table::frollmax" = data.table::frollmax(df$x, n),
+  "roll::roll_max" = roll::roll_max(df$x, width = n),
+  "RollingWindow::RollingMax" = RollingWindow::RollingMax(df$x, n),
+  "RcppRoll::roll_max" = RcppRoll::roll_max(df$x, n = n, fill = NA),
+  "runner::max_run" = runner::max_run(df$x, k = n, na_pad = TRUE),
+  "zoo::rollmax" = zoo::rollmax(df$x, k = n, fill = NA),
+  times = n_times)
+```
+
+## Sum
+
+```{r}
+microbenchmark(
+    "data.table::frollsum, fast" = data.table::frollsum(df$x, n, algo = "fast"),
+    "roll::roll_sum" = roll::roll_sum(df$x, width = n),
+    "RollingWindow::RollingSum" = RollingWindow::RollingSum(df$x, n),
+    "slider::slide_sum" = slider::slide_sum(df$x, before = n_half, after = n_half),
+    "data.table::frollsum, exact" = data.table::frollsum(df$x, n, algo = "exact"),
+    "RcppRoll::roll_sum" = RcppRoll::roll_sum(df$x, n = n, fill = NA),
+    "zoo::rollsum" = zoo::rollsum(df$x, n, fill = NA),
+    "runner::sum_run" = runner::sum_run(df$x, k = n, na_pad = TRUE),
+    times = n_times)
+```
+
+## SD
+
+```{r}
+microbenchmark(
+  "roll::roll_sd" = roll::roll_sd(df$x, width = n),
+  "RollingWindow::RollingStd" = RollingWindow::RollingStd(df$x, n),
+  "runstats::RunningSd" = runstats::RunningSd(df$x, W = n),
+  "RcppRoll::roll_sd" = RcppRoll::roll_sd(df$x, n = n, fill = NA),
+  times = n_times)
+```
+
+## Custom functions
+
+```{r}
+microbenchmark(
+  "data.table::frollapply" = data.table::frollapply(df$x, n, sum),
+  "zoo::rollapply" = zoo::rollapply(df$x, n, sum),
+  times = n_times)
+```
+
+```{r eval=FALSE, include=FALSE}
+
+df_sum <- tibble()
+windows <- c(3, 5, 11, 21, 31, 41, 51, 61, 71, 81, 91, 101)
+for (n in windows){
+  n_half <- floor(n/2)
+  res <- microbenchmark(
+    "data.table::frollsum, fast" = data.table::frollsum(df$x, n, algo = "fast"),
+    "roll::roll_sum" = roll::roll_sum(df$x, width = n),
+    "RollingWindow::RollingSum" = RollingWindow::RollingSum(df$x, n),
+    "slider::slide_sum" = slider::slide_sum(df$x, before = n_half, after = n_half),
+    "data.table::frollsum, exact" = data.table::frollsum(df$x, n, algo = "exact"),
+    "RcppRoll::roll_sum" = RcppRoll::roll_sum(df$x, n = n, fill = NA),
+    "zoo::rollsum" = zoo::rollsum(df$x, n, fill = NA),
+    "runner::sum_run" = runner::sum_run(df$x, k = n, na_pad = TRUE),
+    times = 5) |> 
+    mutate(window = n)
+  
+  df_sum <- dplyr::bind_rows(df_sum, res)
+}
+
+library(ggplot2)
+df_sum_summarised <- df_sum |> 
+  # filter(expr != "runner::sum_run") |> 
+  group_by(expr, window) |>
+  summarise(time = median(time) / 1000000)
+df_sum |> 
+  # filter(expr != "runner::sum_run") |> 
+  mutate(time = time / 1000000) |> 
+ggplot(aes(window, time, colour =  expr)) +
+  geom_jitter(alpha = 0.1) +
+  geom_line(data = df_sum_summarised)
+```

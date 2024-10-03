@@ -1,0 +1,21 @@
+---
+title: "Tools for Scientific Computing"
+description: |
+  Working with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. 
+categories: 
+  - tools
+  - technology
+  - science
+date: 2024-10-03
+image: ahorst.png
+image-alt: "The panel clockwise from top left: Ali Al-Sherbaz, Janet Bastiman, Fatemeh Torabi and Jonathan Gillard" 
+draft: false
+---
+
+https://www.andrewheiss.com/uses/index.html#development
+
+- pixi
+- quarto/mystmd
+- nushell
+- zotero
+- obsidian

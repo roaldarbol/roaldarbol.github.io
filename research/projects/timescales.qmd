@@ -1,0 +1,16 @@
+---
+title: "Biologically and Behaviourally relevant Timescales"
+description: |
+   Behaviour unfolds over multiple timescales. 
+categories: 
+author:
+  name: Mikkel Roald-Arbøl
+  orcid: 0000-0002-9998-0058
+  url: https://roald-arboel.com
+# image: 
+# image-alt: "The panel clockwise from top left: Ali Al-Sherbaz, Janet Bastiman, Fatemeh Torabi and Jonathan Gillard" 
+toc: true
+---
+
+# Heading 
+Some good content goes here...

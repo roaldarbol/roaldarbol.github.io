@@ -1,0 +1,20 @@
+---
+pagetitle: Mikkel Roald-Arbøl
+# page-layout: custom
+# section-divs: false
+# editor: source
+sidebar: false
+search: false
+repo-actions: false
+description: I'm Mikkel Roald-Arbøl, a PhD student at the University of Sussex. My work lies at the intersection of neuroethology, quantitative ethology and behavioural ecology.
+toc: false
+format: 
+  html: 
+    include-in-header: hero-image.html
+    # include-after-body: _footer.html
+    sidebar: false
+    anchor-sections: false
+    css: [hero-image.css] #theme.css, 
+---
+
+{{< include latest-content.qmd >}}

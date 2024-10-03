@@ -1,0 +1,17 @@
+---
+title: "ICC and R2"
+description: |
+  Working with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. 
+categories: 
+  - Statistics
+  - Variance decomposition   
+  - R
+  - Repeatability
+date: 06/04/2024
+# image: ""
+# image-alt: 
+draft: true
+---
+
+# Heading 
+Some good content goes here...
