@@ -1,16 +1,18 @@
 [
   {
-    "listing": "/blog/index.html",
+    "listing": "/research/index.html",
     "items": [
-      "/blog/posts/2024/06/25/tools/index.html",
-      "/blog/posts/2024/10/03/Benchmark-rolling/index.html",
-      "/blog/posts/2024/06/24/animal-behaviour-tracking/index.html",
-      "/blog/posts/2024/06/24/pixi-R/index.html",
-      "/blog/posts/2024/06/24/r-dataframes/index.html",
-      "/blog/posts/2024/06/24/stats-resources/index.html",
-      "/blog/posts/2024/07/10/ICC/index.html",
-      "/blog/posts/2024/07/25/peer-review/index.html",
-      "/blog/posts/2024/09/01/PopOSMac/index.html"
+      "/research/projects/timescales.html",
+      "/research/projects/internal-states.html",
+      "/research/projects/sleep.html"
+    ]
+  },
+  {
+    "listing": "/pages/about.html",
+    "items": [
+      "/pages/CV.html",
+      "/pages/joys.html",
+      "/pages/scientific-journey.html"
     ]
   },
   {
@@ -28,19 +30,17 @@
     ]
   },
   {
-    "listing": "/pages/about.html",
+    "listing": "/blog/index.html",
     "items": [
-      "/pages/CV.html",
-      "/pages/joys.html",
-      "/pages/scientific-journey.html"
-    ]
-  },
-  {
-    "listing": "/research/index.html",
-    "items": [
-      "/research/projects/timescales.html",
-      "/research/projects/internal-states.html",
-      "/research/projects/sleep.html"
+      "/blog/posts/2024/06/25/tools/index.html",
+      "/blog/posts/2024/10/03/Benchmark-rolling/index.html",
+      "/blog/posts/2024/06/24/animal-behaviour-tracking/index.html",
+      "/blog/posts/2024/06/24/pixi-R/index.html",
+      "/blog/posts/2024/06/24/r-dataframes/index.html",
+      "/blog/posts/2024/06/24/stats-resources/index.html",
+      "/blog/posts/2024/07/10/ICC/index.html",
+      "/blog/posts/2024/07/25/peer-review/index.html",
+      "/blog/posts/2024/09/01/PopOSMac/index.html"
     ]
   },
   {

@@ -56,116 +56,88 @@
     "text": "Custom functions\n\nmicrobenchmark(\n  \"data.table::frollapply\" = data.table::frollapply(df$x, n, sum),\n  \"zoo::rollapply\" = zoo::rollapply(df$x, n, sum),\n  times = n_times)\n\nUnit: seconds\n                   expr       min        lq      mean    median        uq\n data.table::frollapply  3.682705  3.903462  4.026611  4.053144  4.202986\n         zoo::rollapply 11.452357 11.715537 12.500304 12.427262 13.319937\n       max neval\n  4.230897    10\n 14.040575    10"
   },
   {
-    "objectID": "pages/contact.html",
-    "href": "pages/contact.html",
-    "title": "Contact me",
-    "section": "",
-    "text": "ORCID: Mikkel Roald-Arbøl\nMastodon: @roaldarboel\nTwitter/X: @roaldarbol\nGitHub: @roaldarbol"
-  },
-  {
-    "objectID": "blog/posts/2024/06/24/r-dataframes/index.html",
-    "href": "blog/posts/2024/06/24/r-dataframes/index.html",
+    "objectID": "blog/posts/2024/06/24/stats-resources/index.html",
+    "href": "blog/posts/2024/06/24/stats-resources/index.html",
     "title": "data.table, polars and duckDB",
     "section": "",
-    "text": "CitationBibTeX citation:@online{roald-arbøl2024,\n  author = {Roald-Arbøl, Mikkel},\n  title = {Data.table, Polars and {duckDB}},\n  date = {2024-06-04},\n  url = {https://roald-arboel.com/blog/posts/2024/06/24/r-dataframes/},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nRoald-Arbøl, Mikkel. 2024. “Data.table, Polars and duckDB.”\nJune 4, 2024. https://roald-arboel.com/blog/posts/2024/06/24/r-dataframes/."
+    "text": "CitationBibTeX citation:@online{roald-arbøl2024,\n  author = {Roald-Arbøl, Mikkel},\n  title = {Data.table, Polars and {duckDB}},\n  date = {2024-06-04},\n  url = {https://roald-arboel.com/blog/posts/2024/06/24/stats-resources/},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nRoald-Arbøl, Mikkel. 2024. “Data.table, Polars and duckDB.”\nJune 4, 2024. https://roald-arboel.com/blog/posts/2024/06/24/stats-resources/."
   },
   {
-    "objectID": "research/projects/sleep.html",
-    "href": "research/projects/sleep.html",
-    "title": "Sleep across the Animal Kingdom",
+    "objectID": "research/projects/timescales.html",
+    "href": "research/projects/timescales.html",
+    "title": "Biologically and Behaviourally relevant Timescales",
     "section": "",
     "text": "Heading\nSome good content goes here…"
   },
   {
-    "objectID": "research/openscience/other-projects.html",
-    "href": "research/openscience/other-projects.html",
-    "title": "Heading",
+    "objectID": "research/projects/internal-states.html",
+    "href": "research/projects/internal-states.html",
+    "title": "Internal states",
     "section": "",
     "text": "Heading\nSome good content goes here…"
   },
   {
-    "objectID": "research/openscience/aniscope.html",
-    "href": "research/openscience/aniscope.html",
-    "title": "Aniscope",
+    "objectID": "pages/scientific-journey.html",
+    "href": "pages/scientific-journey.html",
+    "title": "Scientific journey",
     "section": "",
-    "text": "Heading\nSome good content goes here…"
+    "text": "Journey in words\nConversely, if you’re here to hear how I’ve ended up doing what I do, here’s the narrative version. With a background in elite sports and sports science, working on understanding animal minds I quite an unlikely path.\n\nElite sports\nI’ve grown up in the world of athletics, and my discipline was the triple jump. My time as an elite athlete was short, but brought me some great experiences; most notably I moved to Cuba in 2010 to train with the Cuban jumpers (if you follow athletics, you may know my former team-mate Pedro Pichardo). But after a few years I realised that, despite my efforts, I wouldn’t make it to the international stage, so I quit. But I wasn’t done with elite sports. I had already as an athlete read all the research I could get my hands on, from specific triple jump biomechanics, periodisation, human physiology, and trainng theory. So the switch to coaching was a small one. Coaching elite sports was also the reason I enrolled in my undergraduate (see above). I started as a junior jumps coach in Sparta, the largest Danish athletics club, where I had the privelege to coach some amazing young athletes. The national federation hired me for a regional youth … (funnily enough, my greatest experience as a coach came slightly later when I was asked to be the delegated jumps coach for the Danish National team for the 2019 Universiade in Naples - also known as the Olympics for university students).\n\n\nScience 101\nOne of our courses in the undergraduate was “Motor Learning”, or “how we learn movements”. Until now, my focus had been on muscle physiology, but here I was introduced to the study of the brain, neuroscience, for the very first time, and instantly my interest was piqued! I took all the related electives I possibly could and got more and more fascinated. I did my first research project with Jesper Lundbye-Jensen on cortical excitability during motor learning, which included a bunch of techniques, transcranial magnetic stimulation (TMS), electroencephalography (EEG) and electromyography (EMG). It also included behavioural work in the form of teaching participants to play a game by squeezing a small metal block (which was a force transducer, so it measured how hard they were squeezing).\nAfter having spent the first 20+ years of my life thinking that sports was life, I was now at a cross-roads. I had found this thing that made me more excited, intelectually stimulated, than I had ever experienced before, but if I was to pursue that, it meant leaving all of my sports-life behind (or at least on the shelf). I had never even considered that I could be a scientist.\nAfter finishing the undergraduate, I buggered off to Australia for a year. To get away, get some perspective, and discover who was without athletics in my life. The plan was to work at coffee shops and bana plantations, but, well… things turned out differently, and I ended up working in two labs at University of Queensland. My first couple of months I spent in a Neuromechanics lab, working primarily on foot biomechanics assisting with …, and developing a setup that combined ultrasound imaging, force application and local anaesthetic in the … nerve (along with being Guinea pig for a bunch of other studies). After my contract in the lab ended, I travelled to Tasmania where I spent a wonderful couple of months, before returning to work with Tim Carroll who worked on motor control. Here I also got the chance to work on a variety of setups, most of them reaching. But it was also here I realised that every living organism has to sense their surrounds and take action to make the best of the situation.\n\n\nNon-human?\nOne morning I went to jump on my bike when I noticed that a sling plant had wrapped itself around my bike frame. Not being trained in “allround” biology all I knew about plants was that they grew towards the sunlight. But that could surely not have been causing this wrapping!? Perplexed, I started … I read about quantum physics, information theory, comparative neuroscience. I read Principles of Neural Design by Simon Laughlin and Peter Sterling.\n\n\n\nThe fun stuff!\nOkay, science is cool, but life is so much more! If it wasn’t obvious, I love doing sports… every type of sports pretty much. I’ve recently taken to open water swimming, and rock climbing (and bouldering) has been a long-standing favourite of mine. I also enjoy running and a good (Olympic) weightlifting session. Badminton, squash or tennis when the opportunity presents itself.\nMusic also plays a big role in my life. I grew up playing the piano, where I was part of a jazz band. Later on I started singing and writing my own songs (I took on the guitar for that, but never got very good). In Brighton, I’ve been singing with the amazing Soul of the City Choir, and had a yearly performance at our Sussex Neuroscience Christmas Party (either solo or with an awesome CRPC band). These days, I mostly improvise some jazzy/ambient tunes on the piano and sing popular cover songs at home.\nAlthough I’ve always enjoyed being outdoors, I didn’t always really appreciate it fully. However, that changed during my undergraduate when we had a course in “Outdoor Life” (friluftsliv in Danish). Now I appreciate all the time I can get outside, paying attention to both the grandiose and the minute details of nature (which probably plays a part in my ending up working with animal behaviour). From camp life through hiking, preferably for multiple days, backcountry skiing, kayaking, rock climbing, mountaineering… any way that takes me through the wonderful nature that surrounds us!\nOh, and I love reading books, especially old classics!\nMy most recent hobby is photography. Catching the beauty of a moment, whether a wide natural landscape or a macro of an insect going about its business. I picked up my first camera (a Canon Powershot G9) in Australia, just to document my year there. But the photos from that year inspired me in a way I hadn’t expected. Now, I’ve invested in some more professional gear, but alas, the PhD has not allowed me much time to make the most of it - let’s see in a year! Until then, you can find a selection of my photos here.\nSome more photography\n\n\n\n\n\n\n\n\n\nPhoto by Hush Naidoo Jade Photography on Unsplash\n\n\n\n\n\n\n\nPhoto by Alessandro Bianchi on Unsplash\n\n\n\n\n\n\n\nPhoto by Joshua Melo on Unsplash"
   },
   {
-    "objectID": "research/Template.html",
-    "href": "research/Template.html",
-    "title": "Heading",
+    "objectID": "pages/about.html",
+    "href": "pages/about.html",
+    "title": "About me",
     "section": "",
-    "text": "Heading\nSome good content goes here…"
+    "text": "CV\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nJoys in life\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nScientific journey\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items"
   },
   {
-    "objectID": "pages/joys.html",
-    "href": "pages/joys.html",
-    "title": "Joys in life",
+    "objectID": "blog/posts/2024/09/01/PopOSMac/index.html",
+    "href": "blog/posts/2024/09/01/PopOSMac/index.html",
+    "title": "Pop_OS! on a Macbook Pro 2011",
     "section": "",
-    "text": "The fun stuff!\nOkay, science is cool, but life is so much more! If it wasn’t obvious, I love doing sports… every type of sports pretty much. I’ve recently taken to open water swimming, and rock climbing (and bouldering) has been a long-standing favourite of mine. I also enjoy running and a good (Olympic) weightlifting session. Badminton, squash or tennis when the opportunity presents itself.\nMusic also plays a big role in my life. I grew up playing the piano, where I was part of a jazz band. Later on I started singing and writing my own songs (I took on the guitar for that, but never got very good). In Brighton, I’ve been singing with the amazing Soul of the City Choir, and had a yearly performance at our Sussex Neuroscience Christmas Party (either solo or with an awesome CRPC band). These days, I mostly improvise some jazzy/ambient tunes on the piano and sing popular cover songs at home.\nAlthough I’ve always enjoyed being outdoors, I didn’t always really appreciate it fully. However, that changed during my undergraduate when we had a course in “Outdoor Life” (friluftsliv in Danish). Now I appreciate all the time I can get outside, paying attention to both the grandiose and the minute details of nature (which probably plays a part in my ending up working with animal behaviour). From camp life through hiking, preferably for multiple days, backcountry skiing, kayaking, rock climbing, mountaineering… any way that takes me through the wonderful nature that surrounds us!\nOh, and I love reading books, especially old classics!\nMy most recent hobby is photography. Catching the beauty of a moment, whether a wide natural landscape or a macro of an insect going about its business. I picked up my first camera (a Canon Powershot G9) in Australia, just to document my year there. But the photos from that year inspired me in a way I hadn’t expected. Now, I’ve invested in some more professional gear, but alas, the PhD has not allowed me much time to make the most of it - let’s see in a year! Until then, you can find a selection of my photos here.\nSome more photography\n\n\n\n\n\n\n\n\n\nPhoto by Hush Naidoo Jade Photography on Unsplash\n\n\n\n\n\n\n\nPhoto by Alessandro Bianchi on Unsplash\n\n\n\n\n\n\n\nPhoto by Joshua Melo on Unsplash"
+    "text": "Heading\n\nFlash PopOS! 24.04 LTS with either BalenaEtcher or Raspberry Pi Imager\nBack up all files (I put everything on Proton Drive)\nTurn off Macbook\nHold the option and power buttons down until a screen asks and you can choose EFI\nFollow the installation prompts\nWifi issues\n\nsudo apt update\nsudo apt-get install bcmwl-kernel-source\nsudo modprobe -r b43 ssb wl brcmfmac brcmsmac bcma\nsudo modprobe wl\nsudo reboot\n\nInstall\n\nRustDesk\nFirefox\nBitwarden\nLibreoffice\nThunderbird\nEnte Photos\n(VLC)\n(Solitaire)\n\n\n\n\n\n\nCitationBibTeX citation:@online{roald-arbøl2024,\n  author = {Roald-Arbøl, Mikkel},\n  title = {Pop\\_OS! On a {Macbook} {Pro} 2011},\n  date = {2024-02-10},\n  url = {https://roald-arboel.com/blog/posts/2024/09/01/PopOSMac/},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nRoald-Arbøl, Mikkel. 2024. “Pop_OS! On a Macbook Pro 2011.”\nFebruary 10, 2024. https://roald-arboel.com/blog/posts/2024/09/01/PopOSMac/."
   },
   {
-    "objectID": "pages/CV.html",
-    "href": "pages/CV.html",
-    "title": "CV",
+    "objectID": "blog/posts/2024/07/10/ICC/index.html",
+    "href": "blog/posts/2024/07/10/ICC/index.html",
+    "title": "ICC and R2",
     "section": "",
-    "text": "Journey in bullet points\nIf you’re here for the science and prefer the minimal story (in a traditional CV style), these are my degrees:\n\nBSc in Exercise and Sports Science (2016), University of Copenhagen\nMSc in Human Biology (2019), University of Copenhagen\nPhD in Biology (2024), University of Sussex\n\nAnd you can find some more detail in my traditional CV here."
+    "text": "Heading\nSome good content goes here…\n\n\n\n\nCitationBibTeX citation:@online{roald-arbøl2024,\n  author = {Roald-Arbøl, Mikkel},\n  title = {ICC and {R2}},\n  date = {2024-06-04},\n  url = {https://roald-arboel.com/blog/posts/2024/07/10/ICC/},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nRoald-Arbøl, Mikkel. 2024. “ICC and R2.” June 4, 2024. https://roald-arboel.com/blog/posts/2024/07/10/ICC/."
   },
   {
-    "objectID": "feeds.html",
-    "href": "feeds.html",
-    "title": "RSS feeds",
+    "objectID": "blog/posts/2024/06/24/pixi-R/index.html",
+    "href": "blog/posts/2024/06/24/pixi-R/index.html",
+    "title": "Pixi + R: Better project management in R",
     "section": "",
-    "text": "Research\nroald-arboel.com/research/index.xml\n\n\nBlog\nroald-arboel.com/blog/index.xml"
+    "text": "Create project: pixi exec copier copy gh:roaldarbol/r-template my-new-project && cd my-new-project\nOpen IDE: pixi run rstudio\nAdd dependencies: rpix::add(\"tidyverse\")\nStart analysing your data!"
   },
   {
-    "objectID": "blog/posts/2024/07/25/peer-review/index.html",
-    "href": "blog/posts/2024/07/25/peer-review/index.html",
-    "title": "Peer Review on Github",
+    "objectID": "blog/posts/2024/06/24/pixi-R/index.html#tldr",
+    "href": "blog/posts/2024/06/24/pixi-R/index.html#tldr",
+    "title": "Pixi + R: Better project management in R",
     "section": "",
-    "text": "Some good content goes here…\n\n\nA tool that collates all the Github contributions into a file (or data-format which the user can serve how they want to)."
+    "text": "Create project: pixi exec copier copy gh:roaldarbol/r-template my-new-project && cd my-new-project\nOpen IDE: pixi run rstudio\nAdd dependencies: rpix::add(\"tidyverse\")\nStart analysing your data!"
   },
   {
-    "objectID": "blog/posts/2024/07/25/peer-review/index.html#what",
-    "href": "blog/posts/2024/07/25/peer-review/index.html#what",
-    "title": "Peer Review on Github",
-    "section": "",
-    "text": "A tool that collates all the Github contributions into a file (or data-format which the user can serve how they want to)."
+    "objectID": "blog/posts/2024/06/24/pixi-R/index.html#project-template",
+    "href": "blog/posts/2024/06/24/pixi-R/index.html#project-template",
+    "title": "Pixi + R: Better project management in R",
+    "section": "Project template",
+    "text": "Project template"
   },
   {
-    "objectID": "blog/posts/2024/06/25/tools/index.html",
-    "href": "blog/posts/2024/06/25/tools/index.html",
-    "title": "Tools for Scientific Computing",
+    "objectID": "blog/index.html",
+    "href": "blog/index.html",
+    "title": "Blog",
     "section": "",
-    "text": "https://www.andrewheiss.com/uses/index.html#development\n\npixi\nquarto/mystmd\nnushell\nzotero\nobsidian\n\n\n\n\nCitationBibTeX citation:@online{roald-arbøl2024,\n  author = {Roald-Arbøl, Mikkel},\n  title = {Tools for {Scientific} {Computing}},\n  date = {2024-10-03},\n  url = {https://roald-arboel.com/blog/posts/2024/06/25/tools/},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nRoald-Arbøl, Mikkel. 2024. “Tools for Scientific\nComputing.” October 3, 2024. https://roald-arboel.com/blog/posts/2024/06/25/tools/."
+    "text": "tools\n\n\ntechnology\n\n\nscience\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nOct 3, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nr\n\n\nrolling\n\n\nstats\n\n\n\nI set out to benchmark the speed of rolling functions from R packages\n\n\n\n\n\nOct 3, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI\n\n\nlarge language models\n\n\nmachine learning\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nR\n\n\nReproducibility\n\n\nPixi\n\n\n\nPixi is the best tool for managing your R projects. If it isn’t already, it will soon be. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nR\n\n\nStatistics\n\n\nData science\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI\n\n\nlarge language models\n\n\nmachine learning\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nStatistics\n\n\nVariance decomposition\n\n\nR\n\n\nRepeatability\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI\n\n\nlarge language models\n\n\nmachine learning\n\n\n\n“Modern science relies on (open source) software and hardware, but whereas creating tools (writing code) can be turned into academic currency (papers), there is currently no incentive for researchers to provide feedback and improvement suggestions for tools despite how valuable these contributions are to the scientific community as a whole. One possible way forward would be to treat”issue creation” and other Git-based activity as an acceptable form of peer review.” \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPop_OS!\n\n\nCosmic\n\n\nMac\n\n\n\nTo make an old laptop last longer, I’ve installed Pop_OS! on it. These are some notes for my future self (and others).\n\n\n\n\n\nFeb 10, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\nNo matching items"
   },
   {
-    "objectID": "blog/posts/2024/06/24/animal-behaviour-tracking/index.html",
-    "href": "blog/posts/2024/06/24/animal-behaviour-tracking/index.html",
-    "title": "Tracking animals: Tools",
+    "objectID": "blog/index.html#section",
+    "href": "blog/index.html#section",
+    "title": "Blog",
     "section": "",
-    "text": "pixi\nquarto/mystmd\nnushell\nzotero\nobsidian\n\n\n\n\nCitationBibTeX citation:@online{roald-arbøl2024,\n  author = {Roald-Arbøl, Mikkel},\n  title = {Tracking Animals: {Tools}},\n  date = {2024-06-04},\n  url = {https://roald-arboel.com/blog/posts/2024/06/24/animal-behaviour-tracking/},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nRoald-Arbøl, Mikkel. 2024. “Tracking Animals: Tools.” June\n4, 2024. https://roald-arboel.com/blog/posts/2024/06/24/animal-behaviour-tracking/."
-  },
-  {
-    "objectID": "LICENCE.html",
-    "href": "LICENCE.html",
-    "title": "Licence",
-    "section": "",
-    "text": "The website roald-arboel.com (“the website”) and the logos are copyright © Mikkel Roald-Arbøl.\nCopyright and licence terms for published articles and any associated videos, images, or other material can be found at the end of each article page.\nI make every reasonable effort to locate, contact and acknowledge copyright owners and wish to be informed by any copyright owners who are not properly identified and acknowledged so that we may make any necessary corrections.\nWhere licence terms for individual articles, videos, images and other published content permit republication, you may do so in accordance with the stated terms of the respective licence(s).\nYou are not permitted to republish the website in its entirety."
-  },
-  {
-    "objectID": "LICENCE.html#content",
-    "href": "LICENCE.html#content",
-    "title": "Licence",
-    "section": "",
-    "text": "The website roald-arboel.com (“the website”) and the logos are copyright © Mikkel Roald-Arbøl.\nCopyright and licence terms for published articles and any associated videos, images, or other material can be found at the end of each article page.\nI make every reasonable effort to locate, contact and acknowledge copyright owners and wish to be informed by any copyright owners who are not properly identified and acknowledged so that we may make any necessary corrections.\nWhere licence terms for individual articles, videos, images and other published content permit republication, you may do so in accordance with the stated terms of the respective licence(s).\nYou are not permitted to republish the website in its entirety."
-  },
-  {
-    "objectID": "LICENCE.html#software-and-services",
-    "href": "LICENCE.html#software-and-services",
-    "title": "Licence",
-    "section": "Software and services",
-    "text": "Software and services\nSource code and files for the website are available from GitHub. Use of our GitHub repository is governed by the Contributor Covenant Code of Conduct.\nThe website is built using Quarto, an open-source scientific and technical publishing system developed by Posit. Quarto source code and software licences are available from GitHub.\nThe website is hosted by GitHub Pages.\nThe website uses the privacy-respecting Simple Analytics for web analytics reporting.\nFonts used on Real World Data Science are served by the Google Fonts API. This is to improve site loading speeds and font compatibility across devices. Review the Google Fonts Privacy and Data Collection statement.\nUser comments and reaction functionality is provided by giscus, a comments system powered by GitHub Discussions. Use of this comment functionality is governed by the Contributor Covenant Code of Conduct."
+    "text": "tools\n\n\ntechnology\n\n\nscience\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nOct 3, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nr\n\n\nrolling\n\n\nstats\n\n\n\nI set out to benchmark the speed of rolling functions from R packages\n\n\n\n\n\nOct 3, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI\n\n\nlarge language models\n\n\nmachine learning\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nR\n\n\nReproducibility\n\n\nPixi\n\n\n\nPixi is the best tool for managing your R projects. If it isn’t already, it will soon be. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nR\n\n\nStatistics\n\n\nData science\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI\n\n\nlarge language models\n\n\nmachine learning\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nStatistics\n\n\nVariance decomposition\n\n\nR\n\n\nRepeatability\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI\n\n\nlarge language models\n\n\nmachine learning\n\n\n\n“Modern science relies on (open source) software and hardware, but whereas creating tools (writing code) can be turned into academic currency (papers), there is currently no incentive for researchers to provide feedback and improvement suggestions for tools despite how valuable these contributions are to the scientific community as a whole. One possible way forward would be to treat”issue creation” and other Git-based activity as an acceptable form of peer review.” \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPop_OS!\n\n\nCosmic\n\n\nMac\n\n\n\nTo make an old laptop last longer, I’ve installed Pop_OS! on it. These are some notes for my future self (and others).\n\n\n\n\n\nFeb 10, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "CODE_OF_CONDUCT.html",
@@ -224,87 +196,108 @@
     "text": "This Code of Conduct is adapted from the Contributor Covenant, version 2.1, available at https://www.contributor-covenant.org/version/2/1/code_of_conduct.html.\nCommunity Impact Guidelines were inspired by Mozilla’s code of conduct enforcement ladder.\nFor answers to common questions about this code of conduct, see the FAQ at https://www.contributor-covenant.org/faq. Translations are available at https://www.contributor-covenant.org/translations."
   },
   {
-    "objectID": "blog/index.html",
-    "href": "blog/index.html",
-    "title": "Blog",
+    "objectID": "LICENCE.html",
+    "href": "LICENCE.html",
+    "title": "Licence",
     "section": "",
-    "text": "tools\n\n\ntechnology\n\n\nscience\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nOct 3, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nr\n\n\nrolling\n\n\nstats\n\n\n\nI set out to benchmark the speed of rolling functions from R packages\n\n\n\n\n\nOct 3, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI\n\n\nlarge language models\n\n\nmachine learning\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nR\n\n\nReproducibility\n\n\nPixi\n\n\n\nPixi is the best tool for managing your R projects. If it isn’t already, it will soon be. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nR\n\n\nStatistics\n\n\nData science\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI\n\n\nlarge language models\n\n\nmachine learning\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nStatistics\n\n\nVariance decomposition\n\n\nR\n\n\nRepeatability\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI\n\n\nlarge language models\n\n\nmachine learning\n\n\n\n“Modern science relies on (open source) software and hardware, but whereas creating tools (writing code) can be turned into academic currency (papers), there is currently no incentive for researchers to provide feedback and improvement suggestions for tools despite how valuable these contributions are to the scientific community as a whole. One possible way forward would be to treat”issue creation” and other Git-based activity as an acceptable form of peer review.” \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPop_OS!\n\n\nCosmic\n\n\nMac\n\n\n\nTo make an old laptop last longer, I’ve installed Pop_OS! on it. These are some notes for my future self (and others).\n\n\n\n\n\nFeb 10, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\nNo matching items"
+    "text": "The website roald-arboel.com (“the website”) and the logos are copyright © Mikkel Roald-Arbøl.\nCopyright and licence terms for published articles and any associated videos, images, or other material can be found at the end of each article page.\nI make every reasonable effort to locate, contact and acknowledge copyright owners and wish to be informed by any copyright owners who are not properly identified and acknowledged so that we may make any necessary corrections.\nWhere licence terms for individual articles, videos, images and other published content permit republication, you may do so in accordance with the stated terms of the respective licence(s).\nYou are not permitted to republish the website in its entirety."
   },
   {
-    "objectID": "blog/index.html#section",
-    "href": "blog/index.html#section",
-    "title": "Blog",
+    "objectID": "LICENCE.html#content",
+    "href": "LICENCE.html#content",
+    "title": "Licence",
     "section": "",
-    "text": "tools\n\n\ntechnology\n\n\nscience\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nOct 3, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nr\n\n\nrolling\n\n\nstats\n\n\n\nI set out to benchmark the speed of rolling functions from R packages\n\n\n\n\n\nOct 3, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI\n\n\nlarge language models\n\n\nmachine learning\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nR\n\n\nReproducibility\n\n\nPixi\n\n\n\nPixi is the best tool for managing your R projects. If it isn’t already, it will soon be. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nR\n\n\nStatistics\n\n\nData science\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI\n\n\nlarge language models\n\n\nmachine learning\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nStatistics\n\n\nVariance decomposition\n\n\nR\n\n\nRepeatability\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI\n\n\nlarge language models\n\n\nmachine learning\n\n\n\n“Modern science relies on (open source) software and hardware, but whereas creating tools (writing code) can be turned into academic currency (papers), there is currently no incentive for researchers to provide feedback and improvement suggestions for tools despite how valuable these contributions are to the scientific community as a whole. One possible way forward would be to treat”issue creation” and other Git-based activity as an acceptable form of peer review.” \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPop_OS!\n\n\nCosmic\n\n\nMac\n\n\n\nTo make an old laptop last longer, I’ve installed Pop_OS! on it. These are some notes for my future self (and others).\n\n\n\n\n\nFeb 10, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\nNo matching items"
+    "text": "The website roald-arboel.com (“the website”) and the logos are copyright © Mikkel Roald-Arbøl.\nCopyright and licence terms for published articles and any associated videos, images, or other material can be found at the end of each article page.\nI make every reasonable effort to locate, contact and acknowledge copyright owners and wish to be informed by any copyright owners who are not properly identified and acknowledged so that we may make any necessary corrections.\nWhere licence terms for individual articles, videos, images and other published content permit republication, you may do so in accordance with the stated terms of the respective licence(s).\nYou are not permitted to republish the website in its entirety."
   },
   {
-    "objectID": "blog/posts/2024/06/24/pixi-R/index.html",
-    "href": "blog/posts/2024/06/24/pixi-R/index.html",
-    "title": "Pixi + R: Better project management in R",
+    "objectID": "LICENCE.html#software-and-services",
+    "href": "LICENCE.html#software-and-services",
+    "title": "Licence",
+    "section": "Software and services",
+    "text": "Software and services\nSource code and files for the website are available from GitHub. Use of our GitHub repository is governed by the Contributor Covenant Code of Conduct.\nThe website is built using Quarto, an open-source scientific and technical publishing system developed by Posit. Quarto source code and software licences are available from GitHub.\nThe website is hosted by GitHub Pages.\nThe website uses the privacy-respecting Simple Analytics for web analytics reporting.\nFonts used on Real World Data Science are served by the Google Fonts API. This is to improve site loading speeds and font compatibility across devices. Review the Google Fonts Privacy and Data Collection statement.\nUser comments and reaction functionality is provided by giscus, a comments system powered by GitHub Discussions. Use of this comment functionality is governed by the Contributor Covenant Code of Conduct."
+  },
+  {
+    "objectID": "blog/posts/2024/06/24/animal-behaviour-tracking/index.html",
+    "href": "blog/posts/2024/06/24/animal-behaviour-tracking/index.html",
+    "title": "Tracking animals: Tools",
     "section": "",
-    "text": "Create project: pixi exec copier copy gh:roaldarbol/r-template my-new-project && cd my-new-project\nOpen IDE: pixi run rstudio\nAdd dependencies: rpix::add(\"tidyverse\")\nStart analysing your data!"
+    "text": "pixi\nquarto/mystmd\nnushell\nzotero\nobsidian\n\n\n\n\nCitationBibTeX citation:@online{roald-arbøl2024,\n  author = {Roald-Arbøl, Mikkel},\n  title = {Tracking Animals: {Tools}},\n  date = {2024-06-04},\n  url = {https://roald-arboel.com/blog/posts/2024/06/24/animal-behaviour-tracking/},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nRoald-Arbøl, Mikkel. 2024. “Tracking Animals: Tools.” June\n4, 2024. https://roald-arboel.com/blog/posts/2024/06/24/animal-behaviour-tracking/."
   },
   {
-    "objectID": "blog/posts/2024/06/24/pixi-R/index.html#tldr",
-    "href": "blog/posts/2024/06/24/pixi-R/index.html#tldr",
-    "title": "Pixi + R: Better project management in R",
+    "objectID": "blog/posts/2024/06/25/tools/index.html",
+    "href": "blog/posts/2024/06/25/tools/index.html",
+    "title": "Tools for Scientific Computing",
     "section": "",
-    "text": "Create project: pixi exec copier copy gh:roaldarbol/r-template my-new-project && cd my-new-project\nOpen IDE: pixi run rstudio\nAdd dependencies: rpix::add(\"tidyverse\")\nStart analysing your data!"
+    "text": "https://www.andrewheiss.com/uses/index.html#development\n\npixi\nquarto/mystmd\nnushell\nzotero\nobsidian\n\n\n\n\nCitationBibTeX citation:@online{roald-arbøl2024,\n  author = {Roald-Arbøl, Mikkel},\n  title = {Tools for {Scientific} {Computing}},\n  date = {2024-10-03},\n  url = {https://roald-arboel.com/blog/posts/2024/06/25/tools/},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nRoald-Arbøl, Mikkel. 2024. “Tools for Scientific\nComputing.” October 3, 2024. https://roald-arboel.com/blog/posts/2024/06/25/tools/."
   },
   {
-    "objectID": "blog/posts/2024/06/24/pixi-R/index.html#project-template",
-    "href": "blog/posts/2024/06/24/pixi-R/index.html#project-template",
-    "title": "Pixi + R: Better project management in R",
-    "section": "Project template",
-    "text": "Project template"
-  },
-  {
-    "objectID": "blog/posts/2024/07/10/ICC/index.html",
-    "href": "blog/posts/2024/07/10/ICC/index.html",
-    "title": "ICC and R2",
+    "objectID": "blog/posts/2024/07/25/peer-review/index.html",
+    "href": "blog/posts/2024/07/25/peer-review/index.html",
+    "title": "Peer Review on Github",
     "section": "",
-    "text": "Heading\nSome good content goes here…\n\n\n\n\nCitationBibTeX citation:@online{roald-arbøl2024,\n  author = {Roald-Arbøl, Mikkel},\n  title = {ICC and {R2}},\n  date = {2024-06-04},\n  url = {https://roald-arboel.com/blog/posts/2024/07/10/ICC/},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nRoald-Arbøl, Mikkel. 2024. “ICC and R2.” June 4, 2024. https://roald-arboel.com/blog/posts/2024/07/10/ICC/."
+    "text": "Some good content goes here…\n\n\nA tool that collates all the Github contributions into a file (or data-format which the user can serve how they want to). Check."
   },
   {
-    "objectID": "blog/posts/2024/09/01/PopOSMac/index.html",
-    "href": "blog/posts/2024/09/01/PopOSMac/index.html",
-    "title": "Pop_OS! on a Macbook Pro 2011",
+    "objectID": "blog/posts/2024/07/25/peer-review/index.html#what",
+    "href": "blog/posts/2024/07/25/peer-review/index.html#what",
+    "title": "Peer Review on Github",
     "section": "",
-    "text": "Heading\n\nFlash PopOS! 24.04 LTS with either BalenaEtcher or Raspberry Pi Imager\nBack up all files (I put everything on Proton Drive)\nTurn off Macbook\nHold the option and power buttons down until a screen asks and you can choose EFI\nFollow the installation prompts\nWifi issues\n\nsudo apt update\nsudo apt-get install bcmwl-kernel-source\nsudo modprobe -r b43 ssb wl brcmfmac brcmsmac bcma\nsudo modprobe wl\nsudo reboot\n\nInstall\n\nRustDesk\nFirefox\nBitwarden\nLibreoffice\nThunderbird\nEnte Photos\n(VLC)\n(Solitaire)\n\n\n\n\n\n\nCitationBibTeX citation:@online{roald-arbøl2024,\n  author = {Roald-Arbøl, Mikkel},\n  title = {Pop\\_OS! On a {Macbook} {Pro} 2011},\n  date = {2024-02-10},\n  url = {https://roald-arboel.com/blog/posts/2024/09/01/PopOSMac/},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nRoald-Arbøl, Mikkel. 2024. “Pop_OS! On a Macbook Pro 2011.”\nFebruary 10, 2024. https://roald-arboel.com/blog/posts/2024/09/01/PopOSMac/."
+    "text": "A tool that collates all the Github contributions into a file (or data-format which the user can serve how they want to). Check."
   },
   {
-    "objectID": "pages/about.html",
-    "href": "pages/about.html",
-    "title": "About me",
+    "objectID": "feeds.html",
+    "href": "feeds.html",
+    "title": "RSS feeds",
     "section": "",
-    "text": "CV\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nJoys in life\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nScientific journey\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items"
+    "text": "Research\nroald-arboel.com/research/index.xml\n\n\nBlog\nroald-arboel.com/blog/index.xml"
   },
   {
-    "objectID": "pages/scientific-journey.html",
-    "href": "pages/scientific-journey.html",
-    "title": "Scientific journey",
+    "objectID": "pages/CV.html",
+    "href": "pages/CV.html",
+    "title": "CV",
     "section": "",
-    "text": "Journey in words\nConversely, if you’re here to hear how I’ve ended up doing what I do, here’s the narrative version. With a background in elite sports and sports science, working on understanding animal minds I quite an unlikely path.\n\nElite sports\nI’ve grown up in the world of athletics, and my discipline was the triple jump. My time as an elite athlete was short, but brought me some great experiences; most notably I moved to Cuba in 2010 to train with the Cuban jumpers (if you follow athletics, you may know my former team-mate Pedro Pichardo). But after a few years I realised that, despite my efforts, I wouldn’t make it to the international stage, so I quit. But I wasn’t done with elite sports. I had already as an athlete read all the research I could get my hands on, from specific triple jump biomechanics, periodisation, human physiology, and trainng theory. So the switch to coaching was a small one. Coaching elite sports was also the reason I enrolled in my undergraduate (see above). I started as a junior jumps coach in Sparta, the largest Danish athletics club, where I had the privelege to coach some amazing young athletes. The national federation hired me for a regional youth … (funnily enough, my greatest experience as a coach came slightly later when I was asked to be the delegated jumps coach for the Danish National team for the 2019 Universiade in Naples - also known as the Olympics for university students).\n\n\nScience 101\nOne of our courses in the undergraduate was “Motor Learning”, or “how we learn movements”. Until now, my focus had been on muscle physiology, but here I was introduced to the study of the brain, neuroscience, for the very first time, and instantly my interest was piqued! I took all the related electives I possibly could and got more and more fascinated. I did my first research project with Jesper Lundbye-Jensen on cortical excitability during motor learning, which included a bunch of techniques, transcranial magnetic stimulation (TMS), electroencephalography (EEG) and electromyography (EMG). It also included behavioural work in the form of teaching participants to play a game by squeezing a small metal block (which was a force transducer, so it measured how hard they were squeezing).\nAfter having spent the first 20+ years of my life thinking that sports was life, I was now at a cross-roads. I had found this thing that made me more excited, intelectually stimulated, than I had ever experienced before, but if I was to pursue that, it meant leaving all of my sports-life behind (or at least on the shelf). I had never even considered that I could be a scientist.\nAfter finishing the undergraduate, I buggered off to Australia for a year. To get away, get some perspective, and discover who was without athletics in my life. The plan was to work at coffee shops and bana plantations, but, well… things turned out differently, and I ended up working in two labs at University of Queensland. My first couple of months I spent in a Neuromechanics lab, working primarily on foot biomechanics assisting with …, and developing a setup that combined ultrasound imaging, force application and local anaesthetic in the … nerve (along with being Guinea pig for a bunch of other studies). After my contract in the lab ended, I travelled to Tasmania where I spent a wonderful couple of months, before returning to work with Tim Carroll who worked on motor control. Here I also got the chance to work on a variety of setups, most of them reaching. But it was also here I realised that every living organism has to sense their surrounds and take action to make the best of the situation.\n\n\nNon-human?\nOne morning I went to jump on my bike when I noticed that a sling plant had wrapped itself around my bike frame. Not being trained in “allround” biology all I knew about plants was that they grew towards the sunlight. But that could surely not have been causing this wrapping!? Perplexed, I started … I read about quantum physics, information theory, comparative neuroscience. I read Principles of Neural Design by Simon Laughlin and Peter Sterling.\n\n\n\nThe fun stuff!\nOkay, science is cool, but life is so much more! If it wasn’t obvious, I love doing sports… every type of sports pretty much. I’ve recently taken to open water swimming, and rock climbing (and bouldering) has been a long-standing favourite of mine. I also enjoy running and a good (Olympic) weightlifting session. Badminton, squash or tennis when the opportunity presents itself.\nMusic also plays a big role in my life. I grew up playing the piano, where I was part of a jazz band. Later on I started singing and writing my own songs (I took on the guitar for that, but never got very good). In Brighton, I’ve been singing with the amazing Soul of the City Choir, and had a yearly performance at our Sussex Neuroscience Christmas Party (either solo or with an awesome CRPC band). These days, I mostly improvise some jazzy/ambient tunes on the piano and sing popular cover songs at home.\nAlthough I’ve always enjoyed being outdoors, I didn’t always really appreciate it fully. However, that changed during my undergraduate when we had a course in “Outdoor Life” (friluftsliv in Danish). Now I appreciate all the time I can get outside, paying attention to both the grandiose and the minute details of nature (which probably plays a part in my ending up working with animal behaviour). From camp life through hiking, preferably for multiple days, backcountry skiing, kayaking, rock climbing, mountaineering… any way that takes me through the wonderful nature that surrounds us!\nOh, and I love reading books, especially old classics!\nMy most recent hobby is photography. Catching the beauty of a moment, whether a wide natural landscape or a macro of an insect going about its business. I picked up my first camera (a Canon Powershot G9) in Australia, just to document my year there. But the photos from that year inspired me in a way I hadn’t expected. Now, I’ve invested in some more professional gear, but alas, the PhD has not allowed me much time to make the most of it - let’s see in a year! Until then, you can find a selection of my photos here.\nSome more photography\n\n\n\n\n\n\n\n\n\nPhoto by Hush Naidoo Jade Photography on Unsplash\n\n\n\n\n\n\n\nPhoto by Alessandro Bianchi on Unsplash\n\n\n\n\n\n\n\nPhoto by Joshua Melo on Unsplash"
+    "text": "Journey in bullet points\nIf you’re here for the science and prefer the minimal story (in a traditional CV style), these are my degrees:\n\nBSc in Exercise and Sports Science (2016), University of Copenhagen\nMSc in Human Biology (2019), University of Copenhagen\nPhD in Biology (2024), University of Sussex\n\nAnd you can find some more detail in my traditional CV here."
   },
   {
-    "objectID": "research/projects/internal-states.html",
-    "href": "research/projects/internal-states.html",
-    "title": "Internal states",
+    "objectID": "pages/joys.html",
+    "href": "pages/joys.html",
+    "title": "Joys in life",
+    "section": "",
+    "text": "The fun stuff!\nOkay, science is cool, but life is so much more! If it wasn’t obvious, I love doing sports… every type of sports pretty much. I’ve recently taken to open water swimming, and rock climbing (and bouldering) has been a long-standing favourite of mine. I also enjoy running and a good (Olympic) weightlifting session. Badminton, squash or tennis when the opportunity presents itself.\nMusic also plays a big role in my life. I grew up playing the piano, where I was part of a jazz band. Later on I started singing and writing my own songs (I took on the guitar for that, but never got very good). In Brighton, I’ve been singing with the amazing Soul of the City Choir, and had a yearly performance at our Sussex Neuroscience Christmas Party (either solo or with an awesome CRPC band). These days, I mostly improvise some jazzy/ambient tunes on the piano and sing popular cover songs at home.\nAlthough I’ve always enjoyed being outdoors, I didn’t always really appreciate it fully. However, that changed during my undergraduate when we had a course in “Outdoor Life” (friluftsliv in Danish). Now I appreciate all the time I can get outside, paying attention to both the grandiose and the minute details of nature (which probably plays a part in my ending up working with animal behaviour). From camp life through hiking, preferably for multiple days, backcountry skiing, kayaking, rock climbing, mountaineering… any way that takes me through the wonderful nature that surrounds us!\nOh, and I love reading books, especially old classics!\nMy most recent hobby is photography. Catching the beauty of a moment, whether a wide natural landscape or a macro of an insect going about its business. I picked up my first camera (a Canon Powershot G9) in Australia, just to document my year there. But the photos from that year inspired me in a way I hadn’t expected. Now, I’ve invested in some more professional gear, but alas, the PhD has not allowed me much time to make the most of it - let’s see in a year! Until then, you can find a selection of my photos here.\nSome more photography\n\n\n\n\n\n\n\n\n\nPhoto by Hush Naidoo Jade Photography on Unsplash\n\n\n\n\n\n\n\nPhoto by Alessandro Bianchi on Unsplash\n\n\n\n\n\n\n\nPhoto by Joshua Melo on Unsplash"
+  },
+  {
+    "objectID": "research/Template.html",
+    "href": "research/Template.html",
+    "title": "Heading",
     "section": "",
     "text": "Heading\nSome good content goes here…"
   },
   {
-    "objectID": "research/projects/timescales.html",
-    "href": "research/projects/timescales.html",
-    "title": "Biologically and Behaviourally relevant Timescales",
+    "objectID": "research/openscience/aniscope.html",
+    "href": "research/openscience/aniscope.html",
+    "title": "Aniscope",
     "section": "",
     "text": "Heading\nSome good content goes here…"
   },
   {
-    "objectID": "blog/posts/2024/06/24/stats-resources/index.html",
-    "href": "blog/posts/2024/06/24/stats-resources/index.html",
+    "objectID": "research/openscience/other-projects.html",
+    "href": "research/openscience/other-projects.html",
+    "title": "Heading",
+    "section": "",
+    "text": "Heading\nSome good content goes here…"
+  },
+  {
+    "objectID": "research/projects/sleep.html",
+    "href": "research/projects/sleep.html",
+    "title": "Sleep across the Animal Kingdom",
+    "section": "",
+    "text": "Heading\nSome good content goes here…"
+  },
+  {
+    "objectID": "blog/posts/2024/06/24/r-dataframes/index.html",
+    "href": "blog/posts/2024/06/24/r-dataframes/index.html",
     "title": "data.table, polars and duckDB",
     "section": "",
-    "text": "CitationBibTeX citation:@online{roald-arbøl2024,\n  author = {Roald-Arbøl, Mikkel},\n  title = {Data.table, Polars and {duckDB}},\n  date = {2024-06-04},\n  url = {https://roald-arboel.com/blog/posts/2024/06/24/stats-resources/},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nRoald-Arbøl, Mikkel. 2024. “Data.table, Polars and duckDB.”\nJune 4, 2024. https://roald-arboel.com/blog/posts/2024/06/24/stats-resources/."
+    "text": "CitationBibTeX citation:@online{roald-arbøl2024,\n  author = {Roald-Arbøl, Mikkel},\n  title = {Data.table, Polars and {duckDB}},\n  date = {2024-06-04},\n  url = {https://roald-arboel.com/blog/posts/2024/06/24/r-dataframes/},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nRoald-Arbøl, Mikkel. 2024. “Data.table, Polars and duckDB.”\nJune 4, 2024. https://roald-arboel.com/blog/posts/2024/06/24/r-dataframes/."
   }
 ]
