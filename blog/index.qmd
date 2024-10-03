@@ -10,6 +10,7 @@ listing:
     # template: ../html/blog/listing.ejs
     categories: true
     image-height: 12em
+    feed: true
 page-layout: full
 toc-title: Year
 toc-location: right

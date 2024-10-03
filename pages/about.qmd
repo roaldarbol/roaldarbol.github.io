@@ -12,7 +12,7 @@ listing:
     - "CV.qmd"
     - "scientific-journey.qmd"
     - "joys.qmd"
-    # sort: "date desc"
+    sort: "title desc"
     type: grid
     categories: false
     sort-ui: false
