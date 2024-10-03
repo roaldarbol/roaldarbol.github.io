@@ -10,7 +10,7 @@
 <atom:link href="https://roald-arboel.com/research/index.xml" rel="self" type="application/rss+xml"/>
 <description>Mikkel Roald-Arbøl is a PhD student at the University of Sussex. My work lies at the intersection of neuroethology, quantitative ethology and behavioural ecology.</description>
 <generator>quarto-1.5.57</generator>
-<lastBuildDate>Thu, 03 Oct 2024 16:15:54 GMT</lastBuildDate>
+<lastBuildDate>Thu, 03 Oct 2024 16:18:55 GMT</lastBuildDate>
 <item>
   <title>Biologically and Behaviourally relevant Timescales</title>
   <dc:creator>Mikkel Roald-Arbøl</dc:creator>
@@ -30,7 +30,7 @@
 
 <script async="" defer="" src="https://scripts.simpleanalyticscdn.com/latest.js"></script> ]]></description>
   <guid>https://roald-arboel.com/research/projects/timescales.html</guid>
-  <pubDate>Thu, 03 Oct 2024 16:15:54 GMT</pubDate>
+  <pubDate>Thu, 03 Oct 2024 16:18:55 GMT</pubDate>
 </item>
 <item>
   <title>Internal states</title>
@@ -52,7 +52,7 @@
 <script async="" defer="" src="https://scripts.simpleanalyticscdn.com/latest.js"></script> ]]></description>
   <category>animal behaviour</category>
   <guid>https://roald-arboel.com/research/projects/internal-states.html</guid>
-  <pubDate>Thu, 03 Oct 2024 16:15:54 GMT</pubDate>
+  <pubDate>Thu, 03 Oct 2024 16:18:55 GMT</pubDate>
 </item>
 <item>
   <title>Sleep across the Animal Kingdom</title>
@@ -75,7 +75,7 @@
   <category>brain states</category>
   <category>animal behaviour</category>
   <guid>https://roald-arboel.com/research/projects/sleep.html</guid>
-  <pubDate>Thu, 03 Oct 2024 16:15:54 GMT</pubDate>
+  <pubDate>Thu, 03 Oct 2024 16:18:55 GMT</pubDate>
 </item>
 <item>
   <title>animovement</title>
@@ -85,7 +85,7 @@
   <category>r</category>
   <category>animal movement</category>
   <guid>https://roald-arboel.com/</guid>
-  <pubDate>Thu, 03 Oct 2024 16:15:54 GMT</pubDate>
+  <pubDate>Thu, 03 Oct 2024 16:18:55 GMT</pubDate>
 </item>
 <item>
   <title>LaPreprint</title>
@@ -96,7 +96,7 @@
   <category>typesetting</category>
   <category>preprint</category>
   <guid>https://roald-arboel.com/</guid>
-  <pubDate>Thu, 03 Oct 2024 16:15:54 GMT</pubDate>
+  <pubDate>Thu, 03 Oct 2024 16:18:55 GMT</pubDate>
 </item>
 <item>
   <title>rpix</title>
@@ -107,7 +107,7 @@
   <category>conda</category>
   <category>r</category>
   <guid>https://roald-arboel.com/</guid>
-  <pubDate>Thu, 03 Oct 2024 16:15:54 GMT</pubDate>
+  <pubDate>Thu, 03 Oct 2024 16:18:55 GMT</pubDate>
 </item>
 </channel>
 </rss>
