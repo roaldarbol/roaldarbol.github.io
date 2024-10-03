@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.5.57">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
 <meta name="author" content="Mikkel Roald-Arbøl">
 <meta name="dcterms.date" content="2024-10-03">
 <meta name="description" content="I set out to benchmark the speed of rolling functions from R packages">
-
 <title>Benchmarking rolling functions in R | Mikkel Roald-Arbøl – Mikkel Roald-Arbøl</title>
 <style>
 code{white-space: pre-wrap;}
@@ -59,7 +56,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
-
 <script src="../../../../../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../../../../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../../../../../site_libs/clipboard/clipboard.min.js"></script>
@@ -79,8 +75,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../../../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <link href="../../../../../../site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
 <link href="../../../../../../site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
-<script src="../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
-<script id="quarto-search-options" type="application/json">{
+<script src="../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script><script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -106,10 +101,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script>
-<meta name="quarto:status" content="draft">
-
-
+}</script><meta name="quarto:status" content="draft">
 <meta property="og:title" content="Benchmarking rolling functions in R | Mikkel Roald-Arbøl">
 <meta property="og:description" content="I set out to benchmark the speed of rolling functions from R packages">
 <meta property="og:image" content="https://roald-arboel.com/blog/posts/2024/10/03/Benchmark-rolling/pretty-r.png">
@@ -118,13 +110,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta property="og:image:width" content="1920">
 <meta property="og:image:alt" content="Two cute balls decorating the R logo.">
 </head>
-
 <body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top quarto-banner"><div id="quarto-draft-alert" class="alert alert-warning"><i class="bi bi-pencil-square"></i>Draft</div>
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
-      <div class="navbar-container container-fluid">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner"><div id="quarto-draft-alert" class="alert alert-warning"><i class="bi bi-pencil-square"></i>Draft</div><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../../../../../../index.html">
     <span class="navbar-title">Mikkel Roald-Arbøl</span>
@@ -136,7 +125,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
-  <li class="nav-item">
+<li class="nav-item">
     <a class="nav-link" href="../../../../../../research/index.html"> 
 <span class="menu-text">Research</span></a>
   </li>  
@@ -148,8 +137,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-about" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">About</span>
     </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-about">    
-        <li>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-about">
+<li>
     <a class="dropdown-item" href="../../../../../../pages/about.html">
  <span class="dropdown-text">Who am I</span></a>
   </li>  
@@ -158,10 +147,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Contact me</span></a>
   </li>  
     </ul>
-  </li>
+</li>
 </ul>
-            <ul class="navbar-nav navbar-nav-scroll ms-auto">
-  <li class="nav-item">
+<ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item">
     <a class="nav-link" href="../../../../../../feeds.html"> 
 <span class="menu-text"><iconify-icon role="img" inline="" icon="bi:rss" style="font-size: 1.1em;" aria-label="Icon rss from bi Iconify.design set." title="RSS"></iconify-icon></span></a>
   </li>  
@@ -182,7 +171,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text"><iconify-icon role="img" inline="" icon="fa:brands" style="font-size: 1.15em;" aria-label="Icon brands from fa Iconify.design set." title="Orcid"></iconify-icon></span></a>
   </li>  
 </ul>
-          </div> <!-- /navcollapse -->
+</div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -191,11 +180,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </a>
 </div>
       </div> <!-- /container-fluid -->
-    </nav>
-</header>
-<!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
+    </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default page-columns page-full"><div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
       <h1 class="title">Benchmarking rolling functions in R</h1>
                   <div>
@@ -245,32 +230,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#mean" id="toc-mean" class="nav-link active" data-scroll-target="#mean">Mean</a></li>
+<li><a href="#mean" id="toc-mean" class="nav-link active" data-scroll-target="#mean">Mean</a></li>
   <li><a href="#median" id="toc-median" class="nav-link" data-scroll-target="#median">Median</a></li>
   <li><a href="#min" id="toc-min" class="nav-link" data-scroll-target="#min">Min</a></li>
   <li><a href="#max" id="toc-max" class="nav-link" data-scroll-target="#max">Max</a></li>
   <li><a href="#sum" id="toc-sum" class="nav-link" data-scroll-target="#sum">Sum</a></li>
   <li><a href="#sd" id="toc-sd" class="nav-link" data-scroll-target="#sd">SD</a></li>
   <li><a href="#custom-functions" id="toc-custom-functions" class="nav-link" data-scroll-target="#custom-functions">Custom functions</a></li>
-  </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/roaldarbol/roaldarbol.github.io/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/roaldarbol/roaldarbol.github.io/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content">
-
-
-
-
-
-<div class="cell" data-layout-align="center">
+<main class="content quarto-banner-title-block" id="quarto-document-content"><div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="pretty-r.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%" alt="A fuzzy monster in a beret and scarf, critiquing their own column graph on a canvas in front of them while other assistant monsters (also in berets) carry over boxes full of elements that can be used to customize a graph (like themes and geometric shapes). In the background is a wall with framed data visualizations. Stylized text reads &quot;ggplot2: build a data masterpiece.&quot;"></p>
+<figure class="figure"><p><img src="pretty-r.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%" alt="A fuzzy monster in a beret and scarf, critiquing their own column graph on a canvas in front of them while other assistant monsters (also in berets) carry over boxes full of elements that can be used to customize a graph (like themes and geometric shapes). In the background is a wall with framed data visualizations. Stylized text reads &quot;ggplot2: build a data masterpiece.&quot;"></p>
 </figure>
 </div>
 </div>
@@ -327,38 +303,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>devtools::install_github("andrewuhl/RollingWindow")</code></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(microbenchmark)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(slider)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(runner)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(zoo)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RollingWindow)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RcppRoll)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(roll)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(runstats)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/">tibble</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/joshuaulrich/microbenchmark/">microbenchmark</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-lib/slider">slider</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">runner</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://zoo.R-Forge.R-project.org/">zoo</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/andrewuhl/RollingWindow">RollingWindow</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">RcppRoll</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jasonjfoster/roll">roll</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/martakarass/runstats">runstats</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="fu">rnorm</span>(<span class="dv">1000000</span>))</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">51</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>n_times <span class="ot">&lt;-</span> <span class="dv">10</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>n_half <span class="ot">&lt;-</span> <span class="fu">floor</span>(n<span class="sc">/</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">1000000</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">51</span></span>
+<span><span class="va">n_times</span> <span class="op">&lt;-</span> <span class="fl">10</span></span>
+<span><span class="va">n_half</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">floor</a></span><span class="op">(</span><span class="va">n</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="mean" class="level2">
-<h2 class="anchored" data-anchor-id="mean">Mean</h2>
+<section id="mean" class="level2"><h2 class="anchored" data-anchor-id="mean">Mean</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">microbenchmark</span>(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"data.table::frollmean"</span> <span class="ot">=</span> data.table<span class="sc">::</span><span class="fu">frollmean</span>(df<span class="sc">$</span>x, n),</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"roll::roll_mean"</span> <span class="ot">=</span> roll<span class="sc">::</span><span class="fu">roll_mean</span>(df<span class="sc">$</span>x, <span class="at">width =</span> n),</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"RollingWindow::RollingMean"</span> <span class="ot">=</span> RollingWindow<span class="sc">::</span><span class="fu">RollingMean</span>(df<span class="sc">$</span>x, n),</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"runstats::RunningMean"</span> <span class="ot">=</span> runstats<span class="sc">::</span><span class="fu">RunningMean</span>(df<span class="sc">$</span>x, <span class="at">W =</span> n),</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"slider::slide_mean"</span> <span class="ot">=</span> slider<span class="sc">::</span><span class="fu">slide_mean</span>(df<span class="sc">$</span>x, <span class="at">before =</span> n_half, <span class="at">after =</span> n_half),</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"RcppRoll::roll_mean"</span> <span class="ot">=</span> RcppRoll<span class="sc">::</span><span class="fu">roll_mean</span>(df<span class="sc">$</span>x, <span class="at">n =</span> n, <span class="at">fill =</span> <span class="cn">NA</span>),</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"zoo::rollmean"</span> <span class="ot">=</span> zoo<span class="sc">::</span><span class="fu">rollmean</span>(df<span class="sc">$</span>x, <span class="at">k =</span> n, <span class="at">fill =</span> <span class="cn">NA</span>),</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"runner::mean_run"</span> <span class="ot">=</span> runner<span class="sc">::</span><span class="fu">mean_run</span>(df<span class="sc">$</span>x, <span class="at">k =</span> n, <span class="at">na_pad =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">times =</span> n_times)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span></span>
+<span>  <span class="st">"data.table::frollmean"</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/froll.html">frollmean</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span><span class="op">)</span>,</span>
+<span>  <span class="st">"roll::roll_mean"</span> <span class="op">=</span> <span class="fu">roll</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/roll/man/roll_mean.html">roll_mean</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, width <span class="op">=</span> <span class="va">n</span><span class="op">)</span>,</span>
+<span>  <span class="st">"RollingWindow::RollingMean"</span> <span class="op">=</span> <span class="fu">RollingWindow</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/RollingWindow/man/RollingMean.html">RollingMean</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span><span class="op">)</span>,</span>
+<span>  <span class="st">"runstats::RunningMean"</span> <span class="op">=</span> <span class="fu">runstats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/runstats/man/RunningMean.html">RunningMean</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, W <span class="op">=</span> <span class="va">n</span><span class="op">)</span>,</span>
+<span>  <span class="st">"slider::slide_mean"</span> <span class="op">=</span> <span class="fu">slider</span><span class="fu">::</span><span class="fu"><a href="https://slider.r-lib.org/reference/summary-slide.html">slide_mean</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, before <span class="op">=</span> <span class="va">n_half</span>, after <span class="op">=</span> <span class="va">n_half</span><span class="op">)</span>,</span>
+<span>  <span class="st">"RcppRoll::roll_mean"</span> <span class="op">=</span> <span class="fu">RcppRoll</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/RcppRoll/man/RcppRoll-exports.html">roll_mean</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, n <span class="op">=</span> <span class="va">n</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>  <span class="st">"zoo::rollmean"</span> <span class="op">=</span> <span class="fu">zoo</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/zoo/man/rollmean.html">rollmean</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, k <span class="op">=</span> <span class="va">n</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>  <span class="st">"runner::mean_run"</span> <span class="op">=</span> <span class="fu">runner</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/runner/man/mean_run.html">mean_run</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, k <span class="op">=</span> <span class="va">n</span>, na_pad <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>  times <span class="op">=</span> <span class="va">n_times</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: milliseconds
                        expr         min          lq       mean      median
@@ -381,17 +356,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  1547.052810 1606.93501    10</code></pre>
 </div>
 </div>
-</section>
-<section id="median" class="level2">
-<h2 class="anchored" data-anchor-id="median">Median</h2>
+</section><section id="median" class="level2"><h2 class="anchored" data-anchor-id="median">Median</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">microbenchmark</span>(</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"data.table::frollmedian"</span> <span class="ot">=</span> data.table<span class="sc">::</span><span class="fu">frollmedian</span>(df<span class="sc">$</span>x, n),</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"RollingWindow::RollingMedian"</span> <span class="ot">=</span> RollingWindow<span class="sc">::</span><span class="fu">RollingMedian</span>(df<span class="sc">$</span>x, n),</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"zoo::rollmedian"</span> <span class="ot">=</span> zoo<span class="sc">::</span><span class="fu">rollmedian</span>(df<span class="sc">$</span>x, <span class="at">k =</span> n, <span class="at">fill =</span> <span class="cn">NA</span>),</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"roll::roll_median"</span> <span class="ot">=</span> roll<span class="sc">::</span><span class="fu">roll_median</span>(df<span class="sc">$</span>x, <span class="at">width =</span> n),</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"RcppRoll::roll_median"</span> <span class="ot">=</span> RcppRoll<span class="sc">::</span><span class="fu">roll_median</span>(df<span class="sc">$</span>x, <span class="at">n =</span> n, <span class="at">fill =</span> <span class="cn">NA</span>),</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">times =</span> n_times)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span></span>
+<span>  <span class="st">"data.table::frollmedian"</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/froll.html">frollmedian</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span><span class="op">)</span>,</span>
+<span>  <span class="st">"RollingWindow::RollingMedian"</span> <span class="op">=</span> <span class="fu">RollingWindow</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/RollingWindow/man/RollingMedian.html">RollingMedian</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span><span class="op">)</span>,</span>
+<span>  <span class="st">"zoo::rollmedian"</span> <span class="op">=</span> <span class="fu">zoo</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/zoo/man/rollmean.html">rollmedian</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, k <span class="op">=</span> <span class="va">n</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>  <span class="st">"roll::roll_median"</span> <span class="op">=</span> <span class="fu">roll</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/roll/man/roll_median.html">roll_median</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, width <span class="op">=</span> <span class="va">n</span><span class="op">)</span>,</span>
+<span>  <span class="st">"RcppRoll::roll_median"</span> <span class="op">=</span> <span class="fu">RcppRoll</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/RcppRoll/man/RcppRoll-exports.html">roll_median</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, n <span class="op">=</span> <span class="va">n</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>  times <span class="op">=</span> <span class="va">n_times</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: milliseconds
                          expr        min         lq       mean     median
@@ -408,17 +381,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  1633.18224 1909.33519    10</code></pre>
 </div>
 </div>
-</section>
-<section id="min" class="level2">
-<h2 class="anchored" data-anchor-id="min">Min</h2>
+</section><section id="min" class="level2"><h2 class="anchored" data-anchor-id="min">Min</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">microbenchmark</span>(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"data.table::frollmin"</span> <span class="ot">=</span> data.table<span class="sc">::</span><span class="fu">frollmin</span>(df<span class="sc">$</span>x, n),</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"roll::roll_min"</span> <span class="ot">=</span> roll<span class="sc">::</span><span class="fu">roll_min</span>(df<span class="sc">$</span>x, <span class="at">width =</span> n),</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"RollingWindow::RollingMin"</span> <span class="ot">=</span> RollingWindow<span class="sc">::</span><span class="fu">RollingMin</span>(df<span class="sc">$</span>x, n),</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"RcppRoll::roll_min"</span> <span class="ot">=</span> RcppRoll<span class="sc">::</span><span class="fu">roll_min</span>(df<span class="sc">$</span>x, <span class="at">n =</span> n, <span class="at">fill =</span> <span class="cn">NA</span>),</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"runner::min_run"</span> <span class="ot">=</span> runner<span class="sc">::</span><span class="fu">min_run</span>(df<span class="sc">$</span>x, <span class="at">k =</span> n, <span class="at">na_pad =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">times =</span> n_times)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span></span>
+<span>  <span class="st">"data.table::frollmin"</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/froll.html">frollmin</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span><span class="op">)</span>,</span>
+<span>  <span class="st">"roll::roll_min"</span> <span class="op">=</span> <span class="fu">roll</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/roll/man/roll_min.html">roll_min</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, width <span class="op">=</span> <span class="va">n</span><span class="op">)</span>,</span>
+<span>  <span class="st">"RollingWindow::RollingMin"</span> <span class="op">=</span> <span class="fu">RollingWindow</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/RollingWindow/man/RollingMin.html">RollingMin</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span><span class="op">)</span>,</span>
+<span>  <span class="st">"RcppRoll::roll_min"</span> <span class="op">=</span> <span class="fu">RcppRoll</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/RcppRoll/man/RcppRoll-exports.html">roll_min</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, n <span class="op">=</span> <span class="va">n</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>  <span class="st">"runner::min_run"</span> <span class="op">=</span> <span class="fu">runner</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/runner/man/min_run.html">min_run</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, k <span class="op">=</span> <span class="va">n</span>, na_pad <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>  times <span class="op">=</span> <span class="va">n_times</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: milliseconds
                       expr        min         lq        mean      median
@@ -435,18 +406,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  1174.581112 1313.950563    10</code></pre>
 </div>
 </div>
-</section>
-<section id="max" class="level2">
-<h2 class="anchored" data-anchor-id="max">Max</h2>
+</section><section id="max" class="level2"><h2 class="anchored" data-anchor-id="max">Max</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">microbenchmark</span>(</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"data.table::frollmax"</span> <span class="ot">=</span> data.table<span class="sc">::</span><span class="fu">frollmax</span>(df<span class="sc">$</span>x, n),</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"roll::roll_max"</span> <span class="ot">=</span> roll<span class="sc">::</span><span class="fu">roll_max</span>(df<span class="sc">$</span>x, <span class="at">width =</span> n),</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"RollingWindow::RollingMax"</span> <span class="ot">=</span> RollingWindow<span class="sc">::</span><span class="fu">RollingMax</span>(df<span class="sc">$</span>x, n),</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"RcppRoll::roll_max"</span> <span class="ot">=</span> RcppRoll<span class="sc">::</span><span class="fu">roll_max</span>(df<span class="sc">$</span>x, <span class="at">n =</span> n, <span class="at">fill =</span> <span class="cn">NA</span>),</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"runner::max_run"</span> <span class="ot">=</span> runner<span class="sc">::</span><span class="fu">max_run</span>(df<span class="sc">$</span>x, <span class="at">k =</span> n, <span class="at">na_pad =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"zoo::rollmax"</span> <span class="ot">=</span> zoo<span class="sc">::</span><span class="fu">rollmax</span>(df<span class="sc">$</span>x, <span class="at">k =</span> n, <span class="at">fill =</span> <span class="cn">NA</span>),</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">times =</span> n_times)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span></span>
+<span>  <span class="st">"data.table::frollmax"</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/froll.html">frollmax</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span><span class="op">)</span>,</span>
+<span>  <span class="st">"roll::roll_max"</span> <span class="op">=</span> <span class="fu">roll</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/roll/man/roll_max.html">roll_max</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, width <span class="op">=</span> <span class="va">n</span><span class="op">)</span>,</span>
+<span>  <span class="st">"RollingWindow::RollingMax"</span> <span class="op">=</span> <span class="fu">RollingWindow</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/RollingWindow/man/RollingMax.html">RollingMax</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span><span class="op">)</span>,</span>
+<span>  <span class="st">"RcppRoll::roll_max"</span> <span class="op">=</span> <span class="fu">RcppRoll</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/RcppRoll/man/RcppRoll-exports.html">roll_max</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, n <span class="op">=</span> <span class="va">n</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>  <span class="st">"runner::max_run"</span> <span class="op">=</span> <span class="fu">runner</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/runner/man/max_run.html">max_run</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, k <span class="op">=</span> <span class="va">n</span>, na_pad <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>  <span class="st">"zoo::rollmax"</span> <span class="op">=</span> <span class="fu">zoo</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/zoo/man/rollmean.html">rollmax</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, k <span class="op">=</span> <span class="va">n</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>  times <span class="op">=</span> <span class="va">n_times</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: milliseconds
                       expr         min          lq       mean      median
@@ -465,20 +434,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  1477.122353 1548.25293    10</code></pre>
 </div>
 </div>
-</section>
-<section id="sum" class="level2">
-<h2 class="anchored" data-anchor-id="sum">Sum</h2>
+</section><section id="sum" class="level2"><h2 class="anchored" data-anchor-id="sum">Sum</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">microbenchmark</span>(</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data.table::frollsum, fast"</span> <span class="ot">=</span> data.table<span class="sc">::</span><span class="fu">frollsum</span>(df<span class="sc">$</span>x, n, <span class="at">algo =</span> <span class="st">"fast"</span>),</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"roll::roll_sum"</span> <span class="ot">=</span> roll<span class="sc">::</span><span class="fu">roll_sum</span>(df<span class="sc">$</span>x, <span class="at">width =</span> n),</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"RollingWindow::RollingSum"</span> <span class="ot">=</span> RollingWindow<span class="sc">::</span><span class="fu">RollingSum</span>(df<span class="sc">$</span>x, n),</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"slider::slide_sum"</span> <span class="ot">=</span> slider<span class="sc">::</span><span class="fu">slide_sum</span>(df<span class="sc">$</span>x, <span class="at">before =</span> n_half, <span class="at">after =</span> n_half),</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data.table::frollsum, exact"</span> <span class="ot">=</span> data.table<span class="sc">::</span><span class="fu">frollsum</span>(df<span class="sc">$</span>x, n, <span class="at">algo =</span> <span class="st">"exact"</span>),</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"RcppRoll::roll_sum"</span> <span class="ot">=</span> RcppRoll<span class="sc">::</span><span class="fu">roll_sum</span>(df<span class="sc">$</span>x, <span class="at">n =</span> n, <span class="at">fill =</span> <span class="cn">NA</span>),</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"zoo::rollsum"</span> <span class="ot">=</span> zoo<span class="sc">::</span><span class="fu">rollsum</span>(df<span class="sc">$</span>x, n, <span class="at">fill =</span> <span class="cn">NA</span>),</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"runner::sum_run"</span> <span class="ot">=</span> runner<span class="sc">::</span><span class="fu">sum_run</span>(df<span class="sc">$</span>x, <span class="at">k =</span> n, <span class="at">na_pad =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">times =</span> n_times)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span></span>
+<span>    <span class="st">"data.table::frollsum, fast"</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/froll.html">frollsum</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span>, algo <span class="op">=</span> <span class="st">"fast"</span><span class="op">)</span>,</span>
+<span>    <span class="st">"roll::roll_sum"</span> <span class="op">=</span> <span class="fu">roll</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/roll/man/roll_sum.html">roll_sum</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, width <span class="op">=</span> <span class="va">n</span><span class="op">)</span>,</span>
+<span>    <span class="st">"RollingWindow::RollingSum"</span> <span class="op">=</span> <span class="fu">RollingWindow</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/RollingWindow/man/RollingSum.html">RollingSum</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span><span class="op">)</span>,</span>
+<span>    <span class="st">"slider::slide_sum"</span> <span class="op">=</span> <span class="fu">slider</span><span class="fu">::</span><span class="fu"><a href="https://slider.r-lib.org/reference/summary-slide.html">slide_sum</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, before <span class="op">=</span> <span class="va">n_half</span>, after <span class="op">=</span> <span class="va">n_half</span><span class="op">)</span>,</span>
+<span>    <span class="st">"data.table::frollsum, exact"</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/froll.html">frollsum</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span>, algo <span class="op">=</span> <span class="st">"exact"</span><span class="op">)</span>,</span>
+<span>    <span class="st">"RcppRoll::roll_sum"</span> <span class="op">=</span> <span class="fu">RcppRoll</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/RcppRoll/man/RcppRoll-exports.html">roll_sum</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, n <span class="op">=</span> <span class="va">n</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>    <span class="st">"zoo::rollsum"</span> <span class="op">=</span> <span class="fu">zoo</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/zoo/man/rollmean.html">rollsum</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>    <span class="st">"runner::sum_run"</span> <span class="op">=</span> <span class="fu">runner</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/runner/man/sum_run.html">sum_run</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, k <span class="op">=</span> <span class="va">n</span>, na_pad <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    times <span class="op">=</span> <span class="va">n_times</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: milliseconds
                         expr         min          lq        mean      median
@@ -501,16 +468,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  1658.419845 1761.18214    10</code></pre>
 </div>
 </div>
-</section>
-<section id="sd" class="level2">
-<h2 class="anchored" data-anchor-id="sd">SD</h2>
+</section><section id="sd" class="level2"><h2 class="anchored" data-anchor-id="sd">SD</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">microbenchmark</span>(</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"roll::roll_sd"</span> <span class="ot">=</span> roll<span class="sc">::</span><span class="fu">roll_sd</span>(df<span class="sc">$</span>x, <span class="at">width =</span> n),</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"RollingWindow::RollingStd"</span> <span class="ot">=</span> RollingWindow<span class="sc">::</span><span class="fu">RollingStd</span>(df<span class="sc">$</span>x, n),</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"runstats::RunningSd"</span> <span class="ot">=</span> runstats<span class="sc">::</span><span class="fu">RunningSd</span>(df<span class="sc">$</span>x, <span class="at">W =</span> n),</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"RcppRoll::roll_sd"</span> <span class="ot">=</span> RcppRoll<span class="sc">::</span><span class="fu">roll_sd</span>(df<span class="sc">$</span>x, <span class="at">n =</span> n, <span class="at">fill =</span> <span class="cn">NA</span>),</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">times =</span> n_times)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span></span>
+<span>  <span class="st">"roll::roll_sd"</span> <span class="op">=</span> <span class="fu">roll</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/roll/man/roll_sd.html">roll_sd</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, width <span class="op">=</span> <span class="va">n</span><span class="op">)</span>,</span>
+<span>  <span class="st">"RollingWindow::RollingStd"</span> <span class="op">=</span> <span class="fu">RollingWindow</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/RollingWindow/man/RollingStd.html">RollingStd</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span><span class="op">)</span>,</span>
+<span>  <span class="st">"runstats::RunningSd"</span> <span class="op">=</span> <span class="fu">runstats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/runstats/man/RunningSd.html">RunningSd</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, W <span class="op">=</span> <span class="va">n</span><span class="op">)</span>,</span>
+<span>  <span class="st">"RcppRoll::roll_sd"</span> <span class="op">=</span> <span class="fu">RcppRoll</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/RcppRoll/man/RcppRoll-exports.html">roll_sd</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, n <span class="op">=</span> <span class="va">n</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>  times <span class="op">=</span> <span class="va">n_times</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: milliseconds
                       expr        min         lq       mean     median
@@ -525,14 +490,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  1322.65637 1440.68273    10</code></pre>
 </div>
 </div>
-</section>
-<section id="custom-functions" class="level2">
-<h2 class="anchored" data-anchor-id="custom-functions">Custom functions</h2>
+</section><section id="custom-functions" class="level2"><h2 class="anchored" data-anchor-id="custom-functions">Custom functions</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">microbenchmark</span>(</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"data.table::frollapply"</span> <span class="ot">=</span> data.table<span class="sc">::</span><span class="fu">frollapply</span>(df<span class="sc">$</span>x, n, sum),</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"zoo::rollapply"</span> <span class="ot">=</span> zoo<span class="sc">::</span><span class="fu">rollapply</span>(df<span class="sc">$</span>x, n, sum),</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">times =</span> n_times)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/microbenchmark/man/microbenchmark.html">microbenchmark</a></span><span class="op">(</span></span>
+<span>  <span class="st">"data.table::frollapply"</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/frollapply.html">frollapply</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span>, <span class="va">sum</span><span class="op">)</span>,</span>
+<span>  <span class="st">"zoo::rollapply"</span> <span class="op">=</span> <span class="fu">zoo</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/zoo/man/rollapply.html">rollapply</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span>, <span class="va">sum</span><span class="op">)</span>,</span>
+<span>  times <span class="op">=</span> <span class="va">n_times</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unit: seconds
                    expr       min        lq      mean    median        uq
@@ -545,9 +508,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 
 
-</section>
-
-<script async="" defer="" src="https://scripts.simpleanalyticscdn.com/latest.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{roald-arbøl2024,
+</section><script async="" defer="" src="https://scripts.simpleanalyticscdn.com/latest.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{roald-arbøl2024,
   author = {Roald-Arbøl, Mikkel},
   title = {Benchmarking Rolling Functions in {R}},
   date = {2024-10-03},
@@ -557,8 +518,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-roald-arbøl2024" class="csl-entry quarto-appendix-citeas" role="listitem">
 Roald-Arbøl, Mikkel. 2024. <span>“Benchmarking Rolling Functions in
 R.”</span> October 3, 2024. <a href="https://roald-arboel.com/blog/posts/2024/10/03/Benchmark-rolling/">https://roald-arboel.com/blog/posts/2024/10/03/Benchmark-rolling/</a>.
-</div></div></section></div></main> <!-- /main -->
-<script id="quarto-html-after-body" type="application/javascript">
+</div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -977,14 +937,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>
-<script src="https://giscus.app/client.js" data-repo="roaldarbol/quarto-website" data-repo-id="" data-category="General" data-category-id="" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
-</script>
-<input type="hidden" id="giscus-base-theme" value="light">
-<input type="hidden" id="giscus-alt-theme" value="dark">
+</script><script src="https://giscus.app/client.js" data-repo="roaldarbol/quarto-website" data-repo-id="" data-category="General" data-category-id="" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script><input type="hidden" id="giscus-base-theme" value="light"><input type="hidden" id="giscus-alt-theme" value="dark">
 </div> <!-- /content -->
-<footer class="footer">
-  <div class="nav-footer">
+<footer class="footer"><div class="nav-footer">
     <div class="nav-footer-left">
 <p><a href="../../../../../../LICENCE.html">Copyright © 2024 Mikkel Roald-Arbøl</a></p>
 </div>   
@@ -996,8 +952,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div>
   </div>
 </footer>
-
-
 
 
 </body></html>
