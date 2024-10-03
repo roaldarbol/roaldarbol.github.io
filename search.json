@@ -1,0 +1,310 @@
+[
+  {
+    "objectID": "blog/posts/2024/10/03/Benchmark-rolling/index.html",
+    "href": "blog/posts/2024/10/03/Benchmark-rolling/index.html",
+    "title": "Benchmarking rolling functions in R",
+    "section": "",
+    "text": "I’ll write a bit about the benchmarks here.\nCan run on a normal vector (precludes polars).\nHere are the packages under consideration (if you have additions, please open an issue on Github):\nWe are considering the following computations\nWe also keep track of various features:\nInstall data.table form the rollmedian branch:\nInstall roll from Github:\nInstall RollingWindow from Github:\nlibrary(tibble)\nlibrary(dplyr)\nlibrary(microbenchmark)\n\nlibrary(slider)\nlibrary(runner)\nlibrary(zoo)\nlibrary(RollingWindow)\nlibrary(RcppRoll)\nlibrary(roll)\nlibrary(data.table)\nlibrary(runstats)\ndf &lt;- tibble(x = rnorm(1000000))\nn &lt;- 51\nn_times &lt;- 10\nn_half &lt;- floor(n/2)"
+  },
+  {
+    "objectID": "blog/posts/2024/10/03/Benchmark-rolling/index.html#mean",
+    "href": "blog/posts/2024/10/03/Benchmark-rolling/index.html#mean",
+    "title": "Benchmarking rolling functions in R",
+    "section": "Mean",
+    "text": "Mean\n\nmicrobenchmark(\n  \"data.table::frollmean\" = data.table::frollmean(df$x, n),\n  \"roll::roll_mean\" = roll::roll_mean(df$x, width = n),\n  \"RollingWindow::RollingMean\" = RollingWindow::RollingMean(df$x, n),\n  \"runstats::RunningMean\" = runstats::RunningMean(df$x, W = n),\n  \"slider::slide_mean\" = slider::slide_mean(df$x, before = n_half, after = n_half),\n  \"RcppRoll::roll_mean\" = RcppRoll::roll_mean(df$x, n = n, fill = NA),\n  \"zoo::rollmean\" = zoo::rollmean(df$x, k = n, fill = NA),\n  \"runner::mean_run\" = runner::mean_run(df$x, k = n, na_pad = TRUE),\n  times = n_times)\n\nUnit: milliseconds\n                       expr         min          lq       mean      median\n      data.table::frollmean    2.241879    2.340252   11.07247    2.713214\n            roll::roll_mean   11.808366   12.351446   14.35429   12.473165\n RollingWindow::RollingMean   16.977660   17.465734   33.28365   23.602618\n      runstats::RunningMean   14.769024   16.227194   44.86687   25.787892\n         slider::slide_mean   73.969034   74.136307   76.08521   75.195895\n        RcppRoll::roll_mean  125.844943  127.134127  129.67824  129.576611\n              zoo::rollmean  256.682808  313.302683  346.79951  322.212449\n           runner::mean_run 1198.164818 1228.970005 1369.71537 1285.969585\n          uq        max neval\n    6.031607   79.03656    10\n   14.610513   24.02796    10\n   26.719363  128.51629    10\n   94.260361  108.86306    10\n   77.303700   80.14807    10\n  131.924998  135.28932    10\n  367.791690  531.82976    10\n 1547.052810 1606.93501    10"
+  },
+  {
+    "objectID": "blog/posts/2024/10/03/Benchmark-rolling/index.html#median",
+    "href": "blog/posts/2024/10/03/Benchmark-rolling/index.html#median",
+    "title": "Benchmarking rolling functions in R",
+    "section": "Median",
+    "text": "Median\n\nmicrobenchmark(\n  \"data.table::frollmedian\" = data.table::frollmedian(df$x, n),\n  \"RollingWindow::RollingMedian\" = RollingWindow::RollingMedian(df$x, n),\n  \"zoo::rollmedian\" = zoo::rollmedian(df$x, k = n, fill = NA),\n  \"roll::roll_median\" = roll::roll_median(df$x, width = n),\n  \"RcppRoll::roll_median\" = RcppRoll::roll_median(df$x, n = n, fill = NA),\n  times = n_times)\n\nUnit: milliseconds\n                         expr        min         lq       mean     median\n      data.table::frollmedian   69.04398   71.51425   89.17143   73.78828\n RollingWindow::RollingMedian   57.11521   57.80190   65.25114   64.92265\n              zoo::rollmedian  316.62932  352.47701  356.72934  359.56134\n            roll::roll_median  501.02063  503.81910  541.68486  526.72164\n        RcppRoll::roll_median 1407.80392 1409.40807 1536.79857 1466.03330\n         uq        max neval\n   77.92332  225.23769    10\n   69.99089   77.45782    10\n  365.43327  396.97943    10\n  538.86600  665.62833    10\n 1633.18224 1909.33519    10"
+  },
+  {
+    "objectID": "blog/posts/2024/10/03/Benchmark-rolling/index.html#min",
+    "href": "blog/posts/2024/10/03/Benchmark-rolling/index.html#min",
+    "title": "Benchmarking rolling functions in R",
+    "section": "Min",
+    "text": "Min\n\nmicrobenchmark(\n  \"data.table::frollmin\" = data.table::frollmin(df$x, n),\n  \"roll::roll_min\" = roll::roll_min(df$x, width = n),\n  \"RollingWindow::RollingMin\" = RollingWindow::RollingMin(df$x, n),\n  \"RcppRoll::roll_min\" = RcppRoll::roll_min(df$x, n = n, fill = NA),\n  \"runner::min_run\" = runner::min_run(df$x, k = n, na_pad = TRUE),\n  times = n_times)\n\nUnit: milliseconds\n                      expr        min         lq        mean      median\n      data.table::frollmin   5.411031   5.517803    5.827558    5.792026\n            roll::roll_min  22.984927  23.445202   23.864652   23.630812\n RollingWindow::RollingMin  44.843584  46.259335   52.213656   48.525513\n        RcppRoll::roll_min 349.503761 350.284608  355.950302  352.792411\n           runner::min_run 798.355932 855.048846 1050.799176 1080.054734\n          uq         max neval\n    6.037268    6.309239    10\n   24.170740   25.898749    10\n   56.849840   67.821354    10\n  359.726967  371.640967    10\n 1174.581112 1313.950563    10"
+  },
+  {
+    "objectID": "blog/posts/2024/10/03/Benchmark-rolling/index.html#max",
+    "href": "blog/posts/2024/10/03/Benchmark-rolling/index.html#max",
+    "title": "Benchmarking rolling functions in R",
+    "section": "Max",
+    "text": "Max\n\nmicrobenchmark(\n  \"data.table::frollmax\" = data.table::frollmax(df$x, n),\n  \"roll::roll_max\" = roll::roll_max(df$x, width = n),\n  \"RollingWindow::RollingMax\" = RollingWindow::RollingMax(df$x, n),\n  \"RcppRoll::roll_max\" = RcppRoll::roll_max(df$x, n = n, fill = NA),\n  \"runner::max_run\" = runner::max_run(df$x, k = n, na_pad = TRUE),\n  \"zoo::rollmax\" = zoo::rollmax(df$x, k = n, fill = NA),\n  times = n_times)\n\nUnit: milliseconds\n                      expr         min          lq       mean      median\n      data.table::frollmax    5.044174    5.610125   17.85473    6.502458\n            roll::roll_max   22.839600   24.028406   26.71447   26.783014\n RollingWindow::RollingMax   46.142606   48.621133   57.48825   49.863125\n        RcppRoll::roll_max  350.372535  356.682585  371.96263  369.004938\n           runner::max_run  784.649671  812.671187 1032.20082  973.548273\n              zoo::rollmax 1147.328909 1241.116590 1351.98079 1347.271621\n          uq        max neval\n    9.949318  106.67906    10\n   29.236878   31.57566    10\n   52.198837  124.78942    10\n  386.567315  401.79024    10\n 1283.828536 1409.76538    10\n 1477.122353 1548.25293    10"
+  },
+  {
+    "objectID": "blog/posts/2024/10/03/Benchmark-rolling/index.html#sum",
+    "href": "blog/posts/2024/10/03/Benchmark-rolling/index.html#sum",
+    "title": "Benchmarking rolling functions in R",
+    "section": "Sum",
+    "text": "Sum\n\nmicrobenchmark(\n    \"data.table::frollsum, fast\" = data.table::frollsum(df$x, n, algo = \"fast\"),\n    \"roll::roll_sum\" = roll::roll_sum(df$x, width = n),\n    \"RollingWindow::RollingSum\" = RollingWindow::RollingSum(df$x, n),\n    \"slider::slide_sum\" = slider::slide_sum(df$x, before = n_half, after = n_half),\n    \"data.table::frollsum, exact\" = data.table::frollsum(df$x, n, algo = \"exact\"),\n    \"RcppRoll::roll_sum\" = RcppRoll::roll_sum(df$x, n = n, fill = NA),\n    \"zoo::rollsum\" = zoo::rollsum(df$x, n, fill = NA),\n    \"runner::sum_run\" = runner::sum_run(df$x, k = n, na_pad = TRUE),\n    times = n_times)\n\nUnit: milliseconds\n                        expr         min          lq        mean      median\n  data.table::frollsum, fast    2.523604    2.659571    5.861422    3.063187\n              roll::roll_sum    6.436056    6.642563    9.666256    8.289517\n   RollingWindow::RollingSum   17.793522   19.836219   26.065329   20.714188\n           slider::slide_sum   76.570577   78.599420   90.508191   83.782619\n data.table::frollsum, exact   36.971424   38.606730   40.628789   39.484406\n          RcppRoll::roll_sum  126.439986  131.928438  132.967029  134.275092\n                zoo::rollsum  325.665040  379.251710  480.714105  450.228940\n             runner::sum_run 1289.769892 1418.957973 1525.079449 1517.706760\n          uq        max neval\n    4.499823   18.11897    10\n   12.717016   16.84787    10\n   33.918532   43.64378    10\n   88.895235  126.26658    10\n   40.049148   54.13022    10\n  135.329135  136.40403    10\n  608.734517  696.18947    10\n 1658.419845 1761.18214    10"
+  },
+  {
+    "objectID": "blog/posts/2024/10/03/Benchmark-rolling/index.html#sd",
+    "href": "blog/posts/2024/10/03/Benchmark-rolling/index.html#sd",
+    "title": "Benchmarking rolling functions in R",
+    "section": "SD",
+    "text": "SD\n\nmicrobenchmark(\n  \"roll::roll_sd\" = roll::roll_sd(df$x, width = n),\n  \"RollingWindow::RollingStd\" = RollingWindow::RollingStd(df$x, n),\n  \"runstats::RunningSd\" = runstats::RunningSd(df$x, W = n),\n  \"RcppRoll::roll_sd\" = RcppRoll::roll_sd(df$x, n = n, fill = NA),\n  times = n_times)\n\nUnit: milliseconds\n                      expr        min         lq       mean     median\n             roll::roll_sd   56.31893   56.64948   61.66736   57.28845\n RollingWindow::RollingStd   31.00776   33.04170   42.24170   33.54361\n       runstats::RunningSd   59.02132   67.17997   92.24908   85.79771\n         RcppRoll::roll_sd 1205.79275 1217.69071 1292.22611 1294.74142\n         uq        max neval\n   61.82976   79.94232    10\n   40.37113  107.05237    10\n  113.36480  163.73572    10\n 1322.65637 1440.68273    10"
+  },
+  {
+    "objectID": "blog/posts/2024/10/03/Benchmark-rolling/index.html#custom-functions",
+    "href": "blog/posts/2024/10/03/Benchmark-rolling/index.html#custom-functions",
+    "title": "Benchmarking rolling functions in R",
+    "section": "Custom functions",
+    "text": "Custom functions\n\nmicrobenchmark(\n  \"data.table::frollapply\" = data.table::frollapply(df$x, n, sum),\n  \"zoo::rollapply\" = zoo::rollapply(df$x, n, sum),\n  times = n_times)\n\nUnit: seconds\n                   expr       min        lq      mean    median        uq\n data.table::frollapply  3.682705  3.903462  4.026611  4.053144  4.202986\n         zoo::rollapply 11.452357 11.715537 12.500304 12.427262 13.319937\n       max neval\n  4.230897    10\n 14.040575    10"
+  },
+  {
+    "objectID": "pages/contact.html",
+    "href": "pages/contact.html",
+    "title": "Contact me",
+    "section": "",
+    "text": "ORCID: Mikkel Roald-Arbøl\nMastodon: @roaldarboel\nTwitter/X: @roaldarbol\nGitHub: @roaldarbol"
+  },
+  {
+    "objectID": "blog/posts/2024/06/24/r-dataframes/index.html",
+    "href": "blog/posts/2024/06/24/r-dataframes/index.html",
+    "title": "data.table, polars and duckDB",
+    "section": "",
+    "text": "CitationBibTeX citation:@online{roald-arbøl2024,\n  author = {Roald-Arbøl, Mikkel},\n  title = {Data.table, Polars and {duckDB}},\n  date = {2024-06-04},\n  url = {https://roald-arboel.com/blog/posts/2024/06/24/r-dataframes/},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nRoald-Arbøl, Mikkel. 2024. “Data.table, Polars and duckDB.”\nJune 4, 2024. https://roald-arboel.com/blog/posts/2024/06/24/r-dataframes/."
+  },
+  {
+    "objectID": "research/projects/sleep.html",
+    "href": "research/projects/sleep.html",
+    "title": "Sleep across the Animal Kingdom",
+    "section": "",
+    "text": "Heading\nSome good content goes here…"
+  },
+  {
+    "objectID": "research/openscience/other-projects.html",
+    "href": "research/openscience/other-projects.html",
+    "title": "Heading",
+    "section": "",
+    "text": "Heading\nSome good content goes here…"
+  },
+  {
+    "objectID": "research/openscience/aniscope.html",
+    "href": "research/openscience/aniscope.html",
+    "title": "Aniscope",
+    "section": "",
+    "text": "Heading\nSome good content goes here…"
+  },
+  {
+    "objectID": "research/Template.html",
+    "href": "research/Template.html",
+    "title": "Heading",
+    "section": "",
+    "text": "Heading\nSome good content goes here…"
+  },
+  {
+    "objectID": "pages/joys.html",
+    "href": "pages/joys.html",
+    "title": "Joys in life",
+    "section": "",
+    "text": "The fun stuff!\nOkay, science is cool, but life is so much more! If it wasn’t obvious, I love doing sports… every type of sports pretty much. I’ve recently taken to open water swimming, and rock climbing (and bouldering) has been a long-standing favourite of mine. I also enjoy running and a good (Olympic) weightlifting session. Badminton, squash or tennis when the opportunity presents itself.\nMusic also plays a big role in my life. I grew up playing the piano, where I was part of a jazz band. Later on I started singing and writing my own songs (I took on the guitar for that, but never got very good). In Brighton, I’ve been singing with the amazing Soul of the City Choir, and had a yearly performance at our Sussex Neuroscience Christmas Party (either solo or with an awesome CRPC band). These days, I mostly improvise some jazzy/ambient tunes on the piano and sing popular cover songs at home.\nAlthough I’ve always enjoyed being outdoors, I didn’t always really appreciate it fully. However, that changed during my undergraduate when we had a course in “Outdoor Life” (friluftsliv in Danish). Now I appreciate all the time I can get outside, paying attention to both the grandiose and the minute details of nature (which probably plays a part in my ending up working with animal behaviour). From camp life through hiking, preferably for multiple days, backcountry skiing, kayaking, rock climbing, mountaineering… any way that takes me through the wonderful nature that surrounds us!\nOh, and I love reading books, especially old classics!\nMy most recent hobby is photography. Catching the beauty of a moment, whether a wide natural landscape or a macro of an insect going about its business. I picked up my first camera (a Canon Powershot G9) in Australia, just to document my year there. But the photos from that year inspired me in a way I hadn’t expected. Now, I’ve invested in some more professional gear, but alas, the PhD has not allowed me much time to make the most of it - let’s see in a year! Until then, you can find a selection of my photos here.\nSome more photography\n\n\n\n\n\n\n\n\n\nPhoto by Hush Naidoo Jade Photography on Unsplash\n\n\n\n\n\n\n\nPhoto by Alessandro Bianchi on Unsplash\n\n\n\n\n\n\n\nPhoto by Joshua Melo on Unsplash"
+  },
+  {
+    "objectID": "pages/CV.html",
+    "href": "pages/CV.html",
+    "title": "CV",
+    "section": "",
+    "text": "Journey in bullet points\nIf you’re here for the science and prefer the minimal story (in a traditional CV style), these are my degrees:\n\nBSc in Exercise and Sports Science (2016), University of Copenhagen\nMSc in Human Biology (2019), University of Copenhagen\nPhD in Biology (2024), University of Sussex\n\nAnd you can find some more detail in my traditional CV here."
+  },
+  {
+    "objectID": "feeds.html",
+    "href": "feeds.html",
+    "title": "RSS feeds",
+    "section": "",
+    "text": "Research\nroald-arboel.com/research/index.xml\n\n\nBlog\nroald-arboel.com/blog/index.xml"
+  },
+  {
+    "objectID": "blog/posts/2024/07/25/peer-review/index.html",
+    "href": "blog/posts/2024/07/25/peer-review/index.html",
+    "title": "Peer Review on Github",
+    "section": "",
+    "text": "Some good content goes here…\n\n\nA tool that collates all the Github contributions into a file (or data-format which the user can serve how they want to)."
+  },
+  {
+    "objectID": "blog/posts/2024/07/25/peer-review/index.html#what",
+    "href": "blog/posts/2024/07/25/peer-review/index.html#what",
+    "title": "Peer Review on Github",
+    "section": "",
+    "text": "A tool that collates all the Github contributions into a file (or data-format which the user can serve how they want to)."
+  },
+  {
+    "objectID": "blog/posts/2024/06/25/tools/index.html",
+    "href": "blog/posts/2024/06/25/tools/index.html",
+    "title": "Tools for Scientific Computing",
+    "section": "",
+    "text": "https://www.andrewheiss.com/uses/index.html#development\n\npixi\nquarto/mystmd\nnushell\nzotero\nobsidian\n\n\n\n\nCitationBibTeX citation:@online{roald-arbøl2024,\n  author = {Roald-Arbøl, Mikkel},\n  title = {Tools for {Scientific} {Computing}},\n  date = {2024-10-03},\n  url = {https://roald-arboel.com/blog/posts/2024/06/25/tools/},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nRoald-Arbøl, Mikkel. 2024. “Tools for Scientific\nComputing.” October 3, 2024. https://roald-arboel.com/blog/posts/2024/06/25/tools/."
+  },
+  {
+    "objectID": "blog/posts/2024/06/24/animal-behaviour-tracking/index.html",
+    "href": "blog/posts/2024/06/24/animal-behaviour-tracking/index.html",
+    "title": "Tracking animals: Tools",
+    "section": "",
+    "text": "pixi\nquarto/mystmd\nnushell\nzotero\nobsidian\n\n\n\n\nCitationBibTeX citation:@online{roald-arbøl2024,\n  author = {Roald-Arbøl, Mikkel},\n  title = {Tracking Animals: {Tools}},\n  date = {2024-06-04},\n  url = {https://roald-arboel.com/blog/posts/2024/06/24/animal-behaviour-tracking/},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nRoald-Arbøl, Mikkel. 2024. “Tracking Animals: Tools.” June\n4, 2024. https://roald-arboel.com/blog/posts/2024/06/24/animal-behaviour-tracking/."
+  },
+  {
+    "objectID": "LICENCE.html",
+    "href": "LICENCE.html",
+    "title": "Licence",
+    "section": "",
+    "text": "The website roald-arboel.com (“the website”) and the logos are copyright © Mikkel Roald-Arbøl.\nCopyright and licence terms for published articles and any associated videos, images, or other material can be found at the end of each article page.\nI make every reasonable effort to locate, contact and acknowledge copyright owners and wish to be informed by any copyright owners who are not properly identified and acknowledged so that we may make any necessary corrections.\nWhere licence terms for individual articles, videos, images and other published content permit republication, you may do so in accordance with the stated terms of the respective licence(s).\nYou are not permitted to republish the website in its entirety."
+  },
+  {
+    "objectID": "LICENCE.html#content",
+    "href": "LICENCE.html#content",
+    "title": "Licence",
+    "section": "",
+    "text": "The website roald-arboel.com (“the website”) and the logos are copyright © Mikkel Roald-Arbøl.\nCopyright and licence terms for published articles and any associated videos, images, or other material can be found at the end of each article page.\nI make every reasonable effort to locate, contact and acknowledge copyright owners and wish to be informed by any copyright owners who are not properly identified and acknowledged so that we may make any necessary corrections.\nWhere licence terms for individual articles, videos, images and other published content permit republication, you may do so in accordance with the stated terms of the respective licence(s).\nYou are not permitted to republish the website in its entirety."
+  },
+  {
+    "objectID": "LICENCE.html#software-and-services",
+    "href": "LICENCE.html#software-and-services",
+    "title": "Licence",
+    "section": "Software and services",
+    "text": "Software and services\nSource code and files for the website are available from GitHub. Use of our GitHub repository is governed by the Contributor Covenant Code of Conduct.\nThe website is built using Quarto, an open-source scientific and technical publishing system developed by Posit. Quarto source code and software licences are available from GitHub.\nThe website is hosted by GitHub Pages.\nThe website uses the privacy-respecting Simple Analytics for web analytics reporting.\nFonts used on Real World Data Science are served by the Google Fonts API. This is to improve site loading speeds and font compatibility across devices. Review the Google Fonts Privacy and Data Collection statement.\nUser comments and reaction functionality is provided by giscus, a comments system powered by GitHub Discussions. Use of this comment functionality is governed by the Contributor Covenant Code of Conduct."
+  },
+  {
+    "objectID": "CODE_OF_CONDUCT.html",
+    "href": "CODE_OF_CONDUCT.html",
+    "title": "Contributor Covenant Code of Conduct",
+    "section": "",
+    "text": "We as members, contributors, and leaders pledge to make participation in our community a harassment-free experience for everyone, regardless of age, body size, visible or invisible disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, caste, color, religion, or sexual identity and orientation.\nWe pledge to act and interact in ways that contribute to an open, welcoming, diverse, inclusive, and healthy community.\n\n\n\nExamples of behavior that contributes to a positive environment for our community include:\n\nDemonstrating empathy and kindness toward other people\nBeing respectful of differing opinions, viewpoints, and experiences\nGiving and gracefully accepting constructive feedback\nAccepting responsibility and apologizing to those affected by our mistakes, and learning from the experience\nFocusing on what is best not just for us as individuals, but for the overall community\n\nExamples of unacceptable behavior include:\n\nThe use of sexualized language or imagery, and sexual attention or advances of any kind\nTrolling, insulting or derogatory comments, and personal or political attacks\nPublic or private harassment\nPublishing others’ private information, such as a physical or email address, without their explicit permission\nOther conduct which could reasonably be considered inappropriate in a professional setting\n\n\n\n\nCommunity leaders are responsible for clarifying and enforcing our standards of acceptable behavior and will take appropriate and fair corrective action in response to any behavior that they deem inappropriate, threatening, offensive, or harmful.\nCommunity leaders have the right and responsibility to remove, edit, or reject comments, commits, code, wiki edits, issues, and other contributions that are not aligned to this Code of Conduct, and will communicate reasons for moderation decisions when appropriate.\n\n\n\nThis Code of Conduct applies within all community spaces, and also applies when an individual is officially representing the community in public spaces. Examples of representing our community include using an official email address, posting via an official social media account, or acting as an appointed representative at an online or offline event.\n\n\n\nInstances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leaders responsible for enforcement at [INSERT CONTACT METHOD]. All complaints will be reviewed and investigated promptly and fairly.\nAll community leaders are obligated to respect the privacy and security of the reporter of any incident.\n\n\n\nCommunity leaders will follow these Community Impact Guidelines in determining the consequences for any action they deem in violation of this Code of Conduct:\n\n\nCommunity Impact: Use of inappropriate language or other behavior deemed unprofessional or unwelcome in the community.\nConsequence: A private, written warning from community leaders, providing clarity around the nature of the violation and an explanation of why the behavior was inappropriate. A public apology may be requested.\n\n\n\nCommunity Impact: A violation through a single incident or series of actions.\nConsequence: A warning with consequences for continued behavior. No interaction with the people involved, including unsolicited interaction with those enforcing the Code of Conduct, for a specified period of time. This includes avoiding interactions in community spaces as well as external channels like social media. Violating these terms may lead to a temporary or permanent ban.\n\n\n\nCommunity Impact: A serious violation of community standards, including sustained inappropriate behavior.\nConsequence: A temporary ban from any sort of interaction or public communication with the community for a specified period of time. No public or private interaction with the people involved, including unsolicited interaction with those enforcing the Code of Conduct, is allowed during this period. Violating these terms may lead to a permanent ban.\n\n\n\nCommunity Impact: Demonstrating a pattern of violation of community standards, including sustained inappropriate behavior, harassment of an individual, or aggression toward or disparagement of classes of individuals.\nConsequence: A permanent ban from any sort of public interaction within the community.\n\n\n\n\nThis Code of Conduct is adapted from the Contributor Covenant, version 2.1, available at https://www.contributor-covenant.org/version/2/1/code_of_conduct.html.\nCommunity Impact Guidelines were inspired by Mozilla’s code of conduct enforcement ladder.\nFor answers to common questions about this code of conduct, see the FAQ at https://www.contributor-covenant.org/faq. Translations are available at https://www.contributor-covenant.org/translations."
+  },
+  {
+    "objectID": "CODE_OF_CONDUCT.html#our-pledge",
+    "href": "CODE_OF_CONDUCT.html#our-pledge",
+    "title": "Contributor Covenant Code of Conduct",
+    "section": "",
+    "text": "We as members, contributors, and leaders pledge to make participation in our community a harassment-free experience for everyone, regardless of age, body size, visible or invisible disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, caste, color, religion, or sexual identity and orientation.\nWe pledge to act and interact in ways that contribute to an open, welcoming, diverse, inclusive, and healthy community."
+  },
+  {
+    "objectID": "CODE_OF_CONDUCT.html#our-standards",
+    "href": "CODE_OF_CONDUCT.html#our-standards",
+    "title": "Contributor Covenant Code of Conduct",
+    "section": "",
+    "text": "Examples of behavior that contributes to a positive environment for our community include:\n\nDemonstrating empathy and kindness toward other people\nBeing respectful of differing opinions, viewpoints, and experiences\nGiving and gracefully accepting constructive feedback\nAccepting responsibility and apologizing to those affected by our mistakes, and learning from the experience\nFocusing on what is best not just for us as individuals, but for the overall community\n\nExamples of unacceptable behavior include:\n\nThe use of sexualized language or imagery, and sexual attention or advances of any kind\nTrolling, insulting or derogatory comments, and personal or political attacks\nPublic or private harassment\nPublishing others’ private information, such as a physical or email address, without their explicit permission\nOther conduct which could reasonably be considered inappropriate in a professional setting"
+  },
+  {
+    "objectID": "CODE_OF_CONDUCT.html#enforcement-responsibilities",
+    "href": "CODE_OF_CONDUCT.html#enforcement-responsibilities",
+    "title": "Contributor Covenant Code of Conduct",
+    "section": "",
+    "text": "Community leaders are responsible for clarifying and enforcing our standards of acceptable behavior and will take appropriate and fair corrective action in response to any behavior that they deem inappropriate, threatening, offensive, or harmful.\nCommunity leaders have the right and responsibility to remove, edit, or reject comments, commits, code, wiki edits, issues, and other contributions that are not aligned to this Code of Conduct, and will communicate reasons for moderation decisions when appropriate."
+  },
+  {
+    "objectID": "CODE_OF_CONDUCT.html#scope",
+    "href": "CODE_OF_CONDUCT.html#scope",
+    "title": "Contributor Covenant Code of Conduct",
+    "section": "",
+    "text": "This Code of Conduct applies within all community spaces, and also applies when an individual is officially representing the community in public spaces. Examples of representing our community include using an official email address, posting via an official social media account, or acting as an appointed representative at an online or offline event."
+  },
+  {
+    "objectID": "CODE_OF_CONDUCT.html#enforcement",
+    "href": "CODE_OF_CONDUCT.html#enforcement",
+    "title": "Contributor Covenant Code of Conduct",
+    "section": "",
+    "text": "Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leaders responsible for enforcement at [INSERT CONTACT METHOD]. All complaints will be reviewed and investigated promptly and fairly.\nAll community leaders are obligated to respect the privacy and security of the reporter of any incident."
+  },
+  {
+    "objectID": "CODE_OF_CONDUCT.html#enforcement-guidelines",
+    "href": "CODE_OF_CONDUCT.html#enforcement-guidelines",
+    "title": "Contributor Covenant Code of Conduct",
+    "section": "",
+    "text": "Community leaders will follow these Community Impact Guidelines in determining the consequences for any action they deem in violation of this Code of Conduct:\n\n\nCommunity Impact: Use of inappropriate language or other behavior deemed unprofessional or unwelcome in the community.\nConsequence: A private, written warning from community leaders, providing clarity around the nature of the violation and an explanation of why the behavior was inappropriate. A public apology may be requested.\n\n\n\nCommunity Impact: A violation through a single incident or series of actions.\nConsequence: A warning with consequences for continued behavior. No interaction with the people involved, including unsolicited interaction with those enforcing the Code of Conduct, for a specified period of time. This includes avoiding interactions in community spaces as well as external channels like social media. Violating these terms may lead to a temporary or permanent ban.\n\n\n\nCommunity Impact: A serious violation of community standards, including sustained inappropriate behavior.\nConsequence: A temporary ban from any sort of interaction or public communication with the community for a specified period of time. No public or private interaction with the people involved, including unsolicited interaction with those enforcing the Code of Conduct, is allowed during this period. Violating these terms may lead to a permanent ban.\n\n\n\nCommunity Impact: Demonstrating a pattern of violation of community standards, including sustained inappropriate behavior, harassment of an individual, or aggression toward or disparagement of classes of individuals.\nConsequence: A permanent ban from any sort of public interaction within the community."
+  },
+  {
+    "objectID": "CODE_OF_CONDUCT.html#attribution",
+    "href": "CODE_OF_CONDUCT.html#attribution",
+    "title": "Contributor Covenant Code of Conduct",
+    "section": "",
+    "text": "This Code of Conduct is adapted from the Contributor Covenant, version 2.1, available at https://www.contributor-covenant.org/version/2/1/code_of_conduct.html.\nCommunity Impact Guidelines were inspired by Mozilla’s code of conduct enforcement ladder.\nFor answers to common questions about this code of conduct, see the FAQ at https://www.contributor-covenant.org/faq. Translations are available at https://www.contributor-covenant.org/translations."
+  },
+  {
+    "objectID": "blog/index.html",
+    "href": "blog/index.html",
+    "title": "Blog",
+    "section": "",
+    "text": "tools\n\n\ntechnology\n\n\nscience\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nOct 3, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nr\n\n\nrolling\n\n\nstats\n\n\n\nI set out to benchmark the speed of rolling functions from R packages\n\n\n\n\n\nOct 3, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI\n\n\nlarge language models\n\n\nmachine learning\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nR\n\n\nReproducibility\n\n\nPixi\n\n\n\nPixi is the best tool for managing your R projects. If it isn’t already, it will soon be. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nR\n\n\nStatistics\n\n\nData science\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI\n\n\nlarge language models\n\n\nmachine learning\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nStatistics\n\n\nVariance decomposition\n\n\nR\n\n\nRepeatability\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI\n\n\nlarge language models\n\n\nmachine learning\n\n\n\n“Modern science relies on (open source) software and hardware, but whereas creating tools (writing code) can be turned into academic currency (papers), there is currently no incentive for researchers to provide feedback and improvement suggestions for tools despite how valuable these contributions are to the scientific community as a whole. One possible way forward would be to treat”issue creation” and other Git-based activity as an acceptable form of peer review.” \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPop_OS!\n\n\nCosmic\n\n\nMac\n\n\n\nTo make an old laptop last longer, I’ve installed Pop_OS! on it. These are some notes for my future self (and others).\n\n\n\n\n\nFeb 10, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "blog/index.html#section",
+    "href": "blog/index.html#section",
+    "title": "Blog",
+    "section": "",
+    "text": "tools\n\n\ntechnology\n\n\nscience\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nOct 3, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nr\n\n\nrolling\n\n\nstats\n\n\n\nI set out to benchmark the speed of rolling functions from R packages\n\n\n\n\n\nOct 3, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI\n\n\nlarge language models\n\n\nmachine learning\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nR\n\n\nReproducibility\n\n\nPixi\n\n\n\nPixi is the best tool for managing your R projects. If it isn’t already, it will soon be. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nR\n\n\nStatistics\n\n\nData science\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI\n\n\nlarge language models\n\n\nmachine learning\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nStatistics\n\n\nVariance decomposition\n\n\nR\n\n\nRepeatability\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI\n\n\nlarge language models\n\n\nmachine learning\n\n\n\n“Modern science relies on (open source) software and hardware, but whereas creating tools (writing code) can be turned into academic currency (papers), there is currently no incentive for researchers to provide feedback and improvement suggestions for tools despite how valuable these contributions are to the scientific community as a whole. One possible way forward would be to treat”issue creation” and other Git-based activity as an acceptable form of peer review.” \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPop_OS!\n\n\nCosmic\n\n\nMac\n\n\n\nTo make an old laptop last longer, I’ve installed Pop_OS! on it. These are some notes for my future self (and others).\n\n\n\n\n\nFeb 10, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "blog/posts/2024/06/24/pixi-R/index.html",
+    "href": "blog/posts/2024/06/24/pixi-R/index.html",
+    "title": "Pixi + R: Better project management in R",
+    "section": "",
+    "text": "Create project: pixi exec copier copy gh:roaldarbol/r-template my-new-project && cd my-new-project\nOpen IDE: pixi run rstudio\nAdd dependencies: rpix::add(\"tidyverse\")\nStart analysing your data!"
+  },
+  {
+    "objectID": "blog/posts/2024/06/24/pixi-R/index.html#tldr",
+    "href": "blog/posts/2024/06/24/pixi-R/index.html#tldr",
+    "title": "Pixi + R: Better project management in R",
+    "section": "",
+    "text": "Create project: pixi exec copier copy gh:roaldarbol/r-template my-new-project && cd my-new-project\nOpen IDE: pixi run rstudio\nAdd dependencies: rpix::add(\"tidyverse\")\nStart analysing your data!"
+  },
+  {
+    "objectID": "blog/posts/2024/06/24/pixi-R/index.html#project-template",
+    "href": "blog/posts/2024/06/24/pixi-R/index.html#project-template",
+    "title": "Pixi + R: Better project management in R",
+    "section": "Project template",
+    "text": "Project template"
+  },
+  {
+    "objectID": "blog/posts/2024/07/10/ICC/index.html",
+    "href": "blog/posts/2024/07/10/ICC/index.html",
+    "title": "ICC and R2",
+    "section": "",
+    "text": "Heading\nSome good content goes here…\n\n\n\n\nCitationBibTeX citation:@online{roald-arbøl2024,\n  author = {Roald-Arbøl, Mikkel},\n  title = {ICC and {R2}},\n  date = {2024-06-04},\n  url = {https://roald-arboel.com/blog/posts/2024/07/10/ICC/},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nRoald-Arbøl, Mikkel. 2024. “ICC and R2.” June 4, 2024. https://roald-arboel.com/blog/posts/2024/07/10/ICC/."
+  },
+  {
+    "objectID": "blog/posts/2024/09/01/PopOSMac/index.html",
+    "href": "blog/posts/2024/09/01/PopOSMac/index.html",
+    "title": "Pop_OS! on a Macbook Pro 2011",
+    "section": "",
+    "text": "Heading\n\nFlash PopOS! 24.04 LTS with either BalenaEtcher or Raspberry Pi Imager\nBack up all files (I put everything on Proton Drive)\nTurn off Macbook\nHold the option and power buttons down until a screen asks and you can choose EFI\nFollow the installation prompts\nWifi issues\n\nsudo apt update\nsudo apt-get install bcmwl-kernel-source\nsudo modprobe -r b43 ssb wl brcmfmac brcmsmac bcma\nsudo modprobe wl\nsudo reboot\n\nInstall\n\nRustDesk\nFirefox\nBitwarden\nLibreoffice\nThunderbird\nEnte Photos\n(VLC)\n(Solitaire)\n\n\n\n\n\n\nCitationBibTeX citation:@online{roald-arbøl2024,\n  author = {Roald-Arbøl, Mikkel},\n  title = {Pop\\_OS! On a {Macbook} {Pro} 2011},\n  date = {2024-02-10},\n  url = {https://roald-arboel.com/blog/posts/2024/09/01/PopOSMac/},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nRoald-Arbøl, Mikkel. 2024. “Pop_OS! On a Macbook Pro 2011.”\nFebruary 10, 2024. https://roald-arboel.com/blog/posts/2024/09/01/PopOSMac/."
+  },
+  {
+    "objectID": "pages/about.html",
+    "href": "pages/about.html",
+    "title": "About me",
+    "section": "",
+    "text": "CV\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nJoys in life\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nScientific journey\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "pages/scientific-journey.html",
+    "href": "pages/scientific-journey.html",
+    "title": "Scientific journey",
+    "section": "",
+    "text": "Journey in words\nConversely, if you’re here to hear how I’ve ended up doing what I do, here’s the narrative version. With a background in elite sports and sports science, working on understanding animal minds I quite an unlikely path.\n\nElite sports\nI’ve grown up in the world of athletics, and my discipline was the triple jump. My time as an elite athlete was short, but brought me some great experiences; most notably I moved to Cuba in 2010 to train with the Cuban jumpers (if you follow athletics, you may know my former team-mate Pedro Pichardo). But after a few years I realised that, despite my efforts, I wouldn’t make it to the international stage, so I quit. But I wasn’t done with elite sports. I had already as an athlete read all the research I could get my hands on, from specific triple jump biomechanics, periodisation, human physiology, and trainng theory. So the switch to coaching was a small one. Coaching elite sports was also the reason I enrolled in my undergraduate (see above). I started as a junior jumps coach in Sparta, the largest Danish athletics club, where I had the privelege to coach some amazing young athletes. The national federation hired me for a regional youth … (funnily enough, my greatest experience as a coach came slightly later when I was asked to be the delegated jumps coach for the Danish National team for the 2019 Universiade in Naples - also known as the Olympics for university students).\n\n\nScience 101\nOne of our courses in the undergraduate was “Motor Learning”, or “how we learn movements”. Until now, my focus had been on muscle physiology, but here I was introduced to the study of the brain, neuroscience, for the very first time, and instantly my interest was piqued! I took all the related electives I possibly could and got more and more fascinated. I did my first research project with Jesper Lundbye-Jensen on cortical excitability during motor learning, which included a bunch of techniques, transcranial magnetic stimulation (TMS), electroencephalography (EEG) and electromyography (EMG). It also included behavioural work in the form of teaching participants to play a game by squeezing a small metal block (which was a force transducer, so it measured how hard they were squeezing).\nAfter having spent the first 20+ years of my life thinking that sports was life, I was now at a cross-roads. I had found this thing that made me more excited, intelectually stimulated, than I had ever experienced before, but if I was to pursue that, it meant leaving all of my sports-life behind (or at least on the shelf). I had never even considered that I could be a scientist.\nAfter finishing the undergraduate, I buggered off to Australia for a year. To get away, get some perspective, and discover who was without athletics in my life. The plan was to work at coffee shops and bana plantations, but, well… things turned out differently, and I ended up working in two labs at University of Queensland. My first couple of months I spent in a Neuromechanics lab, working primarily on foot biomechanics assisting with …, and developing a setup that combined ultrasound imaging, force application and local anaesthetic in the … nerve (along with being Guinea pig for a bunch of other studies). After my contract in the lab ended, I travelled to Tasmania where I spent a wonderful couple of months, before returning to work with Tim Carroll who worked on motor control. Here I also got the chance to work on a variety of setups, most of them reaching. But it was also here I realised that every living organism has to sense their surrounds and take action to make the best of the situation.\n\n\nNon-human?\nOne morning I went to jump on my bike when I noticed that a sling plant had wrapped itself around my bike frame. Not being trained in “allround” biology all I knew about plants was that they grew towards the sunlight. But that could surely not have been causing this wrapping!? Perplexed, I started … I read about quantum physics, information theory, comparative neuroscience. I read Principles of Neural Design by Simon Laughlin and Peter Sterling.\n\n\n\nThe fun stuff!\nOkay, science is cool, but life is so much more! If it wasn’t obvious, I love doing sports… every type of sports pretty much. I’ve recently taken to open water swimming, and rock climbing (and bouldering) has been a long-standing favourite of mine. I also enjoy running and a good (Olympic) weightlifting session. Badminton, squash or tennis when the opportunity presents itself.\nMusic also plays a big role in my life. I grew up playing the piano, where I was part of a jazz band. Later on I started singing and writing my own songs (I took on the guitar for that, but never got very good). In Brighton, I’ve been singing with the amazing Soul of the City Choir, and had a yearly performance at our Sussex Neuroscience Christmas Party (either solo or with an awesome CRPC band). These days, I mostly improvise some jazzy/ambient tunes on the piano and sing popular cover songs at home.\nAlthough I’ve always enjoyed being outdoors, I didn’t always really appreciate it fully. However, that changed during my undergraduate when we had a course in “Outdoor Life” (friluftsliv in Danish). Now I appreciate all the time I can get outside, paying attention to both the grandiose and the minute details of nature (which probably plays a part in my ending up working with animal behaviour). From camp life through hiking, preferably for multiple days, backcountry skiing, kayaking, rock climbing, mountaineering… any way that takes me through the wonderful nature that surrounds us!\nOh, and I love reading books, especially old classics!\nMy most recent hobby is photography. Catching the beauty of a moment, whether a wide natural landscape or a macro of an insect going about its business. I picked up my first camera (a Canon Powershot G9) in Australia, just to document my year there. But the photos from that year inspired me in a way I hadn’t expected. Now, I’ve invested in some more professional gear, but alas, the PhD has not allowed me much time to make the most of it - let’s see in a year! Until then, you can find a selection of my photos here.\nSome more photography\n\n\n\n\n\n\n\n\n\nPhoto by Hush Naidoo Jade Photography on Unsplash\n\n\n\n\n\n\n\nPhoto by Alessandro Bianchi on Unsplash\n\n\n\n\n\n\n\nPhoto by Joshua Melo on Unsplash"
+  },
+  {
+    "objectID": "research/projects/internal-states.html",
+    "href": "research/projects/internal-states.html",
+    "title": "Internal states",
+    "section": "",
+    "text": "Heading\nSome good content goes here…"
+  },
+  {
+    "objectID": "research/projects/timescales.html",
+    "href": "research/projects/timescales.html",
+    "title": "Biologically and Behaviourally relevant Timescales",
+    "section": "",
+    "text": "Heading\nSome good content goes here…"
+  },
+  {
+    "objectID": "blog/posts/2024/06/24/stats-resources/index.html",
+    "href": "blog/posts/2024/06/24/stats-resources/index.html",
+    "title": "data.table, polars and duckDB",
+    "section": "",
+    "text": "CitationBibTeX citation:@online{roald-arbøl2024,\n  author = {Roald-Arbøl, Mikkel},\n  title = {Data.table, Polars and {duckDB}},\n  date = {2024-06-04},\n  url = {https://roald-arboel.com/blog/posts/2024/06/24/stats-resources/},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nRoald-Arbøl, Mikkel. 2024. “Data.table, Polars and duckDB.”\nJune 4, 2024. https://roald-arboel.com/blog/posts/2024/06/24/stats-resources/."
+  }
+]

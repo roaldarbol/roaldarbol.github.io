@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Mikkel Roald-Arbøl">
+<meta name="dcterms.date" content="2024-10-03">
+<meta name="description" content="I set out to benchmark the speed of rolling functions from R packages">
+
+<title>Benchmarking rolling functions in R | Mikkel Roald-Arbøl – Mikkel Roald-Arbøl</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../../../../">
+<link href="../../../../../../images/mra-favicon.png" rel="icon" type="image/png">
+<script src="../../../../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="../../../../../../site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="../../../../../../site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
+<script src="../../../../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<meta name="quarto:status" content="draft">
+
+
+<meta property="og:title" content="Benchmarking rolling functions in R | Mikkel Roald-Arbøl">
+<meta property="og:description" content="I set out to benchmark the speed of rolling functions from R packages">
+<meta property="og:image" content="https://roald-arboel.com/blog/posts/2024/10/03/Benchmark-rolling/pretty-r.png">
+<meta property="og:site_name" content="Mikkel Roald-Arbøl">
+<meta property="og:image:height" content="1102">
+<meta property="og:image:width" content="1920">
+<meta property="og:image:alt" content="Two cute balls decorating the R logo.">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner"><div id="quarto-draft-alert" class="alert alert-warning"><i class="bi bi-pencil-square"></i>Draft</div>
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../../../../../index.html">
+    <span class="navbar-title">Mikkel Roald-Arbøl</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../../../research/index.html"> 
+<span class="menu-text">Research</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../../../blog/index.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-about" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">About</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-about">    
+        <li>
+    <a class="dropdown-item" href="../../../../../../pages/about.html">
+ <span class="dropdown-text">Who am I</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../../../../pages/contact.html">
+ <span class="dropdown-text">Contact me</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../../../feeds.html"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="bi:rss" style="font-size: 1.1em;" aria-label="Icon rss from bi Iconify.design set." title="RSS"></iconify-icon></span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="mailto:website.ul7o3@passmail.net"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="bi:envelope" style="font-size: 1.1em;" aria-label="Icon envelope from bi Iconify.design set." title="E-mail"></iconify-icon></span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://neuromatch.social/@roaldarboel" rel="me"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="bi:mastodon" style="font-size: 1.1em;" aria-label="Icon mastodon from bi Iconify.design set." title="Mastodon"></iconify-icon></span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/roaldarbol" rel="me"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="bi:github" style="font-size: 1.1em;" aria-label="Icon github from bi Iconify.design set." title="GitHub"></iconify-icon></span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://orcid.org/0000-0002-9998-0058"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="fa:brands" style="font-size: 1.15em;" aria-label="Icon brands from fa Iconify.design set." title="Orcid"></iconify-icon></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Benchmarking rolling functions in R</h1>
+                  <div>
+        <div class="description">
+          I set out to benchmark the speed of rolling functions from R packages
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">r</div>
+                <div class="quarto-category">rolling</div>
+                <div class="quarto-category">stats</div>
+              </div>
+                  </div>
+  </div>
+    
+  <div class="quarto-title-meta-author">
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-heading">Affiliation</div>
+    
+      <div class="quarto-title-meta-contents">
+      <p class="author"><a href="https://roald-arboel.com">Mikkel Roald-Arbøl</a> <a href="https://orcid.org/0000-0002-9998-0058" class="quarto-title-author-orcid"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg=="></a></p>
+    </div>
+    <div class="quarto-title-meta-contents">
+          <p class="affiliation">
+              <a href="https://sussex.ac.uk">
+              PhD Student in Neuroscience &amp; Animal Behaviour @ University of Sussex
+              </a>
+            </p>
+        </div>
+    </div>
+
+  <div class="quarto-title-meta">
+
+        
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">October 3, 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#mean" id="toc-mean" class="nav-link active" data-scroll-target="#mean">Mean</a></li>
+  <li><a href="#median" id="toc-median" class="nav-link" data-scroll-target="#median">Median</a></li>
+  <li><a href="#min" id="toc-min" class="nav-link" data-scroll-target="#min">Min</a></li>
+  <li><a href="#max" id="toc-max" class="nav-link" data-scroll-target="#max">Max</a></li>
+  <li><a href="#sum" id="toc-sum" class="nav-link" data-scroll-target="#sum">Sum</a></li>
+  <li><a href="#sd" id="toc-sd" class="nav-link" data-scroll-target="#sd">SD</a></li>
+  <li><a href="#custom-functions" id="toc-custom-functions" class="nav-link" data-scroll-target="#custom-functions">Custom functions</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/roaldarbol/roaldarbol.github.io/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pretty-r.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%" alt="A fuzzy monster in a beret and scarf, critiquing their own column graph on a canvas in front of them while other assistant monsters (also in berets) carry over boxes full of elements that can be used to customize a graph (like themes and geometric shapes). In the background is a wall with framed data visualizations. Stylized text reads &quot;ggplot2: build a data masterpiece.&quot;"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="gray-italic center-text">
+<p>Art by <a href="https://allisonhorst.com/">Allison Horst</a></p>
+</div>
+<hr>
+<p>I’ll write a bit about the benchmarks here.</p>
+<p>Can run on a normal vector (precludes <code>polars</code>).</p>
+<p>Here are the packages under consideration (if you have additions, please open an issue on Github):</p>
+<ul>
+<li>data.table</li>
+<li>zoo</li>
+<li>RcppRoll</li>
+<li>runner</li>
+<li>slider</li>
+<li>RollingWindow</li>
+<li>roll</li>
+<li>runstats</li>
+<li>polars</li>
+</ul>
+<p>We are considering the following computations</p>
+<ul>
+<li>Mean</li>
+<li>Median</li>
+<li>Min</li>
+<li>Max</li>
+<li>Sum</li>
+<li>Product</li>
+<li>SD</li>
+<li>MAD</li>
+<li>Correlation</li>
+<li>Covariance</li>
+<li>Skew</li>
+<li>Custom functions</li>
+</ul>
+<p>We also keep track of various features:</p>
+<ul>
+<li>Alignment</li>
+<li>NA handling</li>
+<li>Weight</li>
+</ul>
+<p>Install <code>data.table</code> form the <code>rollmedian</code> branch:</p>
+<ul>
+<li><code>devtools::install_github("Rdatatable/data.table", ref = "rollmedian")</code></li>
+</ul>
+<p>Install <code>roll</code> from Github:</p>
+<ul>
+<li><code>devtools::install_github("jasonjfoster/roll")</code></li>
+</ul>
+<p>Install <code>RollingWindow</code> from Github:</p>
+<ul>
+<li><code>devtools::install_github("andrewuhl/RollingWindow")</code></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(microbenchmark)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(slider)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(runner)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(zoo)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RollingWindow)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RcppRoll)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(roll)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(runstats)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="fu">rnorm</span>(<span class="dv">1000000</span>))</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">51</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>n_times <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>n_half <span class="ot">&lt;-</span> <span class="fu">floor</span>(n<span class="sc">/</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="mean" class="level2">
+<h2 class="anchored" data-anchor-id="mean">Mean</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">microbenchmark</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"data.table::frollmean"</span> <span class="ot">=</span> data.table<span class="sc">::</span><span class="fu">frollmean</span>(df<span class="sc">$</span>x, n),</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"roll::roll_mean"</span> <span class="ot">=</span> roll<span class="sc">::</span><span class="fu">roll_mean</span>(df<span class="sc">$</span>x, <span class="at">width =</span> n),</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"RollingWindow::RollingMean"</span> <span class="ot">=</span> RollingWindow<span class="sc">::</span><span class="fu">RollingMean</span>(df<span class="sc">$</span>x, n),</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"runstats::RunningMean"</span> <span class="ot">=</span> runstats<span class="sc">::</span><span class="fu">RunningMean</span>(df<span class="sc">$</span>x, <span class="at">W =</span> n),</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"slider::slide_mean"</span> <span class="ot">=</span> slider<span class="sc">::</span><span class="fu">slide_mean</span>(df<span class="sc">$</span>x, <span class="at">before =</span> n_half, <span class="at">after =</span> n_half),</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"RcppRoll::roll_mean"</span> <span class="ot">=</span> RcppRoll<span class="sc">::</span><span class="fu">roll_mean</span>(df<span class="sc">$</span>x, <span class="at">n =</span> n, <span class="at">fill =</span> <span class="cn">NA</span>),</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"zoo::rollmean"</span> <span class="ot">=</span> zoo<span class="sc">::</span><span class="fu">rollmean</span>(df<span class="sc">$</span>x, <span class="at">k =</span> n, <span class="at">fill =</span> <span class="cn">NA</span>),</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"runner::mean_run"</span> <span class="ot">=</span> runner<span class="sc">::</span><span class="fu">mean_run</span>(df<span class="sc">$</span>x, <span class="at">k =</span> n, <span class="at">na_pad =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">times =</span> n_times)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Unit: milliseconds
+                       expr         min          lq       mean      median
+      data.table::frollmean    2.241879    2.340252   11.07247    2.713214
+            roll::roll_mean   11.808366   12.351446   14.35429   12.473165
+ RollingWindow::RollingMean   16.977660   17.465734   33.28365   23.602618
+      runstats::RunningMean   14.769024   16.227194   44.86687   25.787892
+         slider::slide_mean   73.969034   74.136307   76.08521   75.195895
+        RcppRoll::roll_mean  125.844943  127.134127  129.67824  129.576611
+              zoo::rollmean  256.682808  313.302683  346.79951  322.212449
+           runner::mean_run 1198.164818 1228.970005 1369.71537 1285.969585
+          uq        max neval
+    6.031607   79.03656    10
+   14.610513   24.02796    10
+   26.719363  128.51629    10
+   94.260361  108.86306    10
+   77.303700   80.14807    10
+  131.924998  135.28932    10
+  367.791690  531.82976    10
+ 1547.052810 1606.93501    10</code></pre>
+</div>
+</div>
+</section>
+<section id="median" class="level2">
+<h2 class="anchored" data-anchor-id="median">Median</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">microbenchmark</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"data.table::frollmedian"</span> <span class="ot">=</span> data.table<span class="sc">::</span><span class="fu">frollmedian</span>(df<span class="sc">$</span>x, n),</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"RollingWindow::RollingMedian"</span> <span class="ot">=</span> RollingWindow<span class="sc">::</span><span class="fu">RollingMedian</span>(df<span class="sc">$</span>x, n),</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"zoo::rollmedian"</span> <span class="ot">=</span> zoo<span class="sc">::</span><span class="fu">rollmedian</span>(df<span class="sc">$</span>x, <span class="at">k =</span> n, <span class="at">fill =</span> <span class="cn">NA</span>),</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"roll::roll_median"</span> <span class="ot">=</span> roll<span class="sc">::</span><span class="fu">roll_median</span>(df<span class="sc">$</span>x, <span class="at">width =</span> n),</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"RcppRoll::roll_median"</span> <span class="ot">=</span> RcppRoll<span class="sc">::</span><span class="fu">roll_median</span>(df<span class="sc">$</span>x, <span class="at">n =</span> n, <span class="at">fill =</span> <span class="cn">NA</span>),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">times =</span> n_times)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Unit: milliseconds
+                         expr        min         lq       mean     median
+      data.table::frollmedian   69.04398   71.51425   89.17143   73.78828
+ RollingWindow::RollingMedian   57.11521   57.80190   65.25114   64.92265
+              zoo::rollmedian  316.62932  352.47701  356.72934  359.56134
+            roll::roll_median  501.02063  503.81910  541.68486  526.72164
+        RcppRoll::roll_median 1407.80392 1409.40807 1536.79857 1466.03330
+         uq        max neval
+   77.92332  225.23769    10
+   69.99089   77.45782    10
+  365.43327  396.97943    10
+  538.86600  665.62833    10
+ 1633.18224 1909.33519    10</code></pre>
+</div>
+</div>
+</section>
+<section id="min" class="level2">
+<h2 class="anchored" data-anchor-id="min">Min</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">microbenchmark</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"data.table::frollmin"</span> <span class="ot">=</span> data.table<span class="sc">::</span><span class="fu">frollmin</span>(df<span class="sc">$</span>x, n),</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"roll::roll_min"</span> <span class="ot">=</span> roll<span class="sc">::</span><span class="fu">roll_min</span>(df<span class="sc">$</span>x, <span class="at">width =</span> n),</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"RollingWindow::RollingMin"</span> <span class="ot">=</span> RollingWindow<span class="sc">::</span><span class="fu">RollingMin</span>(df<span class="sc">$</span>x, n),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"RcppRoll::roll_min"</span> <span class="ot">=</span> RcppRoll<span class="sc">::</span><span class="fu">roll_min</span>(df<span class="sc">$</span>x, <span class="at">n =</span> n, <span class="at">fill =</span> <span class="cn">NA</span>),</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"runner::min_run"</span> <span class="ot">=</span> runner<span class="sc">::</span><span class="fu">min_run</span>(df<span class="sc">$</span>x, <span class="at">k =</span> n, <span class="at">na_pad =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">times =</span> n_times)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Unit: milliseconds
+                      expr        min         lq        mean      median
+      data.table::frollmin   5.411031   5.517803    5.827558    5.792026
+            roll::roll_min  22.984927  23.445202   23.864652   23.630812
+ RollingWindow::RollingMin  44.843584  46.259335   52.213656   48.525513
+        RcppRoll::roll_min 349.503761 350.284608  355.950302  352.792411
+           runner::min_run 798.355932 855.048846 1050.799176 1080.054734
+          uq         max neval
+    6.037268    6.309239    10
+   24.170740   25.898749    10
+   56.849840   67.821354    10
+  359.726967  371.640967    10
+ 1174.581112 1313.950563    10</code></pre>
+</div>
+</div>
+</section>
+<section id="max" class="level2">
+<h2 class="anchored" data-anchor-id="max">Max</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">microbenchmark</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"data.table::frollmax"</span> <span class="ot">=</span> data.table<span class="sc">::</span><span class="fu">frollmax</span>(df<span class="sc">$</span>x, n),</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"roll::roll_max"</span> <span class="ot">=</span> roll<span class="sc">::</span><span class="fu">roll_max</span>(df<span class="sc">$</span>x, <span class="at">width =</span> n),</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"RollingWindow::RollingMax"</span> <span class="ot">=</span> RollingWindow<span class="sc">::</span><span class="fu">RollingMax</span>(df<span class="sc">$</span>x, n),</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"RcppRoll::roll_max"</span> <span class="ot">=</span> RcppRoll<span class="sc">::</span><span class="fu">roll_max</span>(df<span class="sc">$</span>x, <span class="at">n =</span> n, <span class="at">fill =</span> <span class="cn">NA</span>),</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"runner::max_run"</span> <span class="ot">=</span> runner<span class="sc">::</span><span class="fu">max_run</span>(df<span class="sc">$</span>x, <span class="at">k =</span> n, <span class="at">na_pad =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"zoo::rollmax"</span> <span class="ot">=</span> zoo<span class="sc">::</span><span class="fu">rollmax</span>(df<span class="sc">$</span>x, <span class="at">k =</span> n, <span class="at">fill =</span> <span class="cn">NA</span>),</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">times =</span> n_times)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Unit: milliseconds
+                      expr         min          lq       mean      median
+      data.table::frollmax    5.044174    5.610125   17.85473    6.502458
+            roll::roll_max   22.839600   24.028406   26.71447   26.783014
+ RollingWindow::RollingMax   46.142606   48.621133   57.48825   49.863125
+        RcppRoll::roll_max  350.372535  356.682585  371.96263  369.004938
+           runner::max_run  784.649671  812.671187 1032.20082  973.548273
+              zoo::rollmax 1147.328909 1241.116590 1351.98079 1347.271621
+          uq        max neval
+    9.949318  106.67906    10
+   29.236878   31.57566    10
+   52.198837  124.78942    10
+  386.567315  401.79024    10
+ 1283.828536 1409.76538    10
+ 1477.122353 1548.25293    10</code></pre>
+</div>
+</div>
+</section>
+<section id="sum" class="level2">
+<h2 class="anchored" data-anchor-id="sum">Sum</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">microbenchmark</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data.table::frollsum, fast"</span> <span class="ot">=</span> data.table<span class="sc">::</span><span class="fu">frollsum</span>(df<span class="sc">$</span>x, n, <span class="at">algo =</span> <span class="st">"fast"</span>),</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"roll::roll_sum"</span> <span class="ot">=</span> roll<span class="sc">::</span><span class="fu">roll_sum</span>(df<span class="sc">$</span>x, <span class="at">width =</span> n),</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"RollingWindow::RollingSum"</span> <span class="ot">=</span> RollingWindow<span class="sc">::</span><span class="fu">RollingSum</span>(df<span class="sc">$</span>x, n),</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"slider::slide_sum"</span> <span class="ot">=</span> slider<span class="sc">::</span><span class="fu">slide_sum</span>(df<span class="sc">$</span>x, <span class="at">before =</span> n_half, <span class="at">after =</span> n_half),</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data.table::frollsum, exact"</span> <span class="ot">=</span> data.table<span class="sc">::</span><span class="fu">frollsum</span>(df<span class="sc">$</span>x, n, <span class="at">algo =</span> <span class="st">"exact"</span>),</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"RcppRoll::roll_sum"</span> <span class="ot">=</span> RcppRoll<span class="sc">::</span><span class="fu">roll_sum</span>(df<span class="sc">$</span>x, <span class="at">n =</span> n, <span class="at">fill =</span> <span class="cn">NA</span>),</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"zoo::rollsum"</span> <span class="ot">=</span> zoo<span class="sc">::</span><span class="fu">rollsum</span>(df<span class="sc">$</span>x, n, <span class="at">fill =</span> <span class="cn">NA</span>),</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"runner::sum_run"</span> <span class="ot">=</span> runner<span class="sc">::</span><span class="fu">sum_run</span>(df<span class="sc">$</span>x, <span class="at">k =</span> n, <span class="at">na_pad =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">times =</span> n_times)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Unit: milliseconds
+                        expr         min          lq        mean      median
+  data.table::frollsum, fast    2.523604    2.659571    5.861422    3.063187
+              roll::roll_sum    6.436056    6.642563    9.666256    8.289517
+   RollingWindow::RollingSum   17.793522   19.836219   26.065329   20.714188
+           slider::slide_sum   76.570577   78.599420   90.508191   83.782619
+ data.table::frollsum, exact   36.971424   38.606730   40.628789   39.484406
+          RcppRoll::roll_sum  126.439986  131.928438  132.967029  134.275092
+                zoo::rollsum  325.665040  379.251710  480.714105  450.228940
+             runner::sum_run 1289.769892 1418.957973 1525.079449 1517.706760
+          uq        max neval
+    4.499823   18.11897    10
+   12.717016   16.84787    10
+   33.918532   43.64378    10
+   88.895235  126.26658    10
+   40.049148   54.13022    10
+  135.329135  136.40403    10
+  608.734517  696.18947    10
+ 1658.419845 1761.18214    10</code></pre>
+</div>
+</div>
+</section>
+<section id="sd" class="level2">
+<h2 class="anchored" data-anchor-id="sd">SD</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">microbenchmark</span>(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"roll::roll_sd"</span> <span class="ot">=</span> roll<span class="sc">::</span><span class="fu">roll_sd</span>(df<span class="sc">$</span>x, <span class="at">width =</span> n),</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"RollingWindow::RollingStd"</span> <span class="ot">=</span> RollingWindow<span class="sc">::</span><span class="fu">RollingStd</span>(df<span class="sc">$</span>x, n),</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"runstats::RunningSd"</span> <span class="ot">=</span> runstats<span class="sc">::</span><span class="fu">RunningSd</span>(df<span class="sc">$</span>x, <span class="at">W =</span> n),</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"RcppRoll::roll_sd"</span> <span class="ot">=</span> RcppRoll<span class="sc">::</span><span class="fu">roll_sd</span>(df<span class="sc">$</span>x, <span class="at">n =</span> n, <span class="at">fill =</span> <span class="cn">NA</span>),</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">times =</span> n_times)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Unit: milliseconds
+                      expr        min         lq       mean     median
+             roll::roll_sd   56.31893   56.64948   61.66736   57.28845
+ RollingWindow::RollingStd   31.00776   33.04170   42.24170   33.54361
+       runstats::RunningSd   59.02132   67.17997   92.24908   85.79771
+         RcppRoll::roll_sd 1205.79275 1217.69071 1292.22611 1294.74142
+         uq        max neval
+   61.82976   79.94232    10
+   40.37113  107.05237    10
+  113.36480  163.73572    10
+ 1322.65637 1440.68273    10</code></pre>
+</div>
+</div>
+</section>
+<section id="custom-functions" class="level2">
+<h2 class="anchored" data-anchor-id="custom-functions">Custom functions</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">microbenchmark</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"data.table::frollapply"</span> <span class="ot">=</span> data.table<span class="sc">::</span><span class="fu">frollapply</span>(df<span class="sc">$</span>x, n, sum),</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"zoo::rollapply"</span> <span class="ot">=</span> zoo<span class="sc">::</span><span class="fu">rollapply</span>(df<span class="sc">$</span>x, n, sum),</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">times =</span> n_times)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Unit: seconds
+                   expr       min        lq      mean    median        uq
+ data.table::frollapply  3.682705  3.903462  4.026611  4.053144  4.202986
+         zoo::rollapply 11.452357 11.715537 12.500304 12.427262 13.319937
+       max neval
+  4.230897    10
+ 14.040575    10</code></pre>
+</div>
+</div>
+
+
+</section>
+
+<script async="" defer="" src="https://scripts.simpleanalyticscdn.com/latest.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{roald-arbøl2024,
+  author = {Roald-Arbøl, Mikkel},
+  title = {Benchmarking Rolling Functions in {R}},
+  date = {2024-10-03},
+  url = {https://roald-arboel.com/blog/posts/2024/10/03/Benchmark-rolling/},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-roald-arbøl2024" class="csl-entry quarto-appendix-citeas" role="listitem">
+Roald-Arbøl, Mikkel. 2024. <span>“Benchmarking Rolling Functions in
+R.”</span> October 3, 2024. <a href="https://roald-arboel.com/blog/posts/2024/10/03/Benchmark-rolling/">https://roald-arboel.com/blog/posts/2024/10/03/Benchmark-rolling/</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/roald-arboel\.com");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://giscus.app/client.js" data-repo="roaldarbol/quarto-website" data-repo-id="" data-category="General" data-category-id="" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+<input type="hidden" id="giscus-base-theme" value="light">
+<input type="hidden" id="giscus-alt-theme" value="dark">
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p><a href="../../../../../../LICENCE.html">Copyright © 2024 Mikkel Roald-Arbøl</a></p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/roaldarbol/roaldarbol.github.io/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>This website is built with <i class="fa-solid fa-heart" title="a heart" aria-label="heart"></i>, <a href="https://github.com/roaldarbol/roaldarbol.github.io" target="_blank"><i class="fa-brands fa-github" title="GitHub octocat logo" aria-label="github"></i></a>, <a href="https://www.r-project.org/about.html" target="_blank"><i class="fa-brands fa-r-project" title="R Project" aria-label="r-project"></i></a> and <a href="https://quarto.org/" target="_blank">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
