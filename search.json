@@ -11,56 +11,49 @@
     "href": "blog/posts/2024/10/03/Benchmark-rolling/index.html#mean",
     "title": "Benchmarking rolling functions in R",
     "section": "Mean",
-    "text": "Mean\n\nmicrobenchmark(\n  \"data.table::frollmean\" = data.table::frollmean(df$x, n),\n  \"roll::roll_mean\" = roll::roll_mean(df$x, width = n),\n  \"RollingWindow::RollingMean\" = RollingWindow::RollingMean(df$x, n),\n  \"runstats::RunningMean\" = runstats::RunningMean(df$x, W = n),\n  \"slider::slide_mean\" = slider::slide_mean(df$x, before = n_half, after = n_half),\n  \"RcppRoll::roll_mean\" = RcppRoll::roll_mean(df$x, n = n, fill = NA),\n  \"zoo::rollmean\" = zoo::rollmean(df$x, k = n, fill = NA),\n  \"runner::mean_run\" = runner::mean_run(df$x, k = n, na_pad = TRUE),\n  times = n_times)\n\nUnit: milliseconds\n                       expr        min         lq        mean     median\n      data.table::frollmean   4.364765   4.386955    5.545144   4.908773\n            roll::roll_mean  16.512173  16.640832   29.042056  17.433780\n RollingWindow::RollingMean  17.750571  18.664875   22.966375  20.585845\n      runstats::RunningMean  12.640257  18.126632   22.707550  19.553610\n         slider::slide_mean  72.315159  72.536251   73.982968  72.965772\n        RcppRoll::roll_mean 163.385982 163.733190  165.119325 164.247679\n              zoo::rollmean 124.375120 131.965586  214.200296 182.230702\n           runner::mean_run 792.513469 868.069718 1010.502657 994.701654\n          uq        max neval\n    6.120136   10.26725    10\n   18.590567  133.23819    10\n   23.713303   43.36674    10\n   24.478930   54.73269    10\n   75.259317   78.62419    10\n  164.631264  174.28505    10\n  300.922531  399.41005    10\n 1184.272346 1216.75740    10"
+    "text": "Mean\n\nmicrobenchmark(\n  \"data.table::frollmean\" = data.table::frollmean(df$x, n),\n  \"roll::roll_mean\" = roll::roll_mean(df$x, width = n),\n  \"RollingWindow::RollingMean\" = RollingWindow::RollingMean(df$x, n),\n  \"runstats::RunningMean\" = runstats::RunningMean(df$x, W = n),\n  \"slider::slide_mean\" = slider::slide_mean(df$x, before = n_half, after = n_half),\n  \"RcppRoll::roll_mean\" = RcppRoll::roll_mean(df$x, n = n, fill = NA),\n  \"zoo::rollmean\" = zoo::rollmean(df$x, k = n, fill = NA),\n  \"runner::mean_run\" = runner::mean_run(df$x, k = n, na_pad = TRUE),\n  times = n_times)\n\nUnit: milliseconds\n                       expr        min         lq        mean      median\n      data.table::frollmean   4.382272   4.413751    5.314326    4.745209\n            roll::roll_mean  16.571368  16.739432   20.491610   20.436435\n RollingWindow::RollingMean  17.772791  17.960522   20.363032   20.740493\n      runstats::RunningMean  10.447065  10.491798   24.633441   12.125419\n         slider::slide_mean  72.405019  72.474819   73.428159   72.559497\n        RcppRoll::roll_mean 163.576746 163.801434  164.373453  163.940595\n              zoo::rollmean 162.662849 196.419633  276.464719  284.041912\n           runner::mean_run 816.486528 826.975521 1043.022628 1012.847357\n          uq         max neval\n    5.595277    7.663118    10\n   21.448444   31.315135    10\n   21.689835   24.137856    10\n   20.748266  119.397694    10\n   73.534618   76.369912    10\n  164.907249  165.805837    10\n  340.300005  383.897491    10\n 1278.931095 1347.092753    10"
   },
   {
     "objectID": "blog/posts/2024/10/03/Benchmark-rolling/index.html#median",
     "href": "blog/posts/2024/10/03/Benchmark-rolling/index.html#median",
     "title": "Benchmarking rolling functions in R",
     "section": "Median",
-    "text": "Median\n\nmicrobenchmark(\n  \"data.table::frollmedian\" = data.table::frollmedian(df$x, n),\n  \"RollingWindow::RollingMedian\" = RollingWindow::RollingMedian(df$x, n),\n  \"zoo::rollmedian\" = zoo::rollmedian(df$x, k = n, fill = NA),\n  \"roll::roll_median\" = roll::roll_median(df$x, width = n),\n  \"RcppRoll::roll_median\" = RcppRoll::roll_median(df$x, n = n, fill = NA),\n  times = n_times)\n\nUnit: milliseconds\n                         expr        min         lq       mean     median\n      data.table::frollmedian   46.95643   47.04934   47.64099   47.21878\n RollingWindow::RollingMedian   78.35552   79.23443   79.81651   79.59221\n              zoo::rollmedian  171.48053  235.88828  251.83165  262.54601\n            roll::roll_median  332.58490  333.10088  334.09220  333.36676\n        RcppRoll::roll_median 1626.88751 1627.90477 1629.27343 1628.26628\n         uq        max neval\n   47.91003   49.86699    10\n   79.73876   81.82230    10\n  269.75400  344.67020    10\n  334.68866  337.16799    10\n 1630.14684 1635.75588    10"
+    "text": "Median\n\nmicrobenchmark(\n  \"data.table::frollmedian\" = data.table::frollmedian(df$x, n),\n  \"RollingWindow::RollingMedian\" = RollingWindow::RollingMedian(df$x, n),\n  \"zoo::rollmedian\" = zoo::rollmedian(df$x, k = n, fill = NA),\n  \"roll::roll_median\" = roll::roll_median(df$x, width = n),\n  \"RcppRoll::roll_median\" = RcppRoll::roll_median(df$x, n = n, fill = NA),\n  times = n_times)\n\nUnit: milliseconds\n                         expr        min         lq       mean     median\n      data.table::frollmedian   47.12968   47.32341   47.86892   47.42243\n RollingWindow::RollingMedian   77.00480   77.22194   79.23985   80.00793\n              zoo::rollmedian  223.79723  226.70084  291.66339  273.16178\n            roll::roll_median  327.70963  327.83484  338.45050  328.96202\n        RcppRoll::roll_median 1626.29061 1627.12605 1628.76217 1627.72473\n         uq        max neval\n   47.73952   50.13755    10\n   80.39685   81.40892    10\n  321.33499  413.23870    10\n  331.39609  421.64210    10\n 1630.24952 1634.16085    10"
   },
   {
     "objectID": "blog/posts/2024/10/03/Benchmark-rolling/index.html#min",
     "href": "blog/posts/2024/10/03/Benchmark-rolling/index.html#min",
     "title": "Benchmarking rolling functions in R",
     "section": "Min",
-    "text": "Min\n\nmicrobenchmark(\n  \"data.table::frollmin\" = data.table::frollmin(df$x, n),\n  \"roll::roll_min\" = roll::roll_min(df$x, width = n),\n  \"RollingWindow::RollingMin\" = RollingWindow::RollingMin(df$x, n),\n  \"RcppRoll::roll_min\" = RcppRoll::roll_min(df$x, n = n, fill = NA),\n  \"runner::min_run\" = runner::min_run(df$x, k = n, na_pad = TRUE),\n  times = n_times)\n\nUnit: milliseconds\n                      expr        min         lq       mean     median\n      data.table::frollmin   2.772657   3.935705   4.034611   4.063057\n            roll::roll_min  14.716236  14.768653  15.359277  14.801615\n RollingWindow::RollingMin  38.746409  38.873316  42.214788  41.115850\n        RcppRoll::roll_min 182.293719 182.481539 184.006824 183.809320\n           runner::min_run 623.080778 832.823174 869.807306 866.939281\n         uq       max neval\n   4.173648   5.80073    10\n  16.321087  16.48661    10\n  44.808897  50.25288    10\n 184.213558 188.45613    10\n 948.181418 970.83446    10"
+    "text": "Min\n\nmicrobenchmark(\n  \"data.table::frollmin\" = data.table::frollmin(df$x, n),\n  \"roll::roll_min\" = roll::roll_min(df$x, width = n),\n  \"RollingWindow::RollingMin\" = RollingWindow::RollingMin(df$x, n),\n  \"RcppRoll::roll_min\" = RcppRoll::roll_min(df$x, n = n, fill = NA),\n  \"runner::min_run\" = runner::min_run(df$x, k = n, na_pad = TRUE),\n  times = n_times)\n\nUnit: milliseconds\n                      expr        min         lq       mean     median\n      data.table::frollmin   2.753181   2.795789   3.156719   2.823176\n            roll::roll_min  14.744117  14.804270  15.135414  14.855570\n RollingWindow::RollingMin  38.718146  38.985425  39.875889  39.030064\n        RcppRoll::roll_min 182.664412 182.797471 183.018408 182.953096\n           runner::min_run 620.711158 909.491757 926.898008 986.391979\n          uq         max neval\n    2.854841    5.987859    10\n   14.977443   17.413771    10\n   39.102253   47.652586    10\n  183.120754  183.705997    10\n 1014.046349 1066.843270    10"
   },
   {
     "objectID": "blog/posts/2024/10/03/Benchmark-rolling/index.html#max",
     "href": "blog/posts/2024/10/03/Benchmark-rolling/index.html#max",
     "title": "Benchmarking rolling functions in R",
     "section": "Max",
-    "text": "Max\n\nmicrobenchmark(\n  \"data.table::frollmax\" = data.table::frollmax(df$x, n),\n  \"roll::roll_max\" = roll::roll_max(df$x, width = n),\n  \"RollingWindow::RollingMax\" = RollingWindow::RollingMax(df$x, n),\n  \"RcppRoll::roll_max\" = RcppRoll::roll_max(df$x, n = n, fill = NA),\n  \"runner::max_run\" = runner::max_run(df$x, k = n, na_pad = TRUE),\n  \"zoo::rollmax\" = zoo::rollmax(df$x, k = n, fill = NA),\n  times = n_times)\n\nUnit: milliseconds\n                      expr        min         lq      mean     median        uq\n      data.table::frollmax   2.776204   2.800969  30.28713   4.287586  91.96609\n            roll::roll_max  14.774925  14.829417  24.80525  15.820533  16.39667\n RollingWindow::RollingMax  38.377491  38.550455  41.72589  41.703284  44.49210\n        RcppRoll::roll_max 182.552762 183.488316 193.01026 183.712564 185.24436\n           runner::max_run 591.282848 606.012578 785.71499 769.814727 913.56181\n              zoo::rollmax 796.422154 806.075764 929.93900 890.516161 991.11317\n        max neval\n   92.68472    10\n  106.44814    10\n   46.45146    10\n  274.50541    10\n 1061.44790    10\n 1293.14918    10"
+    "text": "Max\n\nmicrobenchmark(\n  \"data.table::frollmax\" = data.table::frollmax(df$x, n),\n  \"roll::roll_max\" = roll::roll_max(df$x, width = n),\n  \"RollingWindow::RollingMax\" = RollingWindow::RollingMax(df$x, n),\n  \"RcppRoll::roll_max\" = RcppRoll::roll_max(df$x, n = n, fill = NA),\n  \"runner::max_run\" = runner::max_run(df$x, k = n, na_pad = TRUE),\n  \"zoo::rollmax\" = zoo::rollmax(df$x, k = n, fill = NA),\n  times = n_times)\n\nUnit: milliseconds\n                      expr        min         lq        mean      median\n      data.table::frollmax   2.700452   2.768108    3.220625    2.792504\n            roll::roll_max  14.742675  14.810060   15.532620   14.870603\n RollingWindow::RollingMax  38.711243  41.244744   41.952580   41.454891\n        RcppRoll::roll_max 182.452486 182.934326  184.246745  183.946285\n           runner::max_run 602.943867 606.665836  778.930968  655.721923\n              zoo::rollmax 922.180317 946.189442 1036.722610 1010.585853\n         uq         max neval\n    2.82305    5.943887    10\n   14.99814   20.726296    10\n   41.65922   48.536858    10\n  185.73647  186.552722    10\n  983.02249 1141.726807    10\n 1044.67440 1452.401121    10"
   },
   {
     "objectID": "blog/posts/2024/10/03/Benchmark-rolling/index.html#sum",
     "href": "blog/posts/2024/10/03/Benchmark-rolling/index.html#sum",
     "title": "Benchmarking rolling functions in R",
     "section": "Sum",
-    "text": "Sum\n\nmicrobenchmark(\n    \"data.table::frollsum, fast\" = data.table::frollsum(df$x, n, algo = \"fast\"),\n    \"roll::roll_sum\" = roll::roll_sum(df$x, width = n),\n    \"RollingWindow::RollingSum\" = RollingWindow::RollingSum(df$x, n),\n    \"slider::slide_sum\" = slider::slide_sum(df$x, before = n_half, after = n_half),\n    \"data.table::frollsum, exact\" = data.table::frollsum(df$x, n, algo = \"exact\"),\n    \"RcppRoll::roll_sum\" = RcppRoll::roll_sum(df$x, n = n, fill = NA),\n    \"zoo::rollsum\" = zoo::rollsum(df$x, n, fill = NA),\n    \"runner::sum_run\" = runner::sum_run(df$x, k = n, na_pad = TRUE),\n    times = n_times)\n\nUnit: milliseconds\n                        expr        min         lq       mean     median\n  data.table::frollsum, fast   4.260019   4.275067   5.293635   4.297149\n              roll::roll_sum  10.977157  11.180897  11.831820  11.203980\n   RollingWindow::RollingSum  17.217027  17.288199  18.518973  17.338423\n           slider::slide_sum  68.654099  68.698620  69.386720  68.761290\n data.table::frollsum, exact  30.538623  30.693632  32.318619  31.276273\n          RcppRoll::roll_sum 159.624762 160.084029 161.473492 161.308797\n                zoo::rollsum 126.401016 150.845291 223.895339 227.482385\n             runner::sum_run 813.588916 823.596967 982.712552 984.822039\n          uq         max neval\n    4.332615    9.759388    10\n   11.242792   15.799886    10\n   20.012045   23.051700    10\n   68.945369   74.645052    10\n   31.560787   41.129050    10\n  161.870088  165.097842    10\n  295.677797  318.265462    10\n 1127.114302 1178.581020    10"
+    "text": "Sum\n\nmicrobenchmark(\n    \"data.table::frollsum, fast\" = data.table::frollsum(df$x, n, algo = \"fast\"),\n    \"roll::roll_sum\" = roll::roll_sum(df$x, width = n),\n    \"RollingWindow::RollingSum\" = RollingWindow::RollingSum(df$x, n),\n    \"slider::slide_sum\" = slider::slide_sum(df$x, before = n_half, after = n_half),\n    \"data.table::frollsum, exact\" = data.table::frollsum(df$x, n, algo = \"exact\"),\n    \"RcppRoll::roll_sum\" = RcppRoll::roll_sum(df$x, n = n, fill = NA),\n    \"zoo::rollsum\" = zoo::rollsum(df$x, n, fill = NA),\n    \"runner::sum_run\" = runner::sum_run(df$x, k = n, na_pad = TRUE),\n    times = n_times)\n\nUnit: milliseconds\n                        expr        min         lq        mean      median\n  data.table::frollsum, fast   4.256808   4.279089    4.705943    4.311339\n              roll::roll_sum  11.217843  11.249563   12.385812   11.916077\n   RollingWindow::RollingSum  17.302644  17.452684   19.839395   17.550863\n           slider::slide_sum  68.706124  68.728525   69.471883   68.839472\n data.table::frollsum, exact  30.595191  30.676473   31.323504   30.734526\n          RcppRoll::roll_sum 160.126133 160.658978  161.684008  160.931922\n                zoo::rollsum 208.039727 259.238895  291.775223  277.372265\n             runner::sum_run 812.392925 825.646470 1065.463562 1026.906193\n          uq         max neval\n    4.371051    7.198158    10\n   13.494755   14.171659    10\n   20.241801   33.290873    10\n   68.881340   74.168572    10\n   31.500050   34.784963    10\n  162.132770  164.756829    10\n  346.317310  394.789977    10\n 1282.102226 1445.063191    10"
   },
   {
     "objectID": "blog/posts/2024/10/03/Benchmark-rolling/index.html#sd",
     "href": "blog/posts/2024/10/03/Benchmark-rolling/index.html#sd",
     "title": "Benchmarking rolling functions in R",
     "section": "SD",
-    "text": "SD\n\nmicrobenchmark(\n  \"roll::roll_sd\" = roll::roll_sd(df$x, width = n),\n  \"RollingWindow::RollingStd\" = RollingWindow::RollingStd(df$x, n),\n  \"runstats::RunningSd\" = runstats::RunningSd(df$x, W = n),\n  \"RcppRoll::roll_sd\" = RcppRoll::roll_sd(df$x, n = n, fill = NA),\n  times = n_times)\n\nUnit: milliseconds\n                      expr       min        lq      mean    median        uq\n             roll::roll_sd  49.08483  49.35531  50.47896  49.43263  49.55413\n RollingWindow::RollingStd  33.10656  33.26814  34.93685  34.86965  36.12318\n       runstats::RunningSd  33.63855  35.41987  46.49156  36.48988  42.15114\n         RcppRoll::roll_sd 877.01068 878.71188 901.26831 887.11328 901.59613\n       max neval\n  57.55106    10\n  38.33700    10\n 127.55715    10\n 964.59497    10"
+    "text": "SD\n\nmicrobenchmark(\n  \"roll::roll_sd\" = roll::roll_sd(df$x, width = n),\n  \"RollingWindow::RollingStd\" = RollingWindow::RollingStd(df$x, n),\n  \"runstats::RunningSd\" = runstats::RunningSd(df$x, W = n),\n  \"RcppRoll::roll_sd\" = RcppRoll::roll_sd(df$x, n = n, fill = NA),\n  times = n_times)\n\nUnit: milliseconds\n                      expr       min        lq      mean    median        uq\n             roll::roll_sd  49.30608  49.46182  50.42183  49.57520  49.59323\n RollingWindow::RollingStd  33.38183  36.08083  37.62366  36.95489  39.19903\n       runstats::RunningSd  31.52770  34.15093  81.94685  79.57908 128.47300\n         RcppRoll::roll_sd 868.01398 872.99105 879.41181 876.90813 885.90538\n       max neval\n  55.87954    10\n  42.16765    10\n 136.25140    10\n 893.93757    10"
   },
   {
     "objectID": "blog/posts/2024/10/03/Benchmark-rolling/index.html#custom-functions",
     "href": "blog/posts/2024/10/03/Benchmark-rolling/index.html#custom-functions",
     "title": "Benchmarking rolling functions in R",
     "section": "Custom functions",
-    "text": "Custom functions\n\nmicrobenchmark(\n  \"data.table::frollapply\" = data.table::frollapply(df$x, n, sum),\n  \"zoo::rollapply\" = zoo::rollapply(df$x, n, sum),\n  times = n_times)\n\nUnit: seconds\n                   expr      min       lq     mean   median       uq      max\n data.table::frollapply 2.428530 2.522191 2.663296 2.625027 2.745117 2.979905\n         zoo::rollapply 7.268567 7.588804 7.775560 7.774598 7.932003 8.316724\n neval\n    10\n    10"
-  },
-  {
-    "objectID": "blog/posts/2024/06/24/stats-resources/index.html",
-    "href": "blog/posts/2024/06/24/stats-resources/index.html",
-    "title": "data.table, polars and duckDB",
-    "section": "",
-    "text": "CitationBibTeX citation:@online{roald-arbøl2024,\n  author = {Roald-Arbøl, Mikkel},\n  title = {Data.table, Polars and {duckDB}},\n  date = {2024-06-04},\n  url = {https://roald-arboel.com/blog/posts/2024/06/24/stats-resources/},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nRoald-Arbøl, Mikkel. 2024. “Data.table, Polars and duckDB.”\nJune 4, 2024. https://roald-arboel.com/blog/posts/2024/06/24/stats-resources/."
+    "text": "Custom functions\n\nmicrobenchmark(\n  \"data.table::frollapply\" = data.table::frollapply(df$x, n, sum),\n  \"zoo::rollapply\" = zoo::rollapply(df$x, n, sum),\n  times = n_times)\n\nUnit: seconds\n                   expr      min       lq     mean   median       uq      max\n data.table::frollapply 2.550373 2.582714 2.720735 2.687968 2.791373 3.076551\n         zoo::rollapply 7.244881 7.778299 7.951841 8.059028 8.154463 8.490448\n neval\n    10\n    10"
   },
   {
     "objectID": "research/projects/timescales.html",
@@ -91,53 +84,18 @@
     "text": "CV\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nJoys in life\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nScientific journey\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items"
   },
   {
-    "objectID": "blog/posts/2024/09/01/PopOSMac/index.html",
-    "href": "blog/posts/2024/09/01/PopOSMac/index.html",
-    "title": "Pop_OS! on a Macbook Pro 2011",
-    "section": "",
-    "text": "Heading\n\nFlash PopOS! 24.04 LTS with either BalenaEtcher or Raspberry Pi Imager\nBack up all files (I put everything on Proton Drive)\nTurn off Macbook\nHold the option and power buttons down until a screen asks and you can choose EFI\nFollow the installation prompts\nWifi issues\n\nsudo apt update\nsudo apt-get install bcmwl-kernel-source\nsudo modprobe -r b43 ssb wl brcmfmac brcmsmac bcma\nsudo modprobe wl\nsudo reboot\n\nInstall\n\nRustDesk\nFirefox\nBitwarden\nLibreoffice\nThunderbird\nEnte Photos\n(VLC)\n(Solitaire)\n\n\n\n\n\n\nCitationBibTeX citation:@online{roald-arbøl2024,\n  author = {Roald-Arbøl, Mikkel},\n  title = {Pop\\_OS! On a {Macbook} {Pro} 2011},\n  date = {2024-02-10},\n  url = {https://roald-arboel.com/blog/posts/2024/09/01/PopOSMac/},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nRoald-Arbøl, Mikkel. 2024. “Pop_OS! On a Macbook Pro 2011.”\nFebruary 10, 2024. https://roald-arboel.com/blog/posts/2024/09/01/PopOSMac/."
-  },
-  {
-    "objectID": "blog/posts/2024/07/10/ICC/index.html",
-    "href": "blog/posts/2024/07/10/ICC/index.html",
-    "title": "ICC and R2",
-    "section": "",
-    "text": "Heading\nSome good content goes here…\n\n\n\n\nCitationBibTeX citation:@online{roald-arbøl2024,\n  author = {Roald-Arbøl, Mikkel},\n  title = {ICC and {R2}},\n  date = {2024-06-04},\n  url = {https://roald-arboel.com/blog/posts/2024/07/10/ICC/},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nRoald-Arbøl, Mikkel. 2024. “ICC and R2.” June 4, 2024. https://roald-arboel.com/blog/posts/2024/07/10/ICC/."
-  },
-  {
-    "objectID": "blog/posts/2024/06/24/pixi-R/index.html",
-    "href": "blog/posts/2024/06/24/pixi-R/index.html",
-    "title": "Pixi + R: Better project management in R",
-    "section": "",
-    "text": "Create project: pixi exec copier copy gh:roaldarbol/r-template my-new-project && cd my-new-project\nOpen IDE: pixi run rstudio\nAdd dependencies: rpix::add(\"tidyverse\")\nStart analysing your data!"
-  },
-  {
-    "objectID": "blog/posts/2024/06/24/pixi-R/index.html#tldr",
-    "href": "blog/posts/2024/06/24/pixi-R/index.html#tldr",
-    "title": "Pixi + R: Better project management in R",
-    "section": "",
-    "text": "Create project: pixi exec copier copy gh:roaldarbol/r-template my-new-project && cd my-new-project\nOpen IDE: pixi run rstudio\nAdd dependencies: rpix::add(\"tidyverse\")\nStart analysing your data!"
-  },
-  {
-    "objectID": "blog/posts/2024/06/24/pixi-R/index.html#project-template",
-    "href": "blog/posts/2024/06/24/pixi-R/index.html#project-template",
-    "title": "Pixi + R: Better project management in R",
-    "section": "Project template",
-    "text": "Project template"
-  },
-  {
     "objectID": "blog/index.html",
     "href": "blog/index.html",
     "title": "Blog",
     "section": "",
-    "text": "tools\n\n\ntechnology\n\n\nscience\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nOct 3, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nr\n\n\nrolling\n\n\nstats\n\n\n\nI set out to benchmark the speed of rolling functions from R packages\n\n\n\n\n\nOct 3, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI\n\n\nlarge language models\n\n\nmachine learning\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nR\n\n\nReproducibility\n\n\nPixi\n\n\n\nPixi is the best tool for managing your R projects. If it isn’t already, it will soon be. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nR\n\n\nStatistics\n\n\nData science\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI\n\n\nlarge language models\n\n\nmachine learning\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nStatistics\n\n\nVariance decomposition\n\n\nR\n\n\nRepeatability\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI\n\n\nlarge language models\n\n\nmachine learning\n\n\n\n“Modern science relies on (open source) software and hardware, but whereas creating tools (writing code) can be turned into academic currency (papers), there is currently no incentive for researchers to provide feedback and improvement suggestions for tools despite how valuable these contributions are to the scientific community as a whole. One possible way forward would be to treat”issue creation” and other Git-based activity as an acceptable form of peer review.” \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPop_OS!\n\n\nCosmic\n\n\nMac\n\n\n\nTo make an old laptop last longer, I’ve installed Pop_OS! on it. These are some notes for my future self (and others).\n\n\n\n\n\nFeb 10, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\nNo matching items"
+    "text": "r\n\n\nrolling\n\n\nstats\n\n\n\nI set out to benchmark the speed of rolling functions from R packages\n\n\n\n\n\nOct 3, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "blog/index.html#section",
     "href": "blog/index.html#section",
     "title": "Blog",
     "section": "",
-    "text": "tools\n\n\ntechnology\n\n\nscience\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nOct 3, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nr\n\n\nrolling\n\n\nstats\n\n\n\nI set out to benchmark the speed of rolling functions from R packages\n\n\n\n\n\nOct 3, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI\n\n\nlarge language models\n\n\nmachine learning\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nR\n\n\nReproducibility\n\n\nPixi\n\n\n\nPixi is the best tool for managing your R projects. If it isn’t already, it will soon be. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nR\n\n\nStatistics\n\n\nData science\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI\n\n\nlarge language models\n\n\nmachine learning\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nStatistics\n\n\nVariance decomposition\n\n\nR\n\n\nRepeatability\n\n\n\nWorking with AI in real world conditions can be quite a different proposal to the idealised settings often discussed “in theory”. Guest editor Anna Demming speaks to a panel of experts about how to meet “best practice” aspirations within real world constraints, and how to avoid common pitfalls. \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAI\n\n\nlarge language models\n\n\nmachine learning\n\n\n\n“Modern science relies on (open source) software and hardware, but whereas creating tools (writing code) can be turned into academic currency (papers), there is currently no incentive for researchers to provide feedback and improvement suggestions for tools despite how valuable these contributions are to the scientific community as a whole. One possible way forward would be to treat”issue creation” and other Git-based activity as an acceptable form of peer review.” \n\n\n\n\n\nJun 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPop_OS!\n\n\nCosmic\n\n\nMac\n\n\n\nTo make an old laptop last longer, I’ve installed Pop_OS! on it. These are some notes for my future self (and others).\n\n\n\n\n\nFeb 10, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\nNo matching items"
+    "text": "r\n\n\nrolling\n\n\nstats\n\n\n\nI set out to benchmark the speed of rolling functions from R packages\n\n\n\n\n\nOct 3, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "CODE_OF_CONDUCT.html",
@@ -217,34 +175,6 @@
     "text": "Software and services\nSource code and files for the website are available from GitHub. Use of our GitHub repository is governed by the Contributor Covenant Code of Conduct.\nThe website is built using Quarto, an open-source scientific and technical publishing system developed by Posit. Quarto source code and software licences are available from GitHub.\nThe website is hosted by GitHub Pages.\nThe website uses the privacy-respecting Simple Analytics for web analytics reporting.\nFonts used on Real World Data Science are served by the Google Fonts API. This is to improve site loading speeds and font compatibility across devices. Review the Google Fonts Privacy and Data Collection statement.\nUser comments and reaction functionality is provided by giscus, a comments system powered by GitHub Discussions. Use of this comment functionality is governed by the Contributor Covenant Code of Conduct."
   },
   {
-    "objectID": "blog/posts/2024/06/24/animal-behaviour-tracking/index.html",
-    "href": "blog/posts/2024/06/24/animal-behaviour-tracking/index.html",
-    "title": "Tracking animals: Tools",
-    "section": "",
-    "text": "pixi\nquarto/mystmd\nnushell\nzotero\nobsidian\n\n\n\n\nCitationBibTeX citation:@online{roald-arbøl2024,\n  author = {Roald-Arbøl, Mikkel},\n  title = {Tracking Animals: {Tools}},\n  date = {2024-06-04},\n  url = {https://roald-arboel.com/blog/posts/2024/06/24/animal-behaviour-tracking/},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nRoald-Arbøl, Mikkel. 2024. “Tracking Animals: Tools.” June\n4, 2024. https://roald-arboel.com/blog/posts/2024/06/24/animal-behaviour-tracking/."
-  },
-  {
-    "objectID": "blog/posts/2024/06/25/tools/index.html",
-    "href": "blog/posts/2024/06/25/tools/index.html",
-    "title": "Tools for Scientific Computing",
-    "section": "",
-    "text": "https://www.andrewheiss.com/uses/index.html#development\n\npixi\nquarto/mystmd\nnushell\nzotero\nobsidian\n\n\n\n\nCitationBibTeX citation:@online{roald-arbøl2024,\n  author = {Roald-Arbøl, Mikkel},\n  title = {Tools for {Scientific} {Computing}},\n  date = {2024-10-03},\n  url = {https://roald-arboel.com/blog/posts/2024/06/25/tools/},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nRoald-Arbøl, Mikkel. 2024. “Tools for Scientific\nComputing.” October 3, 2024. https://roald-arboel.com/blog/posts/2024/06/25/tools/."
-  },
-  {
-    "objectID": "blog/posts/2024/07/25/peer-review/index.html",
-    "href": "blog/posts/2024/07/25/peer-review/index.html",
-    "title": "Peer Review on Github",
-    "section": "",
-    "text": "Some good content goes here…\n\n\nA tool that collates all the Github contributions into a file (or data-format which the user can serve how they want to). Check."
-  },
-  {
-    "objectID": "blog/posts/2024/07/25/peer-review/index.html#what",
-    "href": "blog/posts/2024/07/25/peer-review/index.html#what",
-    "title": "Peer Review on Github",
-    "section": "",
-    "text": "A tool that collates all the Github contributions into a file (or data-format which the user can serve how they want to). Check."
-  },
-  {
     "objectID": "feeds.html",
     "href": "feeds.html",
     "title": "RSS feeds",
@@ -266,13 +196,6 @@
     "text": "The fun stuff!\nOkay, science is cool, but life is so much more! If it wasn’t obvious, I love doing sports… every type of sports pretty much. I’ve recently taken to open water swimming, and rock climbing (and bouldering) has been a long-standing favourite of mine. I also enjoy running and a good (Olympic) weightlifting session. Badminton, squash or tennis when the opportunity presents itself.\nMusic also plays a big role in my life. I grew up playing the piano, where I was part of a jazz band. Later on I started singing and writing my own songs (I took on the guitar for that, but never got very good). In Brighton, I’ve been singing with the amazing Soul of the City Choir, and had a yearly performance at our Sussex Neuroscience Christmas Party (either solo or with an awesome CRPC band). These days, I mostly improvise some jazzy/ambient tunes on the piano and sing popular cover songs at home.\nAlthough I’ve always enjoyed being outdoors, I didn’t always really appreciate it fully. However, that changed during my undergraduate when we had a course in “Outdoor Life” (friluftsliv in Danish). Now I appreciate all the time I can get outside, paying attention to both the grandiose and the minute details of nature (which probably plays a part in my ending up working with animal behaviour). From camp life through hiking, preferably for multiple days, backcountry skiing, kayaking, rock climbing, mountaineering… any way that takes me through the wonderful nature that surrounds us!\nOh, and I love reading books, especially old classics!\nMy most recent hobby is photography. Catching the beauty of a moment, whether a wide natural landscape or a macro of an insect going about its business. I picked up my first camera (a Canon Powershot G9) in Australia, just to document my year there. But the photos from that year inspired me in a way I hadn’t expected. Now, I’ve invested in some more professional gear, but alas, the PhD has not allowed me much time to make the most of it - let’s see in a year! Until then, you can find a selection of my photos here.\nSome more photography\n\n\n\n\n\n\n\n\n\nPhoto by Hush Naidoo Jade Photography on Unsplash\n\n\n\n\n\n\n\nPhoto by Alessandro Bianchi on Unsplash\n\n\n\n\n\n\n\nPhoto by Joshua Melo on Unsplash"
   },
   {
-    "objectID": "research/Template.html",
-    "href": "research/Template.html",
-    "title": "Heading",
-    "section": "",
-    "text": "Heading\nSome good content goes here…"
-  },
-  {
     "objectID": "research/openscience/aniscope.html",
     "href": "research/openscience/aniscope.html",
     "title": "Aniscope",
@@ -292,12 +215,5 @@
     "title": "Sleep across the Animal Kingdom",
     "section": "",
     "text": "Heading\nSome good content goes here…"
-  },
-  {
-    "objectID": "blog/posts/2024/06/24/r-dataframes/index.html",
-    "href": "blog/posts/2024/06/24/r-dataframes/index.html",
-    "title": "data.table, polars and duckDB",
-    "section": "",
-    "text": "CitationBibTeX citation:@online{roald-arbøl2024,\n  author = {Roald-Arbøl, Mikkel},\n  title = {Data.table, Polars and {duckDB}},\n  date = {2024-06-04},\n  url = {https://roald-arboel.com/blog/posts/2024/06/24/r-dataframes/},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nRoald-Arbøl, Mikkel. 2024. “Data.table, Polars and duckDB.”\nJune 4, 2024. https://roald-arboel.com/blog/posts/2024/06/24/r-dataframes/."
   }
 ]
