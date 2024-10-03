@@ -24,6 +24,9 @@ jobs:
         with:
           r-version: '4.2.0'
 
+      - name: Install libfftw3 (for runstats)
+        run: sudo apt-get install libfftw3-dev libfftw3-doc
+
       - name: Install R Dependencies
         uses: r-lib/actions/setup-renv@v2
         with:
