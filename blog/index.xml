@@ -1,0 +1,894 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss  xmlns:atom="http://www.w3.org/2005/Atom" 
+      xmlns:media="http://search.yahoo.com/mrss/" 
+      xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+      xmlns:dc="http://purl.org/dc/elements/1.1/" 
+      version="2.0">
+<channel>
+<title>Mikkel Roald-Arbøl</title>
+<link>https://roald-arboel.com/blog/</link>
+<atom:link href="https://roald-arboel.com/blog/index.xml" rel="self" type="application/rss+xml"/>
+<description>Mikkel Roald-Arbøl is a PhD student at the University of Sussex. My work lies at the intersection of neuroethology, quantitative ethology and behavioural ecology.</description>
+<generator>quarto-1.5.57</generator>
+<lastBuildDate>Thu, 03 Oct 2024 00:00:00 GMT</lastBuildDate>
+<item>
+  <title>Benchmarking rolling functions in R</title>
+  <dc:creator>Mikkel Roald-Arbøl</dc:creator>
+  <link>https://roald-arboel.com/blog/posts/2024/10/03/Benchmark-rolling/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://roald-arboel.com/blog/posts/2024/10/03/Benchmark-rolling/pretty-r.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%" alt="A fuzzy monster in a beret and scarf, critiquing their own column graph on a canvas in front of them while other assistant monsters (also in berets) carry over boxes full of elements that can be used to customize a graph (like themes and geometric shapes). In the background is a wall with framed data visualizations. Stylized text reads &quot;ggplot2: build a data masterpiece.&quot;"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="gray-italic center-text">
+<p>Art by <a href="https://allisonhorst.com/">Allison Horst</a></p>
+</div>
+<hr>
+<p>I’ll write a bit about the benchmarks here.</p>
+<p>Can run on a normal vector (precludes <code>polars</code>).</p>
+<p>Here are the packages under consideration (if you have additions, please open an issue on Github):</p>
+<ul>
+<li>data.table</li>
+<li>zoo</li>
+<li>RcppRoll</li>
+<li>runner</li>
+<li>slider</li>
+<li>RollingWindow</li>
+<li>roll</li>
+<li>runstats</li>
+<li>polars</li>
+</ul>
+<p>We are considering the following computations</p>
+<ul>
+<li>Mean</li>
+<li>Median</li>
+<li>Min</li>
+<li>Max</li>
+<li>Sum</li>
+<li>Product</li>
+<li>SD</li>
+<li>MAD</li>
+<li>Correlation</li>
+<li>Covariance</li>
+<li>Skew</li>
+<li>Custom functions</li>
+</ul>
+<p>We also keep track of various features:</p>
+<ul>
+<li>Alignment</li>
+<li>NA handling</li>
+<li>Weight</li>
+</ul>
+<p>Install <code>data.table</code> form the <code>rollmedian</code> branch:</p>
+<ul>
+<li><code>devtools::install_github("Rdatatable/data.table", ref = "rollmedian")</code></li>
+</ul>
+<p>Install <code>roll</code> from Github:</p>
+<ul>
+<li><code>devtools::install_github("jasonjfoster/roll")</code></li>
+</ul>
+<p>Install <code>RollingWindow</code> from Github:</p>
+<ul>
+<li><code>devtools::install_github("andrewuhl/RollingWindow")</code></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(tibble)</span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(dplyr)</span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(microbenchmark)</span>
+<span id="cb1-4"></span>
+<span id="cb1-5"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(slider)</span>
+<span id="cb1-6"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(runner)</span>
+<span id="cb1-7"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(zoo)</span>
+<span id="cb1-8"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(RollingWindow)</span>
+<span id="cb1-9"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(RcppRoll)</span>
+<span id="cb1-10"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(roll)</span>
+<span id="cb1-11"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(data.table)</span>
+<span id="cb1-12"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(runstats)</span></code></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">df <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tibble</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000000</span>))</span>
+<span id="cb2-2">n <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">51</span></span>
+<span id="cb2-3">n_times <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span></span>
+<span id="cb2-4">n_half <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">floor</span>(n<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)</span></code></pre></div>
+</div>
+<section id="mean" class="level2">
+<h2 class="anchored" data-anchor-id="mean">Mean</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">microbenchmark</span>(</span>
+<span id="cb3-2">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"data.table::frollmean"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> data.table<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">frollmean</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, n),</span>
+<span id="cb3-3">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"roll::roll_mean"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> roll<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">roll_mean</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">width =</span> n),</span>
+<span id="cb3-4">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RollingWindow::RollingMean"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> RollingWindow<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">RollingMean</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, n),</span>
+<span id="cb3-5">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"runstats::RunningMean"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> runstats<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">RunningMean</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">W =</span> n),</span>
+<span id="cb3-6">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"slider::slide_mean"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> slider<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">slide_mean</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">before =</span> n_half, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">after =</span> n_half),</span>
+<span id="cb3-7">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RcppRoll::roll_mean"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> RcppRoll<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">roll_mean</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">n =</span> n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>),</span>
+<span id="cb3-8">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"zoo::rollmean"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> zoo<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rollmean</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">k =</span> n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>),</span>
+<span id="cb3-9">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"runner::mean_run"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> runner<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mean_run</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">k =</span> n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">na_pad =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>),</span>
+<span id="cb3-10">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">times =</span> n_times)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Unit: milliseconds
+                       expr         min          lq        mean      median
+      data.table::frollmean    2.528392    2.575577    6.409287    2.823944
+            roll::roll_mean   11.249723   11.923514   15.633693   13.978278
+ RollingWindow::RollingMean   16.104892   17.353718   22.353997   21.186912
+      runstats::RunningMean   14.839448   16.012179   27.653775   19.636449
+         slider::slide_mean   73.741872   74.134439   76.586143   74.859557
+        RcppRoll::roll_mean  124.848519  125.173977  131.904014  125.323508
+              zoo::rollmean  258.371663  325.731206  367.712097  363.513641
+           runner::mean_run 1189.143254 1208.572897 1342.568931 1349.811091
+          uq        max neval
+    9.788604   19.20219    10
+   19.228761   24.24973    10
+   22.934465   39.18662    10
+   21.156570  106.35653    10
+   75.554435   87.88286    10
+  127.265534  185.96713    10
+  406.102017  491.26451    10
+ 1459.592818 1533.96127    10</code></pre>
+</div>
+</div>
+</section>
+<section id="median" class="level2">
+<h2 class="anchored" data-anchor-id="median">Median</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">microbenchmark</span>(</span>
+<span id="cb5-2">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"data.table::frollmedian"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> data.table<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">frollmedian</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, n),</span>
+<span id="cb5-3">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RollingWindow::RollingMedian"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> RollingWindow<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">RollingMedian</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, n),</span>
+<span id="cb5-4">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"zoo::rollmedian"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> zoo<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rollmedian</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">k =</span> n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>),</span>
+<span id="cb5-5">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"roll::roll_median"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> roll<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">roll_median</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">width =</span> n),</span>
+<span id="cb5-6">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RcppRoll::roll_median"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> RcppRoll<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">roll_median</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">n =</span> n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>),</span>
+<span id="cb5-7">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">times =</span> n_times)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Unit: milliseconds
+                         expr        min         lq       mean     median
+      data.table::frollmedian   67.63338   70.79997   72.63963   72.23658
+ RollingWindow::RollingMedian   55.46251   56.34510   60.34565   57.67917
+              zoo::rollmedian  287.78461  353.23420  363.93025  364.49829
+            roll::roll_median  481.88655  487.59467  492.29941  489.00424
+        RcppRoll::roll_median 1390.57466 1394.72265 1399.23186 1395.54720
+         uq        max neval
+   73.49281   80.82044    10
+   66.77382   67.41929    10
+  377.75150  429.53638    10
+  495.05209  512.52022    10
+ 1403.80476 1418.83105    10</code></pre>
+</div>
+</div>
+</section>
+<section id="min" class="level2">
+<h2 class="anchored" data-anchor-id="min">Min</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">microbenchmark</span>(</span>
+<span id="cb7-2">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"data.table::frollmin"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> data.table<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">frollmin</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, n),</span>
+<span id="cb7-3">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"roll::roll_min"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> roll<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">roll_min</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">width =</span> n),</span>
+<span id="cb7-4">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RollingWindow::RollingMin"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> RollingWindow<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">RollingMin</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, n),</span>
+<span id="cb7-5">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RcppRoll::roll_min"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> RcppRoll<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">roll_min</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">n =</span> n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>),</span>
+<span id="cb7-6">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"runner::min_run"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> runner<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">min_run</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">k =</span> n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">na_pad =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>),</span>
+<span id="cb7-7">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">times =</span> n_times)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Unit: milliseconds
+                      expr        min         lq       mean      median
+      data.table::frollmin   4.845729   5.199644   5.398049    5.338382
+            roll::roll_min  21.493150  22.052008  22.471110   22.277611
+ RollingWindow::RollingMin  43.622865  43.770571  52.614803   44.285968
+        RcppRoll::roll_min 341.501616 341.736272 343.869839  342.315587
+           runner::min_run 763.922595 785.407571 986.200854 1021.810808
+          uq         max neval
+    5.450568    6.656056    10
+   22.362016   25.204924    10
+   55.645740  100.317851    10
+  343.806943  356.130640    10
+ 1136.936654 1277.429589    10</code></pre>
+</div>
+</div>
+</section>
+<section id="max" class="level2">
+<h2 class="anchored" data-anchor-id="max">Max</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">microbenchmark</span>(</span>
+<span id="cb9-2">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"data.table::frollmax"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> data.table<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">frollmax</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, n),</span>
+<span id="cb9-3">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"roll::roll_max"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> roll<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">roll_max</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">width =</span> n),</span>
+<span id="cb9-4">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RollingWindow::RollingMax"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> RollingWindow<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">RollingMax</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, n),</span>
+<span id="cb9-5">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RcppRoll::roll_max"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> RcppRoll<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">roll_max</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">n =</span> n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>),</span>
+<span id="cb9-6">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"runner::max_run"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> runner<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">max_run</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">k =</span> n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">na_pad =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>),</span>
+<span id="cb9-7">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"zoo::rollmax"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> zoo<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rollmax</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">k =</span> n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>),</span>
+<span id="cb9-8">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">times =</span> n_times)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Unit: milliseconds
+                      expr         min          lq        mean      median
+      data.table::frollmax    5.088317    5.360759    7.238134    5.543899
+            roll::roll_max   21.927607   22.208017   24.618317   22.897165
+ RollingWindow::RollingMax   42.709967   43.708928   47.450042   43.834974
+        RcppRoll::roll_max  340.493071  341.861354  344.178960  343.301036
+           runner::max_run  761.009794  771.572608  921.591040  872.108225
+              zoo::rollmax 1105.288335 1146.510895 1180.192603 1159.619289
+          uq        max neval
+    9.557734   12.76079    10
+   27.404292   29.57034    10
+   49.448732   62.44726    10
+  346.667787  349.17161    10
+ 1046.810618 1188.65542    10
+ 1172.851812 1323.71699    10</code></pre>
+</div>
+</div>
+</section>
+<section id="sum" class="level2">
+<h2 class="anchored" data-anchor-id="sum">Sum</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">microbenchmark</span>(</span>
+<span id="cb11-2">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"data.table::frollsum, fast"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> data.table<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">frollsum</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">algo =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"fast"</span>),</span>
+<span id="cb11-3">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"roll::roll_sum"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> roll<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">roll_sum</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">width =</span> n),</span>
+<span id="cb11-4">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RollingWindow::RollingSum"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> RollingWindow<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">RollingSum</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, n),</span>
+<span id="cb11-5">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"slider::slide_sum"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> slider<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">slide_sum</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">before =</span> n_half, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">after =</span> n_half),</span>
+<span id="cb11-6">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"data.table::frollsum, exact"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> data.table<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">frollsum</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">algo =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"exact"</span>),</span>
+<span id="cb11-7">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RcppRoll::roll_sum"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> RcppRoll<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">roll_sum</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">n =</span> n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>),</span>
+<span id="cb11-8">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"zoo::rollsum"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> zoo<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rollsum</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>),</span>
+<span id="cb11-9">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"runner::sum_run"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> runner<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sum_run</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">k =</span> n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">na_pad =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>),</span>
+<span id="cb11-10">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">times =</span> n_times)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Unit: milliseconds
+                        expr         min          lq        mean      median
+  data.table::frollsum, fast    2.468353    2.677565    4.478684    2.881925
+              roll::roll_sum    5.968941    6.208679    9.064714    6.967456
+   RollingWindow::RollingSum   17.344807   18.079892   28.505993   22.773872
+           slider::slide_sum   73.169581   74.198004   74.981613   74.822772
+ data.table::frollsum, exact   36.078660   36.771375   38.728564   36.971688
+          RcppRoll::roll_sum  124.487880  124.967297  137.863318  125.799511
+                zoo::rollsum  262.796820  321.825352  343.230812  334.105080
+             runner::sum_run 1175.274787 1186.584031 1303.626565 1202.849454
+          uq        max neval
+    5.539535   11.08081    10
+    9.795142   18.60304    10
+   27.648642   82.67978    10
+   75.584955   78.11596    10
+   37.923790   53.54899    10
+  128.367919  241.31714    10
+  371.039815  440.70912    10
+ 1434.765679 1553.45422    10</code></pre>
+</div>
+</div>
+</section>
+<section id="sd" class="level2">
+<h2 class="anchored" data-anchor-id="sd">SD</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">microbenchmark</span>(</span>
+<span id="cb13-2">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"roll::roll_sd"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> roll<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">roll_sd</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">width =</span> n),</span>
+<span id="cb13-3">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RollingWindow::RollingStd"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> RollingWindow<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">RollingStd</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, n),</span>
+<span id="cb13-4">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"runstats::RunningSd"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> runstats<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">RunningSd</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">W =</span> n),</span>
+<span id="cb13-5">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RcppRoll::roll_sd"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> RcppRoll<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">roll_sd</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">n =</span> n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>),</span>
+<span id="cb13-6">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">times =</span> n_times)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Unit: milliseconds
+                      expr        min         lq       mean     median
+             roll::roll_sd   53.53818   54.55695   55.29623   55.05981
+ RollingWindow::RollingStd   29.67353   29.85540   38.70341   33.14228
+       runstats::RunningSd   52.09679   52.99587   84.10161   79.75626
+         RcppRoll::roll_sd 1075.56594 1085.75599 1112.54256 1100.41033
+         uq        max neval
+   55.90207   57.53775    10
+   36.90833   77.85308    10
+   91.44206  151.42464    10
+ 1132.83261 1194.03892    10</code></pre>
+</div>
+</div>
+</section>
+<section id="custom-functions" class="level2">
+<h2 class="anchored" data-anchor-id="custom-functions">Custom functions</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">microbenchmark</span>(</span>
+<span id="cb15-2">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"data.table::frollapply"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> data.table<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">frollapply</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, n, sum),</span>
+<span id="cb15-3">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"zoo::rollapply"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> zoo<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rollapply</span>(df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>x, n, sum),</span>
+<span id="cb15-4">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">times =</span> n_times)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Unit: seconds
+                   expr       min        lq      mean    median        uq
+ data.table::frollapply  3.640066  3.721544  3.770476  3.737924  3.871212
+         zoo::rollapply 10.515981 10.554274 10.925195 10.913021 11.107258
+       max neval
+  3.921615    10
+ 11.469549    10</code></pre>
+</div>
+</div>
+
+
+</section>
+
+<script async="" defer="" src="https://scripts.simpleanalyticscdn.com/latest.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{roald-arbøl2024,
+  author = {Roald-Arbøl, Mikkel},
+  title = {Benchmarking Rolling Functions in {R}},
+  date = {2024-10-03},
+  url = {https://roald-arboel.com/blog/posts/2024/10/03/Benchmark-rolling/},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-roald-arbøl2024" class="csl-entry quarto-appendix-citeas">
+Roald-Arbøl, Mikkel. 2024. <span>“Benchmarking Rolling Functions in
+R.”</span> October 3, 2024. <a href="https://roald-arboel.com/blog/posts/2024/10/03/Benchmark-rolling/">https://roald-arboel.com/blog/posts/2024/10/03/Benchmark-rolling/</a>.
+</div></div></section></div> ]]></description>
+  <category>r</category>
+  <category>rolling</category>
+  <category>stats</category>
+  <guid>https://roald-arboel.com/blog/posts/2024/10/03/Benchmark-rolling/</guid>
+  <pubDate>Thu, 03 Oct 2024 00:00:00 GMT</pubDate>
+  <media:content url="https://roald-arboel.com/blog/posts/2024/10/03/Benchmark-rolling/pretty-r.png" medium="image" type="image/png" height="83" width="144"/>
+</item>
+</channel>
+</rss>
