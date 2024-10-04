@@ -11,6 +11,7 @@ image: "https://upload.wikimedia.org/wikipedia/commons/0/02/Pop_OS-Logo-nobg.png
 draft: true
 ---
 
+
 # Heading 
 - Flash PopOS! 24.04 LTS with either BalenaEtcher or Raspberry Pi Imager
 - Back up all files (I put everything on Proton Drive)

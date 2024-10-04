@@ -17,4 +17,10 @@ format:
     css: [hero-image.css] #theme.css, 
 ---
 
+```{r}
+#| include: false
+here::here()
+```
+
+
 {{< include latest-content.qmd >}}

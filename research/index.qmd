@@ -42,12 +42,18 @@ listing:
         description: |
           an R package to interface with pixi
         categories: [pixi, conda, r, software]
+        image: "images/rpix.png"
       - path: https://github.com/BeeHive-org/BeeHive
         title: "BeeHive"
         description: |
           A flexible platform for connecting different sensors and actuators
         categories: [hardware, microcontroller, micropython]
 ---
+
+```{r}
+#| include: false
+renv::activate(profile = "default")
+```
 
 ![Small wasp](images/small-wasp.png)
 

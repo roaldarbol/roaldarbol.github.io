@@ -1,0 +1,15 @@
+{
+  "hash": "0176f0ecfc57199641787dd13280bff8",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\npagetitle: Mikkel Roald-Arbøl\n# page-layout: custom\n# section-divs: false\n# editor: source\nsidebar: false\nsearch: false\nrepo-actions: false\ndescription: I'm Mikkel Roald-Arbøl, a PhD student at the University of Sussex. My work lies at the intersection of neuroethology, quantitative ethology and behavioural ecology.\ntoc: false\nformat: \n  html: \n    include-in-header: hero-image.html\n    # include-after-body: _footer.html\n    sidebar: false\n    anchor-sections: false\n    css: [hero-image.css] #theme.css, \n---\n\n\n\n---\ntitle: Latest blog posts\ndescription: \"\"\ntitle-block-banner: false\nsidebar: false\nsearch: false\npage-layout: article  \nlisting:\n  contents:\n  - /blog/posts/\n  sort: \"date desc\"\n  type: grid\n  categories: false\n  sort-ui: false\n  filter-ui: false\n  page-size: 3\n  feed: false\n---\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

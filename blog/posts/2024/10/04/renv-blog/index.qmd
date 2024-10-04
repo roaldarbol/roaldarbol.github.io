@@ -1,0 +1,144 @@
+---
+title: Use {renv} to manage dependencies per blog post
+description: When testing out packages in blog posts, it's preferable to keep dependencies for each post separately. 
+categories: 
+  - r
+  - quarto
+  - blog
+date: 2024-10-04
+date-modified: 2024-10-04
+# image: 
+# image-alt: 
+draft: false
+---
+
+```{r}
+#| eval: false
+#| include: false
+
+renv::activate(profile = "2024-renv-blog")
+
+renv::install(
+  "ggplot2"
+)
+
+renv::snapshot(
+  packages = c(  
+    "ggplot2")
+  )
+```
+
+```{r}
+#| include: false
+my_path <- paste(here::here(), "renv/profiles/2024-renv-blog/renv.lock", sep = "/")
+renv::use(lockfile = my_path)
+```
+
+As I was making some benchmarks in a blog post, I needed a different version of *data.table* than the standard. However, I do want to keep the CRAN version of *data.table* available for other things, so I needed a way to maintain two separate versions.
+
+I [asked on Mastodon](https://neuromatch.social/@roaldarboel/113243708252919690) and got some good ideas. Luckily, there were some amazing suggestions! [Joel Nitta](https://www.joelnitta.com/posts/2024-01-11_using_renv_with_blog/) suggested using `renv::use()` which I did end up doing. I had to refine it a bit, as I don't want to open each post in a new project window - I wanted to simply work from my base project. But now I've got a good workflow. It relies on *renv* and the fact that it's possible to have multiple profiles in the same `renv.lock` file. So now my process is this:
+
+## 1. Install the *here* package
+
+In your base/default profile, install the *here* package with:
+
+```{{r}}
+renv::install("here")
+```
+
+## 2. Activate new profile, install and snapshot
+
+In a new blog post, I keep this chunk of code in the top of every new blog post. I install the packages I need and take a `snapshot()`; note that running `renv::snapshot()` without specifying the packages gave me a good headache, and this was the best solution I could find. I set `eval` to false; this is a chunk I only run manually, but keep around to remember where I got the packages from (e.g. from a certain branch or commit). 
+
+```{{r}}
+#| eval: false
+#| include: false
+
+# Activate new profile
+renv::activate(profile = "2024-renv-blog")
+
+# Install the needed packages
+renv::install(
+  "ggplot2"
+)
+
+# Snapshot the packages
+renv::snapshot(
+  packages = c(  
+    "ggplot2")
+  )
+```
+
+
+## 3. Use new profile
+
+Next, I use the new profile. I don't run this block myself, it will be picked up by `renv` when you, or `gh-pages`, render your site. I use `here::here()` You don't need to touch it from now on. Note that in all these blocks, I've set `#| include: false` so they won't be shown in the actual blog post.
+
+```{{r}}
+#| include: false
+my_path <- paste(here::here(), "renv/profiles/2024-renv-blog/renv.lock", sep = "/")
+renv::use(lockfile = my_path)
+```
+
+## 4. Write awesome content
+
+From here, I go on to write the post. Let's try and see whether this throws an error!
+
+```{r}
+library(ggplot2)
+ggplot(iris, aes(Sepal.Length, Sepal.Width)) +
+  geom_point()
+```
+
+## 5. Render Website
+
+Lastly, the only thing left is clicking "Render Website" and seeing your posts render with all their separate *renv* libraries!
+
+
+# Tips and tricks
+
+There are a few tips and tricks that might be worth noting.
+
+## `.renvignore`
+
+First of all, I've placed a `.renvignore` file at the base of my project, that excludes all my blog files, so just a single line (might be `/posts/` if you use that name):
+```
+/blog/
+```
+That simply ensures that the default environment doesn't think it's out-of-sync due to dependencies for your blog posts.
+
+## `here::here()`
+I installed the `here` package in my default env as it makes it much easier to point to the correct lock files. However, since I don't really use it in other places than in my blog posts, *renv* thinks it's unnecessary. So I've just placed a section in the `index.qmd` at the root of my project with:
+
+```{{r}}
+#| include: false
+here::here()
+```
+
+That keeps those out-of-sync messages at bay!
+
+## Packages from Github (and similar)
+
+Here, the `install` and `snapshot` were pretty much identical. However, if you install e.g. from Github, you need to *just* name the package in `snapshot`, like so:
+
+```{{r}}
+#| eval: false
+#| include: false
+
+renv::activate(profile = "2024-renv-blog")
+
+renv::install(
+  "Rdatatable/data.table"
+)
+
+renv::snapshot(
+  packages = c(  
+    "data.table")
+  )
+```
+
+## Which profile am I in?
+When rendering the website, I forgot whether I was using the correct profile, and I also messed the default up at some point. The trick to being sure that you're in your base profile is to run `renv::deactivate()` followed by `renv::activate()`. Sure, there might be better ways - if you know them, please let me know!
+
+# Conclusion
+So there you have it - it's possible to use different `renv` profiles for different blog posts. Is it worth it? Well, to me at least, I hope it will be as I try out some niche packages!

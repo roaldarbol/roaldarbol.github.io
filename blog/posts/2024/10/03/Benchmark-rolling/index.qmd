@@ -1,22 +1,71 @@
 ---
-title: Benchmarking rolling functions in R
-description: I set out to benchmark the speed of rolling functions from R packages
+title: Benchmarking rolling window functions in R
+description: Rolling, running or sliding window functions; there are many names, for these powerful tools. Here I benchmark the speed of rolling functions from a range of R packages.
 categories: 
     - r
-    - rolling
+    - time series
     - stats
 date: 2024-10-03
+date-modified: 2024-10-04
 image: "pretty-r.png"
-image-alt: Two cute balls decorating the R logo.
+image-alt: Two fuzzy monsters decorating the R logo.
 draft: false
 ---
+
+```{r}
+#| eval: false
+#| include: false
+
+renv::activate(profile = "2024-Rolling-Functions")
+
+renv::install(
+  "knitr",
+  "microbenchmark",
+  "zoo",
+  "RcppRoll",
+  "runner",
+  "slider",
+  "runstats",
+  "tidyverse",
+  "ggdist",
+  "scales",
+  "Rdatatable/data.table@rollmedian",
+  "jasonjfoster/roll",
+  "andrewuhl/RollingWindow"
+)
+
+renv::snapshot(
+  packages = c(
+    "knitr",
+    "microbenchmark",
+    "zoo",
+    "RcppRoll",
+    "runner",
+    "slider",
+    "runstats",
+    "tidyverse",
+    "ggdist",
+    "scales",
+    "data.table",
+    "roll",
+    "RollingWindow"
+  )
+)
+```
+
+```{r}
+#| include: false
+lock_path <- paste(here::here(), "renv/profiles/2024-Rolling-Functions/renv.lock", sep = "/")
+renv::use(lockfile = lock_path)
+```
+
 
 ```{r}
 #| eval: true 
 #| echo: false
 #| fig-align: "center"
 #| out-width: "75%" 
-#| fig-alt: "A fuzzy monster in a beret and scarf, critiquing their own column graph on a canvas in front of them while other assistant monsters (also in berets) carry over boxes full of elements that can be used to customize a graph (like themes and geometric shapes). In the background is a wall with framed data visualizations. Stylized text reads \"ggplot2: build a data masterpiece.\""
+#| fig-alt: "Two fuzzy monsters decorating the R logo."
 knitr::include_graphics("pretty-r.png")
 ```
 
@@ -24,77 +73,72 @@ knitr::include_graphics("pretty-r.png")
 Art by [Allison Horst](https://allisonhorst.com/)
 :::
 
----
+------------------------------------------------------------------------
 
+Rolling functions are widely used in science, especially when working with smoothing and/or time series. They also form the basis of feature extraction from time series, used for many classification methods in machine learning. Simply put, they take a window of `k` values at a time and perform some mathematical operation on them. When I started out using rolling functions for smoothing animal movement paths, I used `{zoo}`'s `rollmean()`. With large data sets, this step always took a long time. Only much later did I realise that many packages exist that tackle this issue. I've used a number of them in my work, but now I decided to put them to the test! Which package is fastest?! Of course it's a little more nuanced than that: There are many different types of rolling functions, and extra functionality that one might need. Although we try to narrow the tests to avoid them getting out of hand, it does mean it will be a long post with lots of numbers, but hopefully it will prove useful for both you and me. :-)
 
-I'll write a bit about the benchmarks here.
-
-Can run on a normal vector (precludes `polars`).
-
-Here are the packages under consideration (if you have additions, please open an issue on Github):
-
--   data.table
--   zoo
--   RcppRoll
--   runner
--   slider
--   RollingWindow
--   roll
--   runstats
--   polars
-
-We are considering the following computations
+## Which functions?
+Rolling functions can in principle be used with any function that produces a single value from a vector (see custom functions below). But some are common and have their own functions with optimised algorithms have been developed for them. We are considering the following computations:
 
 -   Mean
 -   Median
 -   Min
 -   Max
 -   Sum
--   Product
+-   Product (**TODO**)
 -   SD
--   MAD
--   Correlation
--   Covariance
--   Skew
+-   MAD (**TODO**)
+-   Correlation (**TODO**)
+-   Covariance (**TODO**)
+-   Skew (**TODO**)
 -   Custom functions
 
-We also keep track of various features:
+## Which features?
+There are a lot of features available in many of the packages. It is outside the scope of this benchmark to test them all, as we will just test with standard settings, but do check out some of the packages that have more advanced features. For now, the two most important features are:
 
-- Alignment
-- NA handling
-- Weight
+**NA handling**. The standard should be to have a constant window width, and if `NA`s are present to (1) exclude the `NA`s and compute the metric from the remaining values, or (2) return `NA`. This distinction is often reflected in a parameter called `complete` or something similar. Although are more ways to deal with this, e.g. adaptive window widths.
 
-Install `data.table` form the `rollmedian` branch:
+**Alignment**. Alignment is one of the most important features of a rolling function. There are (at least) three ways they can be aligned:
 
-```{r eval=FALSE, include=FALSE}
-renv::install('devtools', prompt = FALSE)
-renv::install('microbenchmark', prompt = FALSE)
-renv::install('dplyr', prompt = FALSE)
-renv::install('tibble', prompt = FALSE)
-renv::install('zoo', prompt = FALSE)
-renv::install('RcppRoll', prompt = FALSE)
-renv::install('runner', prompt = FALSE)
-renv::install('slider', prompt = FALSE)
-renv::install('runstats', prompt = FALSE)
-devtools::install_github("Rdatatable/data.table", ref = "rollmedian")
-devtools::install_github("jasonjfoster/roll")
-devtools::install_github("andrewuhl/RollingWindow")
-```
+-   **Left**: [*------], will cause the returned vector to have NA values at the right end.
+-   **Center**: [---*---], will cause the returned vector to have NA values at either end.
+-   **Right**: [------*], will cause the returned vector to have NA values at the left end.
 
+## Which packages?
+There are quite a lot of packages that have written functions for this; not all packages have functions for each metric.
+Here are the packages under consideration (if you have additions, please open an issue on Github):
 
--   `devtools::install_github("Rdatatable/data.table", ref = "rollmedian")`
+| Package name | Comment | Installation |
+|----|----|----|
+| data.table | Installed from the `rollingmedian` branch on Github | `devtools::install_github("Rdatatable/data.table", ref = "rollmedian")` |
+| RcppRoll |  | `renv::install("RcppRoll")` |
+| roll | Installed from Github | `devtools::install_github("jasonjfoster/roll")` |
+| RollingWindow | Installed from Github | `devtools::install_github("andrewuhl/RollingWindow")` |
+| runner |  | `renv::install("runner")` |
+| runstats | Requires additional installation of `lib3` | `renv::install("runstats")` |
+| slider |  | `renv::install("slider")` |
+| zoo |  | `renv::install("zoo")` |
 
-Install `roll` from Github:
+**Notes**: Because the test has to run on a normal vector *in memory*, I am not including `{polars}`. If it is possible to run rolling functions *in memory* with `{polars}`, please leave a comment below or raise an issue.
 
--   `devtools::install_github("jasonjfoster/roll")`
+# Benchmarks
+## The rules
 
-Install `RollingWindow` from Github:
+Let's start by setting up some ground rules; mostly to rear in all the potential scenarios I *could* try to cover, but also to save some computation time.
 
--   `devtools::install_github("andrewuhl/RollingWindow")`
+-   Test on a 1.000.000 element vector
+-   Vector is right-aligned
+-   Output vector same length as input vector
+-   If `NA`s are present, return `NA`
+  - Default window width (51)
+  - (**TODO** Range of window widths to assess scaling)
+
+Let's get started! First we'll import all the packages we need. I use the `{microbenchmark}` package for the tests and `{ggplot2}` for some graphs of the results.
 
 ```{r message=FALSE, warning=FALSE}
-library(tibble)
-library(dplyr)
+library(tidyverse)
+library(scales)
+library(ggdist)
 library(microbenchmark)
 
 library(slider)
@@ -107,98 +151,161 @@ library(data.table)
 library(runstats)
 ```
 
+## Set variables
+
+For the benchmark we'll make a vector of a million values, all drawn from a Gaussian distribution (doesn't really matter where there come from), but the important thing is that they are *floating numbers*, not *integers*. Initially we'll set the window width to 51 - the width needs to be an uneven number. And we set the number of times to run each test to 10.
+
 ```{r}
+set.seed(12345)
 df <- tibble(x = rnorm(1000000))
 n <- 51
-n_times <- 10
+n_times <- 20
 n_half <- floor(n/2)
 ```
+
+```{r}
+#| code-fold: true
+#| code-summary: "Just making the plotting function here"
+
+plot_benchmark_single <- function(microbenchmark_output){
+  microbenchmark_output <- microbenchmark_output |> 
+    as_tibble() |> 
+    separate_wider_delim(expr, delim = "::", names = c("package_name", "function_name")) |> 
+    mutate(time = time / 1000000,
+           pkg_fct = paste(package_name, function_name, sep = " "))
+  
+  med_time <- microbenchmark_output |> 
+    group_by(pkg_fct) |> 
+    summarise(time = round(median(time), 2)) |> 
+    mutate(time = paste(time, "ms"))
+  
+  microbenchmark_output |> 
+    ggplot(aes(x = fct_reorder(pkg_fct, time, .desc = TRUE), y = time, fill = pkg_fct)) +
+    # ggdist::stat_interval() +
+    # geom_boxplot(outliers = FALSE) +
+    ggdist::geom_weave(position = "dodge", alpha = 0.5) +
+    # geom_jitter(height = 0, width = 0.1, alpha = 0.3) +
+    geom_text(data = med_time, aes(x = pkg_fct, y = Inf, label = time), hjust = 1) +
+    scale_y_log10(breaks=trans_breaks("log10", function(x) 10^x, n=4)) +
+    scale_x_discrete(labels = label_wrap(10)) +
+    annotation_logticks(sides = "b", colour = "grey70") +
+    guides(fill = "none") +
+    coord_flip() +
+    ylab("Time (ms)") +
+    xlab("") +
+    ggdist::theme_ggdist() +
+    theme(
+      panel.grid.major.x = element_line(colour = "grey70"),
+      panel.grid.minor.x = element_line(colour = "grey90")
+    )
+}
+```
+
 
 ## Mean
 
 ```{r}
-microbenchmark(
-  "data.table::frollmean" = data.table::frollmean(df$x, n),
+bm_mean <- microbenchmark(
+  "data.table::frollmean" = data.table::frollmean(df$x, n, align = "right"),
   "roll::roll_mean" = roll::roll_mean(df$x, width = n),
   "RollingWindow::RollingMean" = RollingWindow::RollingMean(df$x, n),
   "runstats::RunningMean" = runstats::RunningMean(df$x, W = n),
-  "slider::slide_mean" = slider::slide_mean(df$x, before = n_half, after = n_half),
-  "RcppRoll::roll_mean" = RcppRoll::roll_mean(df$x, n = n, fill = NA),
-  "zoo::rollmean" = zoo::rollmean(df$x, k = n, fill = NA),
+  "slider::slide_mean" = slider::slide_mean(df$x, before = n-1, complete = TRUE),
+  "RcppRoll::roll_meanr" = RcppRoll::roll_meanr(df$x, n = n, fill = NA),
+  "zoo::rollmeanr" = zoo::rollmeanr(df$x, k = n, fill = NA),
   "runner::mean_run" = runner::mean_run(df$x, k = n, na_pad = TRUE),
   times = n_times)
+bm_mean |> 
+  plot_benchmark_single()
+
 ```
 
 ## Median
 
 ```{r}
-microbenchmark(
+bm_median <- microbenchmark(
   "data.table::frollmedian" = data.table::frollmedian(df$x, n),
-  "RollingWindow::RollingMedian" = RollingWindow::RollingMedian(df$x, n),
-  "zoo::rollmedian" = zoo::rollmedian(df$x, k = n, fill = NA),
-  "roll::roll_median" = roll::roll_median(df$x, width = n),
   "RcppRoll::roll_median" = RcppRoll::roll_median(df$x, n = n, fill = NA),
+  "roll::roll_median" = roll::roll_median(df$x, width = n),
+  "RollingWindow::RollingMedian" = RollingWindow::RollingMedian(df$x, n),
+  "zoo::rollmedianr" = zoo::rollmedianr(df$x, k = n, fill = NA),
   times = n_times)
+bm_median |> 
+  plot_benchmark_single()
 ```
 
 ## Min
 
 ```{r}
-microbenchmark(
+bm_min <- microbenchmark(
   "data.table::frollmin" = data.table::frollmin(df$x, n),
+  "RcppRoll::roll_min" = RcppRoll::roll_min(df$x, n = n, fill = NA),
   "roll::roll_min" = roll::roll_min(df$x, width = n),
   "RollingWindow::RollingMin" = RollingWindow::RollingMin(df$x, n),
-  "RcppRoll::roll_min" = RcppRoll::roll_min(df$x, n = n, fill = NA),
+  "slider::slide_min" = slider::slide_min(df$x, before = n-1, complete = TRUE),
   "runner::min_run" = runner::min_run(df$x, k = n, na_pad = TRUE),
   times = n_times)
+bm_min |> 
+  plot_benchmark_single()
 ```
 
 ## Max
 
 ```{r}
-microbenchmark(
+bm_max <- microbenchmark(
   "data.table::frollmax" = data.table::frollmax(df$x, n),
+  "RcppRoll::roll_max" = RcppRoll::roll_max(df$x, n = n, fill = NA),
   "roll::roll_max" = roll::roll_max(df$x, width = n),
   "RollingWindow::RollingMax" = RollingWindow::RollingMax(df$x, n),
-  "RcppRoll::roll_max" = RcppRoll::roll_max(df$x, n = n, fill = NA),
   "runner::max_run" = runner::max_run(df$x, k = n, na_pad = TRUE),
+  "slider::slide_max" = slider::slide_max(df$x, before = n-1, complete = TRUE),
   "zoo::rollmax" = zoo::rollmax(df$x, k = n, fill = NA),
   times = n_times)
+bm_max |> 
+  plot_benchmark_single()
 ```
 
 ## Sum
 
 ```{r}
-microbenchmark(
+bm_sum <- microbenchmark(
+    "data.table::frollsum, exact" = data.table::frollsum(df$x, n, algo = "exact"),
     "data.table::frollsum, fast" = data.table::frollsum(df$x, n, algo = "fast"),
+    "RcppRoll::roll_sum" = RcppRoll::roll_sum(df$x, n = n, fill = NA),
     "roll::roll_sum" = roll::roll_sum(df$x, width = n),
     "RollingWindow::RollingSum" = RollingWindow::RollingSum(df$x, n),
-    "slider::slide_sum" = slider::slide_sum(df$x, before = n_half, after = n_half),
-    "data.table::frollsum, exact" = data.table::frollsum(df$x, n, algo = "exact"),
-    "RcppRoll::roll_sum" = RcppRoll::roll_sum(df$x, n = n, fill = NA),
-    "zoo::rollsum" = zoo::rollsum(df$x, n, fill = NA),
     "runner::sum_run" = runner::sum_run(df$x, k = n, na_pad = TRUE),
+    "slider::slide_sum" = slider::slide_sum(df$x, before = n-1, complete = TRUE),
+    "zoo::rollsum" = zoo::rollsum(df$x, n, fill = NA),
     times = n_times)
+bm_sum |> 
+  plot_benchmark_single()
 ```
 
 ## SD
 
 ```{r}
-microbenchmark(
+bm_sd <- microbenchmark(
+  "RcppRoll::roll_sd" = RcppRoll::roll_sd(df$x, n = n, fill = NA),
   "roll::roll_sd" = roll::roll_sd(df$x, width = n),
   "RollingWindow::RollingStd" = RollingWindow::RollingStd(df$x, n),
   "runstats::RunningSd" = runstats::RunningSd(df$x, W = n),
-  "RcppRoll::roll_sd" = RcppRoll::roll_sd(df$x, n = n, fill = NA),
   times = n_times)
+bm_sd |> 
+  plot_benchmark_single()
 ```
 
 ## Custom functions
 
+These functions are not optimised like the others, so they take a lot longer... so I'll use fewer iterations here.
+
 ```{r}
-microbenchmark(
+bm_custom <- microbenchmark(
   "data.table::frollapply" = data.table::frollapply(df$x, n, sum),
   "zoo::rollapply" = zoo::rollapply(df$x, n, sum),
-  times = n_times)
+  times = 5)
+bm_custom |> 
+  plot_benchmark_single()
 ```
 
 ```{r eval=FALSE, include=FALSE}
@@ -234,3 +341,13 @@ ggplot(aes(window, time, colour =  expr)) +
   geom_jitter(alpha = 0.1) +
   geom_line(data = df_sum_summarised)
 ```
+
+# Conclusion
+In conclusion there's a clear overall winner: **data.table**. It's fast, flexible, it's well-maintain and it's thoroughly tested.
+However, there are a few cases where you might want something different. 
+
+-   If you need rolling functions that *data.table* doesn't have, I would go with **roll** which covers a range of other functions.
+-   If you need weighted estimates, I would go with **roll**. 
+-   If you need custom alignment (not right/left/center), I would go with **slider**.
+
+And if you can in any way get away with it: Do **not** use custom functions! See if it might not be better to compute the constituents from optimised functions.

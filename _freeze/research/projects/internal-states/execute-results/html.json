@@ -1,0 +1,15 @@
+{
+  "hash": "0a02830ea385c510af127ba5d7628880",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Internal states\"\ndescription: |\n   Internal states, what are they and how do they transition?\ncategories: \n  - animal behaviour\nauthor:\n  name: Mikkel Roald-Arbøl\n  orcid: 0000-0002-9998-0058\n  url: https://roald-arboel.com\n# image: \n# image-alt: \"The panel clockwise from top left: Ali Al-Sherbaz, Janet Bastiman, Fatemeh Torabi and Jonathan Gillard\" \ntoc: true\n---\n\n\n\n\n\n\n# Heading\n\nSome good content goes here...\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
