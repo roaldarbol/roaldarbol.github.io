@@ -30,8 +30,8 @@ renv::snapshot(
 
 ```{r}
 #| include: false
-my_path <- paste(here::here(), "renv/profiles/2024-renv-blog/renv.lock", sep = "/")
-renv::use(lockfile = my_path)
+lock_path <- paste(here::here(), "renv/profiles/2024-renv-blog/renv.lock", sep = "/")
+renv::use(lockfile = lock_path)
 ```
 
 As I was making some benchmarks in a blog post, I needed a different version of *data.table* than the standard. However, I do want to keep the CRAN version of *data.table* available for other things, so I needed a way to maintain two separate versions.
@@ -76,8 +76,8 @@ Next, I use the new profile. I don't run this block myself, it will be picked up
 
 ```{{r}}
 #| include: false
-my_path <- paste(here::here(), "renv/profiles/2024-renv-blog/renv.lock", sep = "/")
-renv::use(lockfile = my_path)
+lock_path <- paste(here::here(), "renv/profiles/2024-renv-blog/renv.lock", sep = "/")
+renv::use(lockfile = lock_path)
 ```
 
 ## 4. Write awesome content
@@ -139,6 +139,10 @@ renv::snapshot(
 
 ## Which profile am I in?
 When rendering the website, I forgot whether I was using the correct profile, and I also messed the default up at some point. The trick to being sure that you're in your base profile is to run `renv::deactivate()` followed by `renv::activate()`. Sure, there might be better ways - if you know them, please let me know!
+
+## Publishing
+
+Initially I attempted to publish using a Github Action, but it's tricky, and [it was pointed out to me](https://fosstodon.org/@Drmowinckels/113256144437597183) that I might not want to re-render posts every time I commit new content... that makes a lot of sense! So simply ¶building to a `docs` folder](https://quarto.org/docs/publishing/github-pages.html#render-to-docs) and publishing from there works much better. 
 
 # Conclusion
 So there you have it - it's possible to use different `renv` profiles for different blog posts. Is it worth it? Well, to me at least, I hope it will be as I try out some niche packages!

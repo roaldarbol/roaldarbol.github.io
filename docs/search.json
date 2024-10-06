@@ -1,0 +1,331 @@
+[
+  {
+    "objectID": "blog/posts/2024/10/03/Benchmark-rolling/index.html",
+    "href": "blog/posts/2024/10/03/Benchmark-rolling/index.html",
+    "title": "Benchmarking rolling window functions in R",
+    "section": "",
+    "text": "Rolling functions are widely used in science, especially when working with smoothing and/or time series. They also form the basis of feature extraction from time series, used for many classification methods in machine learning. Simply put, they take a window of k values at a time and perform some mathematical operation on them. When I started out using rolling functions for smoothing animal movement paths, I used zoo’s rollmean(). With large data sets, this step always took a long time. Only much later did I realise that many packages exist that tackle this issue. I’ve used a number of them in my work, but now I decided to put them to the test! Which package is fastest?! Of course it’s a little more nuanced than that: There are many different types of rolling functions, and extra functionality that one might need. Although we try to narrow the tests to avoid them getting out of hand, it does mean it will be a long post with lots of numbers, but hopefully it will prove useful for both you and me. :-)"
+  },
+  {
+    "objectID": "blog/posts/2024/10/03/Benchmark-rolling/index.html#which-functions",
+    "href": "blog/posts/2024/10/03/Benchmark-rolling/index.html#which-functions",
+    "title": "Benchmarking rolling window functions in R",
+    "section": "Which functions?",
+    "text": "Which functions?\nRolling functions can in principle be used with any function that produces a single value from a vector (see custom functions below). But some are common and have their own functions with optimised algorithms have been developed for them. We are considering the following computations:\n\nMean\nMedian\nMin\nMax\nSum\nProduct (TODO)\nSD\nMAD (TODO)\nCorrelation (TODO)\nCovariance (TODO)\nSkew (TODO)\nCustom functions"
+  },
+  {
+    "objectID": "blog/posts/2024/10/03/Benchmark-rolling/index.html#which-features",
+    "href": "blog/posts/2024/10/03/Benchmark-rolling/index.html#which-features",
+    "title": "Benchmarking rolling window functions in R",
+    "section": "Which features?",
+    "text": "Which features?\nThere are a lot of features available in many of the packages. It is outside the scope of this benchmark to test them all, as we will just test with standard settings, but do check out some of the packages that have more advanced features. For now, the two most important features are:\nNA handling. The standard should be to have a constant window width, and if NAs are present to (1) exclude the NAs and compute the metric from the remaining values, or (2) return NA. This distinction is often reflected in a parameter called complete or something similar. Although are more ways to deal with this, e.g. adaptive window widths.\nAlignment. Alignment is one of the most important features of a rolling function. There are (at least) three ways they can be aligned:\n\n\nLeft: [*——], will cause the returned vector to have NA values at the right end.\n\nCenter: [—*—], will cause the returned vector to have NA values at either end.\n\nRight: [——*], will cause the returned vector to have NA values at the left end."
+  },
+  {
+    "objectID": "blog/posts/2024/10/03/Benchmark-rolling/index.html#which-packages",
+    "href": "blog/posts/2024/10/03/Benchmark-rolling/index.html#which-packages",
+    "title": "Benchmarking rolling window functions in R",
+    "section": "Which packages?",
+    "text": "Which packages?\nThere are quite a lot of packages that have written functions for this; not all packages have functions for each metric. Here are the packages under consideration (if you have additions, please open an issue on Github):\n\n\n\n\n\n\n\nPackage name\nComment\nInstallation\n\n\n\ndata.table\nInstalled from the rollingmedian branch on Github\ndevtools::install_github(\"Rdatatable/data.table\", ref = \"rollmedian\")\n\n\nRcppRoll\n\nrenv::install(\"RcppRoll\")\n\n\nroll\nInstalled from Github\ndevtools::install_github(\"jasonjfoster/roll\")\n\n\nRollingWindow\nInstalled from Github\ndevtools::install_github(\"andrewuhl/RollingWindow\")\n\n\nrunner\n\nrenv::install(\"runner\")\n\n\nrunstats\nRequires additional installation of lib3\n\nrenv::install(\"runstats\")\n\n\nslider\n\nrenv::install(\"slider\")\n\n\nzoo\n\nrenv::install(\"zoo\")\n\n\n\nNotes: Because the test has to run on a normal vector in memory, I am not including {polars}. If it is possible to run rolling functions in memory with {polars}, please leave a comment below or raise an issue."
+  },
+  {
+    "objectID": "blog/posts/2024/10/03/Benchmark-rolling/index.html#the-rules",
+    "href": "blog/posts/2024/10/03/Benchmark-rolling/index.html#the-rules",
+    "title": "Benchmarking rolling window functions in R",
+    "section": "The rules",
+    "text": "The rules\nLet’s start by setting up some ground rules; mostly to rear in all the potential scenarios I could try to cover, but also to save some computation time.\n\nTest on a 1.000.000 element vector\nVector is right-aligned\nOutput vector same length as input vector\nIf NAs are present, return NA\n\nDefault window width (51)\n(TODO Range of window widths to assess scaling)\n\nLet’s get started! First we’ll import all the packages we need. I use the microbenchmark package for the tests and ggplot2 for some graphs of the results.\n\nlibrary(tidyverse)\nlibrary(scales)\nlibrary(ggdist)\nlibrary(microbenchmark)\n\nlibrary(slider)\nlibrary(runner)\nlibrary(zoo)\nlibrary(RollingWindow)\nlibrary(RcppRoll)\nlibrary(roll)\nlibrary(data.table)\nlibrary(runstats)"
+  },
+  {
+    "objectID": "blog/posts/2024/10/03/Benchmark-rolling/index.html#set-variables",
+    "href": "blog/posts/2024/10/03/Benchmark-rolling/index.html#set-variables",
+    "title": "Benchmarking rolling window functions in R",
+    "section": "Set variables",
+    "text": "Set variables\nFor the benchmark we’ll make a vector of a million values, all drawn from a Gaussian distribution (doesn’t really matter where there come from), but the important thing is that they are floating numbers, not integers. Initially we’ll set the window width to 51 - the width needs to be an uneven number. And we set the number of times to run each test to 10.\n\nset.seed(12345)\ndf &lt;- tibble(x = rnorm(1000000))\nn &lt;- 51\nn_times &lt;- 20\nn_half &lt;- floor(n/2)\n\n\nJust making the plotting function hereplot_benchmark_single &lt;- function(microbenchmark_output){\n  microbenchmark_output &lt;- microbenchmark_output |&gt; \n    as_tibble() |&gt; \n    separate_wider_delim(expr, delim = \"::\", names = c(\"package_name\", \"function_name\")) |&gt; \n    mutate(time = time / 1000000,\n           pkg_fct = paste(package_name, function_name, sep = \" \"))\n  \n  med_time &lt;- microbenchmark_output |&gt; \n    group_by(pkg_fct) |&gt; \n    summarise(time = round(median(time), 2)) |&gt; \n    mutate(time = paste(time, \"ms\"))\n  \n  microbenchmark_output |&gt; \n    ggplot(aes(x = fct_reorder(pkg_fct, time, .desc = TRUE), y = time, fill = pkg_fct)) +\n    # ggdist::stat_interval() +\n    # geom_boxplot(outliers = FALSE) +\n    ggdist::geom_weave(position = \"dodge\", alpha = 0.5) +\n    # geom_jitter(height = 0, width = 0.1, alpha = 0.3) +\n    geom_text(data = med_time, aes(x = pkg_fct, y = Inf, label = time), hjust = 1) +\n    scale_y_log10(breaks=trans_breaks(\"log10\", function(x) 10^x, n=4)) +\n    scale_x_discrete(labels = label_wrap(10)) +\n    annotation_logticks(sides = \"b\", colour = \"grey70\") +\n    guides(fill = \"none\") +\n    coord_flip() +\n    ylab(\"Time (ms)\") +\n    xlab(\"\") +\n    ggdist::theme_ggdist() +\n    theme(\n      panel.grid.major.x = element_line(colour = \"grey70\"),\n      panel.grid.minor.x = element_line(colour = \"grey90\")\n    )\n}"
+  },
+  {
+    "objectID": "blog/posts/2024/10/03/Benchmark-rolling/index.html#mean",
+    "href": "blog/posts/2024/10/03/Benchmark-rolling/index.html#mean",
+    "title": "Benchmarking rolling window functions in R",
+    "section": "Mean",
+    "text": "Mean\n\nbm_mean &lt;- microbenchmark(\n  \"data.table::frollmean\" = data.table::frollmean(df$x, n, align = \"right\"),\n  \"roll::roll_mean\" = roll::roll_mean(df$x, width = n),\n  \"RollingWindow::RollingMean\" = RollingWindow::RollingMean(df$x, n),\n  \"runstats::RunningMean\" = runstats::RunningMean(df$x, W = n),\n  \"slider::slide_mean\" = slider::slide_mean(df$x, before = n-1, complete = TRUE),\n  \"RcppRoll::roll_meanr\" = RcppRoll::roll_meanr(df$x, n = n, fill = NA),\n  \"zoo::rollmeanr\" = zoo::rollmeanr(df$x, k = n, fill = NA),\n  \"runner::mean_run\" = runner::mean_run(df$x, k = n, na_pad = TRUE),\n  times = n_times)\nbm_mean |&gt; \n  plot_benchmark_single()"
+  },
+  {
+    "objectID": "blog/posts/2024/10/03/Benchmark-rolling/index.html#median",
+    "href": "blog/posts/2024/10/03/Benchmark-rolling/index.html#median",
+    "title": "Benchmarking rolling window functions in R",
+    "section": "Median",
+    "text": "Median\n\nbm_median &lt;- microbenchmark(\n  \"data.table::frollmedian\" = data.table::frollmedian(df$x, n),\n  \"RcppRoll::roll_median\" = RcppRoll::roll_median(df$x, n = n, fill = NA),\n  \"roll::roll_median\" = roll::roll_median(df$x, width = n),\n  \"RollingWindow::RollingMedian\" = RollingWindow::RollingMedian(df$x, n),\n  \"zoo::rollmedianr\" = zoo::rollmedianr(df$x, k = n, fill = NA),\n  times = n_times)\nbm_median |&gt; \n  plot_benchmark_single()"
+  },
+  {
+    "objectID": "blog/posts/2024/10/03/Benchmark-rolling/index.html#min",
+    "href": "blog/posts/2024/10/03/Benchmark-rolling/index.html#min",
+    "title": "Benchmarking rolling window functions in R",
+    "section": "Min",
+    "text": "Min\n\nbm_min &lt;- microbenchmark(\n  \"data.table::frollmin\" = data.table::frollmin(df$x, n),\n  \"RcppRoll::roll_min\" = RcppRoll::roll_min(df$x, n = n, fill = NA),\n  \"roll::roll_min\" = roll::roll_min(df$x, width = n),\n  \"RollingWindow::RollingMin\" = RollingWindow::RollingMin(df$x, n),\n  \"slider::slide_min\" = slider::slide_min(df$x, before = n-1, complete = TRUE),\n  \"runner::min_run\" = runner::min_run(df$x, k = n, na_pad = TRUE),\n  times = n_times)\nbm_min |&gt; \n  plot_benchmark_single()"
+  },
+  {
+    "objectID": "blog/posts/2024/10/03/Benchmark-rolling/index.html#max",
+    "href": "blog/posts/2024/10/03/Benchmark-rolling/index.html#max",
+    "title": "Benchmarking rolling window functions in R",
+    "section": "Max",
+    "text": "Max\n\nbm_max &lt;- microbenchmark(\n  \"data.table::frollmax\" = data.table::frollmax(df$x, n),\n  \"RcppRoll::roll_max\" = RcppRoll::roll_max(df$x, n = n, fill = NA),\n  \"roll::roll_max\" = roll::roll_max(df$x, width = n),\n  \"RollingWindow::RollingMax\" = RollingWindow::RollingMax(df$x, n),\n  \"runner::max_run\" = runner::max_run(df$x, k = n, na_pad = TRUE),\n  \"slider::slide_max\" = slider::slide_max(df$x, before = n-1, complete = TRUE),\n  \"zoo::rollmax\" = zoo::rollmax(df$x, k = n, fill = NA),\n  times = n_times)\nbm_max |&gt; \n  plot_benchmark_single()"
+  },
+  {
+    "objectID": "blog/posts/2024/10/03/Benchmark-rolling/index.html#sum",
+    "href": "blog/posts/2024/10/03/Benchmark-rolling/index.html#sum",
+    "title": "Benchmarking rolling window functions in R",
+    "section": "Sum",
+    "text": "Sum\n\nbm_sum &lt;- microbenchmark(\n    \"data.table::frollsum, exact\" = data.table::frollsum(df$x, n, algo = \"exact\"),\n    \"data.table::frollsum, fast\" = data.table::frollsum(df$x, n, algo = \"fast\"),\n    \"RcppRoll::roll_sum\" = RcppRoll::roll_sum(df$x, n = n, fill = NA),\n    \"roll::roll_sum\" = roll::roll_sum(df$x, width = n),\n    \"RollingWindow::RollingSum\" = RollingWindow::RollingSum(df$x, n),\n    \"runner::sum_run\" = runner::sum_run(df$x, k = n, na_pad = TRUE),\n    \"slider::slide_sum\" = slider::slide_sum(df$x, before = n-1, complete = TRUE),\n    \"zoo::rollsum\" = zoo::rollsum(df$x, n, fill = NA),\n    times = n_times)\nbm_sum |&gt; \n  plot_benchmark_single()"
+  },
+  {
+    "objectID": "blog/posts/2024/10/03/Benchmark-rolling/index.html#sd",
+    "href": "blog/posts/2024/10/03/Benchmark-rolling/index.html#sd",
+    "title": "Benchmarking rolling window functions in R",
+    "section": "SD",
+    "text": "SD\n\nbm_sd &lt;- microbenchmark(\n  \"RcppRoll::roll_sd\" = RcppRoll::roll_sd(df$x, n = n, fill = NA),\n  \"roll::roll_sd\" = roll::roll_sd(df$x, width = n),\n  \"RollingWindow::RollingStd\" = RollingWindow::RollingStd(df$x, n),\n  \"runstats::RunningSd\" = runstats::RunningSd(df$x, W = n),\n  times = n_times)\nbm_sd |&gt; \n  plot_benchmark_single()"
+  },
+  {
+    "objectID": "blog/posts/2024/10/03/Benchmark-rolling/index.html#custom-functions",
+    "href": "blog/posts/2024/10/03/Benchmark-rolling/index.html#custom-functions",
+    "title": "Benchmarking rolling window functions in R",
+    "section": "Custom functions",
+    "text": "Custom functions\nThese functions are not optimised like the others, so they take a lot longer… so I’ll use fewer iterations here.\n\nbm_custom &lt;- microbenchmark(\n  \"data.table::frollapply\" = data.table::frollapply(df$x, n, sum),\n  \"zoo::rollapply\" = zoo::rollapply(df$x, n, sum),\n  times = 5)\nbm_custom |&gt; \n  plot_benchmark_single()"
+  },
+  {
+    "objectID": "research/projects/timescales.html",
+    "href": "research/projects/timescales.html",
+    "title": "Biologically and Behaviourally relevant Timescales",
+    "section": "",
+    "text": "Heading\nSome good content goes here…"
+  },
+  {
+    "objectID": "research/projects/internal-states.html",
+    "href": "research/projects/internal-states.html",
+    "title": "Internal states",
+    "section": "",
+    "text": "Heading\nSome good content goes here…"
+  },
+  {
+    "objectID": "pages/joys.html",
+    "href": "pages/joys.html",
+    "title": "Joys in life",
+    "section": "",
+    "text": "The fun stuff!\nOkay, science is cool, but life is so much more! If it wasn’t obvious, I love doing sports… every type of sports pretty much. I’ve recently taken to open water swimming, and rock climbing (and bouldering) has been a long-standing favourite of mine. I also enjoy running and a good (Olympic) weightlifting session. Badminton, squash or tennis when the opportunity presents itself.\nMusic also plays a big role in my life. I grew up playing the piano, where I was part of a jazz band. Later on I started singing and writing my own songs (I took on the guitar for that, but never got very good). In Brighton, I’ve been singing with the amazing Soul of the City Choir, and had a yearly performance at our Sussex Neuroscience Christmas Party (either solo or with an awesome CRPC band). These days, I mostly improvise some jazzy/ambient tunes on the piano and sing popular cover songs at home.\nAlthough I’ve always enjoyed being outdoors, I didn’t always really appreciate it fully. However, that changed during my undergraduate when we had a course in “Outdoor Life” (friluftsliv in Danish). Now I appreciate all the time I can get outside, paying attention to both the grandiose and the minute details of nature (which probably plays a part in my ending up working with animal behaviour). From camp life through hiking, preferably for multiple days, backcountry skiing, kayaking, rock climbing, mountaineering… any way that takes me through the wonderful nature that surrounds us!\nOh, and I love reading books, especially old classics!\nMy most recent hobby is photography. Catching the beauty of a moment, whether a wide natural landscape or a macro of an insect going about its business. I picked up my first camera (a Canon Powershot G9) in Australia, just to document my year there. But the photos from that year inspired me in a way I hadn’t expected. Now, I’ve invested in some more professional gear, but alas, the PhD has not allowed me much time to make the most of it - let’s see in a year! Until then, you can find a selection of my photos here.\nSome more photography\n\n\n\n\n\n\n\n\n\nPhoto by Hush Naidoo Jade Photography on Unsplash\n\n\n\n\n\n\n\nPhoto by Alessandro Bianchi on Unsplash\n\n\n\n\n\n\n\nPhoto by Joshua Melo on Unsplash"
+  },
+  {
+    "objectID": "pages/CV.html",
+    "href": "pages/CV.html",
+    "title": "CV",
+    "section": "",
+    "text": "Journey in bullet points\nIf you’re here for the science and prefer the minimal story (in a traditional CV style), these are my degrees:\n\nBSc in Exercise and Sports Science (2016), University of Copenhagen\nMSc in Human Biology (2019), University of Copenhagen\nPhD in Biology (2024), University of Sussex\n\nAnd you can find some more detail in my traditional CV here."
+  },
+  {
+    "objectID": "feeds.html",
+    "href": "feeds.html",
+    "title": "RSS feeds",
+    "section": "",
+    "text": "Research\nroald-arboel.com/research/index.xml\n\n\nBlog\nroald-arboel.com/blog/index.xml"
+  },
+  {
+    "objectID": "LICENCE.html",
+    "href": "LICENCE.html",
+    "title": "Licence",
+    "section": "",
+    "text": "The website roald-arboel.com (“the website”) and the logos are copyright © Mikkel Roald-Arbøl.\nCopyright and licence terms for published articles and any associated videos, images, or other material can be found at the end of each article page.\nI make every reasonable effort to locate, contact and acknowledge copyright owners and wish to be informed by any copyright owners who are not properly identified and acknowledged so that we may make any necessary corrections.\nWhere licence terms for individual articles, videos, images and other published content permit republication, you may do so in accordance with the stated terms of the respective licence(s).\nYou are not permitted to republish the website in its entirety."
+  },
+  {
+    "objectID": "LICENCE.html#content",
+    "href": "LICENCE.html#content",
+    "title": "Licence",
+    "section": "",
+    "text": "The website roald-arboel.com (“the website”) and the logos are copyright © Mikkel Roald-Arbøl.\nCopyright and licence terms for published articles and any associated videos, images, or other material can be found at the end of each article page.\nI make every reasonable effort to locate, contact and acknowledge copyright owners and wish to be informed by any copyright owners who are not properly identified and acknowledged so that we may make any necessary corrections.\nWhere licence terms for individual articles, videos, images and other published content permit republication, you may do so in accordance with the stated terms of the respective licence(s).\nYou are not permitted to republish the website in its entirety."
+  },
+  {
+    "objectID": "LICENCE.html#software-and-services",
+    "href": "LICENCE.html#software-and-services",
+    "title": "Licence",
+    "section": "Software and services",
+    "text": "Software and services\nSource code and files for the website are available from GitHub. Use of our GitHub repository is governed by the Contributor Covenant Code of Conduct.\nThe website is built using Quarto, an open-source scientific and technical publishing system developed by Posit. Quarto source code and software licences are available from GitHub.\nThe website is hosted by GitHub Pages.\nThe website uses the privacy-respecting Simple Analytics for web analytics reporting.\nFonts used on Real World Data Science are served by the Google Fonts API. This is to improve site loading speeds and font compatibility across devices. Review the Google Fonts Privacy and Data Collection statement.\nUser comments and reaction functionality is provided by giscus, a comments system powered by GitHub Discussions. Use of this comment functionality is governed by the Contributor Covenant Code of Conduct."
+  },
+  {
+    "objectID": "CODE_OF_CONDUCT.html",
+    "href": "CODE_OF_CONDUCT.html",
+    "title": "Contributor Covenant Code of Conduct",
+    "section": "",
+    "text": "We as members, contributors, and leaders pledge to make participation in our community a harassment-free experience for everyone, regardless of age, body size, visible or invisible disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, caste, color, religion, or sexual identity and orientation.\nWe pledge to act and interact in ways that contribute to an open, welcoming, diverse, inclusive, and healthy community.\n\n\n\nExamples of behavior that contributes to a positive environment for our community include:\n\nDemonstrating empathy and kindness toward other people\nBeing respectful of differing opinions, viewpoints, and experiences\nGiving and gracefully accepting constructive feedback\nAccepting responsibility and apologizing to those affected by our mistakes, and learning from the experience\nFocusing on what is best not just for us as individuals, but for the overall community\n\nExamples of unacceptable behavior include:\n\nThe use of sexualized language or imagery, and sexual attention or advances of any kind\nTrolling, insulting or derogatory comments, and personal or political attacks\nPublic or private harassment\nPublishing others’ private information, such as a physical or email address, without their explicit permission\nOther conduct which could reasonably be considered inappropriate in a professional setting\n\n\n\n\nCommunity leaders are responsible for clarifying and enforcing our standards of acceptable behavior and will take appropriate and fair corrective action in response to any behavior that they deem inappropriate, threatening, offensive, or harmful.\nCommunity leaders have the right and responsibility to remove, edit, or reject comments, commits, code, wiki edits, issues, and other contributions that are not aligned to this Code of Conduct, and will communicate reasons for moderation decisions when appropriate.\n\n\n\nThis Code of Conduct applies within all community spaces, and also applies when an individual is officially representing the community in public spaces. Examples of representing our community include using an official email address, posting via an official social media account, or acting as an appointed representative at an online or offline event.\n\n\n\nInstances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leaders responsible for enforcement at [INSERT CONTACT METHOD]. All complaints will be reviewed and investigated promptly and fairly.\nAll community leaders are obligated to respect the privacy and security of the reporter of any incident.\n\n\n\nCommunity leaders will follow these Community Impact Guidelines in determining the consequences for any action they deem in violation of this Code of Conduct:\n\n\nCommunity Impact: Use of inappropriate language or other behavior deemed unprofessional or unwelcome in the community.\nConsequence: A private, written warning from community leaders, providing clarity around the nature of the violation and an explanation of why the behavior was inappropriate. A public apology may be requested.\n\n\n\nCommunity Impact: A violation through a single incident or series of actions.\nConsequence: A warning with consequences for continued behavior. No interaction with the people involved, including unsolicited interaction with those enforcing the Code of Conduct, for a specified period of time. This includes avoiding interactions in community spaces as well as external channels like social media. Violating these terms may lead to a temporary or permanent ban.\n\n\n\nCommunity Impact: A serious violation of community standards, including sustained inappropriate behavior.\nConsequence: A temporary ban from any sort of interaction or public communication with the community for a specified period of time. No public or private interaction with the people involved, including unsolicited interaction with those enforcing the Code of Conduct, is allowed during this period. Violating these terms may lead to a permanent ban.\n\n\n\nCommunity Impact: Demonstrating a pattern of violation of community standards, including sustained inappropriate behavior, harassment of an individual, or aggression toward or disparagement of classes of individuals.\nConsequence: A permanent ban from any sort of public interaction within the community.\n\n\n\n\nThis Code of Conduct is adapted from the Contributor Covenant, version 2.1, available at https://www.contributor-covenant.org/version/2/1/code_of_conduct.html.\nCommunity Impact Guidelines were inspired by Mozilla’s code of conduct enforcement ladder.\nFor answers to common questions about this code of conduct, see the FAQ at https://www.contributor-covenant.org/faq. Translations are available at https://www.contributor-covenant.org/translations."
+  },
+  {
+    "objectID": "CODE_OF_CONDUCT.html#our-pledge",
+    "href": "CODE_OF_CONDUCT.html#our-pledge",
+    "title": "Contributor Covenant Code of Conduct",
+    "section": "",
+    "text": "We as members, contributors, and leaders pledge to make participation in our community a harassment-free experience for everyone, regardless of age, body size, visible or invisible disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, caste, color, religion, or sexual identity and orientation.\nWe pledge to act and interact in ways that contribute to an open, welcoming, diverse, inclusive, and healthy community."
+  },
+  {
+    "objectID": "CODE_OF_CONDUCT.html#our-standards",
+    "href": "CODE_OF_CONDUCT.html#our-standards",
+    "title": "Contributor Covenant Code of Conduct",
+    "section": "",
+    "text": "Examples of behavior that contributes to a positive environment for our community include:\n\nDemonstrating empathy and kindness toward other people\nBeing respectful of differing opinions, viewpoints, and experiences\nGiving and gracefully accepting constructive feedback\nAccepting responsibility and apologizing to those affected by our mistakes, and learning from the experience\nFocusing on what is best not just for us as individuals, but for the overall community\n\nExamples of unacceptable behavior include:\n\nThe use of sexualized language or imagery, and sexual attention or advances of any kind\nTrolling, insulting or derogatory comments, and personal or political attacks\nPublic or private harassment\nPublishing others’ private information, such as a physical or email address, without their explicit permission\nOther conduct which could reasonably be considered inappropriate in a professional setting"
+  },
+  {
+    "objectID": "CODE_OF_CONDUCT.html#enforcement-responsibilities",
+    "href": "CODE_OF_CONDUCT.html#enforcement-responsibilities",
+    "title": "Contributor Covenant Code of Conduct",
+    "section": "",
+    "text": "Community leaders are responsible for clarifying and enforcing our standards of acceptable behavior and will take appropriate and fair corrective action in response to any behavior that they deem inappropriate, threatening, offensive, or harmful.\nCommunity leaders have the right and responsibility to remove, edit, or reject comments, commits, code, wiki edits, issues, and other contributions that are not aligned to this Code of Conduct, and will communicate reasons for moderation decisions when appropriate."
+  },
+  {
+    "objectID": "CODE_OF_CONDUCT.html#scope",
+    "href": "CODE_OF_CONDUCT.html#scope",
+    "title": "Contributor Covenant Code of Conduct",
+    "section": "",
+    "text": "This Code of Conduct applies within all community spaces, and also applies when an individual is officially representing the community in public spaces. Examples of representing our community include using an official email address, posting via an official social media account, or acting as an appointed representative at an online or offline event."
+  },
+  {
+    "objectID": "CODE_OF_CONDUCT.html#enforcement",
+    "href": "CODE_OF_CONDUCT.html#enforcement",
+    "title": "Contributor Covenant Code of Conduct",
+    "section": "",
+    "text": "Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leaders responsible for enforcement at [INSERT CONTACT METHOD]. All complaints will be reviewed and investigated promptly and fairly.\nAll community leaders are obligated to respect the privacy and security of the reporter of any incident."
+  },
+  {
+    "objectID": "CODE_OF_CONDUCT.html#enforcement-guidelines",
+    "href": "CODE_OF_CONDUCT.html#enforcement-guidelines",
+    "title": "Contributor Covenant Code of Conduct",
+    "section": "",
+    "text": "Community leaders will follow these Community Impact Guidelines in determining the consequences for any action they deem in violation of this Code of Conduct:\n\n\nCommunity Impact: Use of inappropriate language or other behavior deemed unprofessional or unwelcome in the community.\nConsequence: A private, written warning from community leaders, providing clarity around the nature of the violation and an explanation of why the behavior was inappropriate. A public apology may be requested.\n\n\n\nCommunity Impact: A violation through a single incident or series of actions.\nConsequence: A warning with consequences for continued behavior. No interaction with the people involved, including unsolicited interaction with those enforcing the Code of Conduct, for a specified period of time. This includes avoiding interactions in community spaces as well as external channels like social media. Violating these terms may lead to a temporary or permanent ban.\n\n\n\nCommunity Impact: A serious violation of community standards, including sustained inappropriate behavior.\nConsequence: A temporary ban from any sort of interaction or public communication with the community for a specified period of time. No public or private interaction with the people involved, including unsolicited interaction with those enforcing the Code of Conduct, is allowed during this period. Violating these terms may lead to a permanent ban.\n\n\n\nCommunity Impact: Demonstrating a pattern of violation of community standards, including sustained inappropriate behavior, harassment of an individual, or aggression toward or disparagement of classes of individuals.\nConsequence: A permanent ban from any sort of public interaction within the community."
+  },
+  {
+    "objectID": "CODE_OF_CONDUCT.html#attribution",
+    "href": "CODE_OF_CONDUCT.html#attribution",
+    "title": "Contributor Covenant Code of Conduct",
+    "section": "",
+    "text": "This Code of Conduct is adapted from the Contributor Covenant, version 2.1, available at https://www.contributor-covenant.org/version/2/1/code_of_conduct.html.\nCommunity Impact Guidelines were inspired by Mozilla’s code of conduct enforcement ladder.\nFor answers to common questions about this code of conduct, see the FAQ at https://www.contributor-covenant.org/faq. Translations are available at https://www.contributor-covenant.org/translations."
+  },
+  {
+    "objectID": "blog/index.html",
+    "href": "blog/index.html",
+    "title": "Blog",
+    "section": "",
+    "text": "r\n\n\nquarto\n\n\nblog\n\n\n\nWhen testing out packages in blog posts, it’s preferable to keep dependencies for each post separately.\n\n\n\n\n\nOct 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nr\n\n\ntime series\n\n\nstats\n\n\n\nRolling, running or sliding window functions; there are many names, for these powerful tools. Here I benchmark the speed of rolling functions from a range of R packages.\n\n\n\n\n\nOct 3, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "blog/index.html#section",
+    "href": "blog/index.html#section",
+    "title": "Blog",
+    "section": "",
+    "text": "r\n\n\nquarto\n\n\nblog\n\n\n\nWhen testing out packages in blog posts, it’s preferable to keep dependencies for each post separately.\n\n\n\n\n\nOct 4, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nr\n\n\ntime series\n\n\nstats\n\n\n\nRolling, running or sliding window functions; there are many names, for these powerful tools. Here I benchmark the speed of rolling functions from a range of R packages.\n\n\n\n\n\nOct 3, 2024\n\n\nMikkel Roald-Arbøl\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "pages/about.html",
+    "href": "pages/about.html",
+    "title": "About me",
+    "section": "",
+    "text": "Scientific journey\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nJoys in life\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nCV\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "pages/scientific-journey.html",
+    "href": "pages/scientific-journey.html",
+    "title": "Scientific journey",
+    "section": "",
+    "text": "Journey in words\nConversely, if you’re here to hear how I’ve ended up doing what I do, here’s the narrative version. With a background in elite sports and sports science, working on understanding animal minds I quite an unlikely path.\n\nElite sports\nI’ve grown up in the world of athletics, and my discipline was the triple jump. My time as an elite athlete was short, but brought me some great experiences; most notably I moved to Cuba in 2010 to train with the Cuban jumpers (if you follow athletics, you may know my former team-mate Pedro Pichardo). But after a few years I realised that, despite my efforts, I wouldn’t make it to the international stage, so I quit. But I wasn’t done with elite sports. I had already as an athlete read all the research I could get my hands on, from specific triple jump biomechanics, periodisation, human physiology, and trainng theory. So the switch to coaching was a small one. Coaching elite sports was also the reason I enrolled in my undergraduate (see above). I started as a junior jumps coach in Sparta, the largest Danish athletics club, where I had the privelege to coach some amazing young athletes. The national federation hired me for a regional youth … (funnily enough, my greatest experience as a coach came slightly later when I was asked to be the delegated jumps coach for the Danish National team for the 2019 Universiade in Naples - also known as the Olympics for university students).\n\n\nScience 101\nOne of our courses in the undergraduate was “Motor Learning”, or “how we learn movements”. Until now, my focus had been on muscle physiology, but here I was introduced to the study of the brain, neuroscience, for the very first time, and instantly my interest was piqued! I took all the related electives I possibly could and got more and more fascinated. I did my first research project with Jesper Lundbye-Jensen on cortical excitability during motor learning, which included a bunch of techniques, transcranial magnetic stimulation (TMS), electroencephalography (EEG) and electromyography (EMG). It also included behavioural work in the form of teaching participants to play a game by squeezing a small metal block (which was a force transducer, so it measured how hard they were squeezing).\nAfter having spent the first 20+ years of my life thinking that sports was life, I was now at a cross-roads. I had found this thing that made me more excited, intelectually stimulated, than I had ever experienced before, but if I was to pursue that, it meant leaving all of my sports-life behind (or at least on the shelf). I had never even considered that I could be a scientist.\nAfter finishing the undergraduate, I buggered off to Australia for a year. To get away, get some perspective, and discover who was without athletics in my life. The plan was to work at coffee shops and bana plantations, but, well… things turned out differently, and I ended up working in two labs at University of Queensland. My first couple of months I spent in a Neuromechanics lab, working primarily on foot biomechanics assisting with …, and developing a setup that combined ultrasound imaging, force application and local anaesthetic in the … nerve (along with being Guinea pig for a bunch of other studies). After my contract in the lab ended, I travelled to Tasmania where I spent a wonderful couple of months, before returning to work with Tim Carroll who worked on motor control. Here I also got the chance to work on a variety of setups, most of them reaching. But it was also here I realised that every living organism has to sense their surrounds and take action to make the best of the situation.\n\n\nNon-human?\nOne morning I went to jump on my bike when I noticed that a sling plant had wrapped itself around my bike frame. Not being trained in “allround” biology all I knew about plants was that they grew towards the sunlight. But that could surely not have been causing this wrapping!? Perplexed, I started … I read about quantum physics, information theory, comparative neuroscience. I read Principles of Neural Design by Simon Laughlin and Peter Sterling.\n\n\n\nThe fun stuff!\nOkay, science is cool, but life is so much more! If it wasn’t obvious, I love doing sports… every type of sports pretty much. I’ve recently taken to open water swimming, and rock climbing (and bouldering) has been a long-standing favourite of mine. I also enjoy running and a good (Olympic) weightlifting session. Badminton, squash or tennis when the opportunity presents itself.\nMusic also plays a big role in my life. I grew up playing the piano, where I was part of a jazz band. Later on I started singing and writing my own songs (I took on the guitar for that, but never got very good). In Brighton, I’ve been singing with the amazing Soul of the City Choir, and had a yearly performance at our Sussex Neuroscience Christmas Party (either solo or with an awesome CRPC band). These days, I mostly improvise some jazzy/ambient tunes on the piano and sing popular cover songs at home.\nAlthough I’ve always enjoyed being outdoors, I didn’t always really appreciate it fully. However, that changed during my undergraduate when we had a course in “Outdoor Life” (friluftsliv in Danish). Now I appreciate all the time I can get outside, paying attention to both the grandiose and the minute details of nature (which probably plays a part in my ending up working with animal behaviour). From camp life through hiking, preferably for multiple days, backcountry skiing, kayaking, rock climbing, mountaineering… any way that takes me through the wonderful nature that surrounds us!\nOh, and I love reading books, especially old classics!\nMy most recent hobby is photography. Catching the beauty of a moment, whether a wide natural landscape or a macro of an insect going about its business. I picked up my first camera (a Canon Powershot G9) in Australia, just to document my year there. But the photos from that year inspired me in a way I hadn’t expected. Now, I’ve invested in some more professional gear, but alas, the PhD has not allowed me much time to make the most of it - let’s see in a year! Until then, you can find a selection of my photos here.\nSome more photography\n\n\n\n\n\n\n\n\n\nPhoto by Hush Naidoo Jade Photography on Unsplash\n\n\n\n\n\n\n\nPhoto by Alessandro Bianchi on Unsplash\n\n\n\n\n\n\n\nPhoto by Joshua Melo on Unsplash"
+  },
+  {
+    "objectID": "research/openscience/aniscope.html",
+    "href": "research/openscience/aniscope.html",
+    "title": "Aniscope",
+    "section": "",
+    "text": "Heading\nSome good content goes here…"
+  },
+  {
+    "objectID": "research/openscience/other-projects.html",
+    "href": "research/openscience/other-projects.html",
+    "title": "Heading",
+    "section": "",
+    "text": "Heading\nSome good content goes here…"
+  },
+  {
+    "objectID": "research/projects/sleep.html",
+    "href": "research/projects/sleep.html",
+    "title": "Sleep across the Animal Kingdom",
+    "section": "",
+    "text": "Heading\nSome good content goes here…"
+  },
+  {
+    "objectID": "blog/posts/2024/10/04/renv-blog/index.html",
+    "href": "blog/posts/2024/10/04/renv-blog/index.html",
+    "title": "Use {renv} to manage dependencies per blog post",
+    "section": "",
+    "text": "As I was making some benchmarks in a blog post, I needed a different version of data.table than the standard. However, I do want to keep the CRAN version of data.table available for other things, so I needed a way to maintain two separate versions.\nI asked on Mastodon and got some good ideas. Luckily, there were some amazing suggestions! Joel Nitta suggested using renv::use() which I did end up doing. I had to refine it a bit, as I don’t want to open each post in a new project window - I wanted to simply work from my base project. But now I’ve got a good workflow. It relies on renv and the fact that it’s possible to have multiple profiles in the same renv.lock file. So now my process is this:"
+  },
+  {
+    "objectID": "blog/posts/2024/10/04/renv-blog/index.html#install-the-here-package",
+    "href": "blog/posts/2024/10/04/renv-blog/index.html#install-the-here-package",
+    "title": "Use {renv} to manage dependencies per blog post",
+    "section": "1. Install the here package",
+    "text": "1. Install the here package\nIn your base/default profile, install the here package with:\n```{r}\nrenv::install(\"here\")\n```"
+  },
+  {
+    "objectID": "blog/posts/2024/10/04/renv-blog/index.html#activate-new-profile-install-and-snapshot",
+    "href": "blog/posts/2024/10/04/renv-blog/index.html#activate-new-profile-install-and-snapshot",
+    "title": "Use {renv} to manage dependencies per blog post",
+    "section": "2. Activate new profile, install and snapshot",
+    "text": "2. Activate new profile, install and snapshot\nIn a new blog post, I keep this chunk of code in the top of every new blog post. I install the packages I need and take a snapshot(); note that running renv::snapshot() without specifying the packages gave me a good headache, and this was the best solution I could find. I set eval to false; this is a chunk I only run manually, but keep around to remember where I got the packages from (e.g. from a certain branch or commit).\n```{r}\n#| eval: false\n#| include: false\n\n# Activate new profile\nrenv::activate(profile = \"2024-renv-blog\")\n\n# Install the needed packages\nrenv::install(\n  \"ggplot2\"\n)\n\n# Snapshot the packages\nrenv::snapshot(\n  packages = c(  \n    \"ggplot2\")\n  )\n```"
+  },
+  {
+    "objectID": "blog/posts/2024/10/04/renv-blog/index.html#use-new-profile",
+    "href": "blog/posts/2024/10/04/renv-blog/index.html#use-new-profile",
+    "title": "Use {renv} to manage dependencies per blog post",
+    "section": "3. Use new profile",
+    "text": "3. Use new profile\nNext, I use the new profile. I don’t run this block myself, it will be picked up by renv when you, or gh-pages, render your site. I use here::here() You don’t need to touch it from now on. Note that in all these blocks, I’ve set #| include: false so they won’t be shown in the actual blog post.\n```{r}\n#| include: false\nlock_path &lt;- paste(here::here(), \"renv/profiles/2024-renv-blog/renv.lock\", sep = \"/\")\nrenv::use(lockfile = lock_path)\n```"
+  },
+  {
+    "objectID": "blog/posts/2024/10/04/renv-blog/index.html#write-awesome-content",
+    "href": "blog/posts/2024/10/04/renv-blog/index.html#write-awesome-content",
+    "title": "Use {renv} to manage dependencies per blog post",
+    "section": "4. Write awesome content",
+    "text": "4. Write awesome content\nFrom here, I go on to write the post. Let’s try and see whether this throws an error!\n\nlibrary(ggplot2)\nggplot(iris, aes(Sepal.Length, Sepal.Width)) +\n  geom_point()"
+  },
+  {
+    "objectID": "blog/posts/2024/10/04/renv-blog/index.html#render-website",
+    "href": "blog/posts/2024/10/04/renv-blog/index.html#render-website",
+    "title": "Use {renv} to manage dependencies per blog post",
+    "section": "5. Render Website",
+    "text": "5. Render Website\nLastly, the only thing left is clicking “Render Website” and seeing your posts render with all their separate renv libraries!"
+  },
+  {
+    "objectID": "blog/posts/2024/10/04/renv-blog/index.html#renvignore",
+    "href": "blog/posts/2024/10/04/renv-blog/index.html#renvignore",
+    "title": "Use {renv} to manage dependencies per blog post",
+    "section": ".renvignore",
+    "text": ".renvignore\nFirst of all, I’ve placed a .renvignore file at the base of my project, that excludes all my blog files, so just a single line (might be /posts/ if you use that name):\n/blog/\nThat simply ensures that the default environment doesn’t think it’s out-of-sync due to dependencies for your blog posts."
+  },
+  {
+    "objectID": "blog/posts/2024/10/04/renv-blog/index.html#herehere",
+    "href": "blog/posts/2024/10/04/renv-blog/index.html#herehere",
+    "title": "Use {renv} to manage dependencies per blog post",
+    "section": "here::here()",
+    "text": "here::here()\nI installed the here package in my default env as it makes it much easier to point to the correct lock files. However, since I don’t really use it in other places than in my blog posts, renv thinks it’s unnecessary. So I’ve just placed a section in the index.qmd at the root of my project with:\n```{r}\n#| include: false\nhere::here()\n```\nThat keeps those out-of-sync messages at bay!"
+  },
+  {
+    "objectID": "blog/posts/2024/10/04/renv-blog/index.html#packages-from-github-and-similar",
+    "href": "blog/posts/2024/10/04/renv-blog/index.html#packages-from-github-and-similar",
+    "title": "Use {renv} to manage dependencies per blog post",
+    "section": "Packages from Github (and similar)",
+    "text": "Packages from Github (and similar)\nHere, the install and snapshot were pretty much identical. However, if you install e.g. from Github, you need to just name the package in snapshot, like so:\n```{r}\n#| eval: false\n#| include: false\n\nrenv::activate(profile = \"2024-renv-blog\")\n\nrenv::install(\n  \"Rdatatable/data.table\"\n)\n\nrenv::snapshot(\n  packages = c(  \n    \"data.table\")\n  )\n```"
+  },
+  {
+    "objectID": "blog/posts/2024/10/04/renv-blog/index.html#which-profile-am-i-in",
+    "href": "blog/posts/2024/10/04/renv-blog/index.html#which-profile-am-i-in",
+    "title": "Use {renv} to manage dependencies per blog post",
+    "section": "Which profile am I in?",
+    "text": "Which profile am I in?\nWhen rendering the website, I forgot whether I was using the correct profile, and I also messed the default up at some point. The trick to being sure that you’re in your base profile is to run renv::deactivate() followed by renv::activate(). Sure, there might be better ways - if you know them, please let me know!"
+  },
+  {
+    "objectID": "blog/posts/2024/10/04/renv-blog/index.html#publishing",
+    "href": "blog/posts/2024/10/04/renv-blog/index.html#publishing",
+    "title": "Use {renv} to manage dependencies per blog post",
+    "section": "Publishing",
+    "text": "Publishing\nInitially I attempted to publish using a Github Action, but it’s tricky, and it was pointed out to me that I might not want to re-render posts every time I commit new content… that makes a lot of sense! So simply ¶building to a docs folder](https://quarto.org/docs/publishing/github-pages.html#render-to-docs) and publishing from there works much better."
+  }
+]

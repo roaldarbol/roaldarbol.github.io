@@ -1,0 +1,39 @@
+[
+  {
+    "listing": "/index.html",
+    "items": [
+      "/blog/posts/2024/10/04/renv-blog/index.html",
+      "/blog/posts/2024/10/03/Benchmark-rolling/index.html"
+    ]
+  },
+  {
+    "listing": "/blog/index.html",
+    "items": [
+      "/blog/posts/2024/10/04/renv-blog/index.html",
+      "/blog/posts/2024/10/03/Benchmark-rolling/index.html"
+    ]
+  },
+  {
+    "listing": "/latest-content.html",
+    "items": [
+      "/blog/posts/2024/10/04/renv-blog/index.html",
+      "/blog/posts/2024/10/03/Benchmark-rolling/index.html"
+    ]
+  },
+  {
+    "listing": "/pages/about.html",
+    "items": [
+      "/pages/scientific-journey.html",
+      "/pages/joys.html",
+      "/pages/CV.html"
+    ]
+  },
+  {
+    "listing": "/research/index.html",
+    "items": [
+      "/research/projects/timescales.html",
+      "/research/projects/internal-states.html",
+      "/research/projects/sleep.html"
+    ]
+  }
+]

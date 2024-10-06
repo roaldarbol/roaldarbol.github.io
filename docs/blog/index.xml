@@ -1,0 +1,2341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss  xmlns:atom="http://www.w3.org/2005/Atom" 
+      xmlns:media="http://search.yahoo.com/mrss/" 
+      xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+      xmlns:dc="http://purl.org/dc/elements/1.1/" 
+      version="2.0">
+<channel>
+<title>Mikkel Roald-Arbøl</title>
+<link>https://roald-arboel.com/blog/</link>
+<atom:link href="https://roald-arboel.com/blog/index.xml" rel="self" type="application/rss+xml"/>
+<description>Mikkel Roald-Arbøl is a PhD student at the University of Sussex. My work lies at the intersection of neuroethology, quantitative ethology and behavioural ecology.</description>
+<generator>quarto-1.5.57</generator>
+<lastBuildDate>Thu, 03 Oct 2024 22:00:00 GMT</lastBuildDate>
+<item>
+  <title>Use {renv} to manage dependencies per blog post</title>
+  <dc:creator>Mikkel Roald-Arbøl</dc:creator>
+  <link>https://roald-arboel.com/blog/posts/2024/10/04/renv-blog/</link>
+  <description><![CDATA[ <p>As I was making some benchmarks in a blog post, I needed a different version of <em>data.table</em> than the standard. However, I do want to keep the CRAN version of <em>data.table</em> available for other things, so I needed a way to maintain two separate versions.</p>
+<p>I <a href="https://neuromatch.social/@roaldarboel/113243708252919690">asked on Mastodon</a> and got some good ideas. Luckily, there were some amazing suggestions! <a href="https://www.joelnitta.com/posts/2024-01-11_using_renv_with_blog/">Joel Nitta</a> suggested using <code><a href="https://rstudio.github.io/renv/reference/embed.html">renv::use()</a></code> which I did end up doing. I had to refine it a bit, as I don’t want to open each post in a new project window - I wanted to simply work from my base project. But now I’ve got a good workflow. It relies on <em>renv</em> and the fact that it’s possible to have multiple profiles in the same <code>renv.lock</code> file. So now my process is this:</p>
+<section id="install-the-here-package" class="level2"><h2 class="anchored" data-anchor-id="install-the-here-package">1. Install the <em>here</em> package</h2>
+<p>In your base/default profile, install the <em>here</em> package with:</p>
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">```{r}</span></span>
+<span id="cb1-2"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">renv::install("here")</span></span>
+<span id="cb1-3"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">```</span></span></code></pre></div>
+</section><section id="activate-new-profile-install-and-snapshot" class="level2"><h2 class="anchored" data-anchor-id="activate-new-profile-install-and-snapshot">2. Activate new profile, install and snapshot</h2>
+<p>In a new blog post, I keep this chunk of code in the top of every new blog post. I install the packages I need and take a <code>snapshot()</code>; note that running <code><a href="https://rstudio.github.io/renv/reference/snapshot.html">renv::snapshot()</a></code> without specifying the packages gave me a good headache, and this was the best solution I could find. I set <code>eval</code> to false; this is a chunk I only run manually, but keep around to remember where I got the packages from (e.g.&nbsp;from a certain branch or commit).</p>
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">```{r}</span></span>
+<span id="cb2-2"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#| eval: false</span></span>
+<span id="cb2-3"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#| include: false</span></span>
+<span id="cb2-4"></span>
+<span id="cb2-5"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Activate new profile</span></span>
+<span id="cb2-6"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">renv::activate(profile = "2024-renv-blog")</span></span>
+<span id="cb2-7"></span>
+<span id="cb2-8"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Install the needed packages</span></span>
+<span id="cb2-9"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">renv::install(</span></span>
+<span id="cb2-10"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">  "ggplot2"</span></span>
+<span id="cb2-11"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span id="cb2-12"></span>
+<span id="cb2-13"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Snapshot the packages</span></span>
+<span id="cb2-14"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">renv::snapshot(</span></span>
+<span id="cb2-15"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">  packages = c(  </span></span>
+<span id="cb2-16"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    "ggplot2")</span></span>
+<span id="cb2-17"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">  )</span></span>
+<span id="cb2-18"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">```</span></span></code></pre></div>
+</section><section id="use-new-profile" class="level2"><h2 class="anchored" data-anchor-id="use-new-profile">3. Use new profile</h2>
+<p>Next, I use the new profile. I don’t run this block myself, it will be picked up by <code>renv</code> when you, or <code>gh-pages</code>, render your site. I use <code><a href="https://here.r-lib.org//reference/here.html">here::here()</a></code> You don’t need to touch it from now on. Note that in all these blocks, I’ve set <code>#| include: false</code> so they won’t be shown in the actual blog post.</p>
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">```{r}</span></span>
+<span id="cb3-2"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#| include: false</span></span>
+<span id="cb3-3"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">lock_path &lt;- paste(here::here(), "renv/profiles/2024-renv-blog/renv.lock", sep = "/")</span></span>
+<span id="cb3-4"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">renv::use(lockfile = lock_path)</span></span>
+<span id="cb3-5"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">```</span></span></code></pre></div>
+</section><section id="write-awesome-content" class="level2"><h2 class="anchored" data-anchor-id="write-awesome-content">4. Write awesome content</h2>
+<p>From here, I go on to write the post. Let’s try and see whether this throws an error!</p>
+<div class="cell">
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">iris</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Sepal.Length</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">Sepal.Width</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_point</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="https://roald-arboel.com/blog/posts/2024/10/04/renv-blog/index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="render-website" class="level2"><h2 class="anchored" data-anchor-id="render-website">5. Render Website</h2>
+<p>Lastly, the only thing left is clicking “Render Website” and seeing your posts render with all their separate <em>renv</em> libraries!</p>
+</section><section id="tips-and-tricks" class="level1"><h1>Tips and tricks</h1>
+<p>There are a few tips and tricks that might be worth noting.</p>
+<section id="renvignore" class="level2"><h2 class="anchored" data-anchor-id="renvignore"><code>.renvignore</code></h2>
+<p>First of all, I’ve placed a <code>.renvignore</code> file at the base of my project, that excludes all my blog files, so just a single line (might be <code>/posts/</code> if you use that name):</p>
+<pre><code>/blog/</code></pre>
+<p>That simply ensures that the default environment doesn’t think it’s out-of-sync due to dependencies for your blog posts.</p>
+</section><section id="herehere" class="level2"><h2 class="anchored" data-anchor-id="herehere"><code>here::here()</code></h2>
+<p>I installed the <code>here</code> package in my default env as it makes it much easier to point to the correct lock files. However, since I don’t really use it in other places than in my blog posts, <em>renv</em> thinks it’s unnecessary. So I’ve just placed a section in the <code>index.qmd</code> at the root of my project with:</p>
+<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">```{r}</span></span>
+<span id="cb6-2"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#| include: false</span></span>
+<span id="cb6-3"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">here::here()</span></span>
+<span id="cb6-4"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">```</span></span></code></pre></div>
+<p>That keeps those out-of-sync messages at bay!</p>
+</section><section id="packages-from-github-and-similar" class="level2"><h2 class="anchored" data-anchor-id="packages-from-github-and-similar">Packages from Github (and similar)</h2>
+<p>Here, the <code>install</code> and <code>snapshot</code> were pretty much identical. However, if you install e.g.&nbsp;from Github, you need to <em>just</em> name the package in <code>snapshot</code>, like so:</p>
+<div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">```{r}</span></span>
+<span id="cb7-2"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#| eval: false</span></span>
+<span id="cb7-3"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#| include: false</span></span>
+<span id="cb7-4"></span>
+<span id="cb7-5"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">renv::activate(profile = "2024-renv-blog")</span></span>
+<span id="cb7-6"></span>
+<span id="cb7-7"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">renv::install(</span></span>
+<span id="cb7-8"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">  "Rdatatable/data.table"</span></span>
+<span id="cb7-9"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span id="cb7-10"></span>
+<span id="cb7-11"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">renv::snapshot(</span></span>
+<span id="cb7-12"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">  packages = c(  </span></span>
+<span id="cb7-13"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">    "data.table")</span></span>
+<span id="cb7-14"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">  )</span></span>
+<span id="cb7-15"><span class="in" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">```</span></span></code></pre></div>
+</section><section id="which-profile-am-i-in" class="level2"><h2 class="anchored" data-anchor-id="which-profile-am-i-in">Which profile am I in?</h2>
+<p>When rendering the website, I forgot whether I was using the correct profile, and I also messed the default up at some point. The trick to being sure that you’re in your base profile is to run <code><a href="https://rstudio.github.io/renv/reference/activate.html">renv::deactivate()</a></code> followed by <code><a href="https://rstudio.github.io/renv/reference/activate.html">renv::activate()</a></code>. Sure, there might be better ways - if you know them, please let me know!</p>
+</section><section id="publishing" class="level2"><h2 class="anchored" data-anchor-id="publishing">Publishing</h2>
+<p>Initially I attempted to publish using a Github Action, but it’s tricky, and <a href="https://fosstodon.org/@Drmowinckels/113256144437597183">it was pointed out to me</a> that I might not want to re-render posts every time I commit new content… that makes a lot of sense! So simply ¶building to a <code>docs</code> folder](https://quarto.org/docs/publishing/github-pages.html#render-to-docs) and publishing from there works much better.</p>
+</section></section><section id="conclusion" class="level1"><h1>Conclusion</h1>
+<p>So there you have it - it’s possible to use different <code>renv</code> profiles for different blog posts. Is it worth it? Well, to me at least, I hope it will be as I try out some niche packages!</p>
+
+
+</section><script async="" defer="" src="https://scripts.simpleanalyticscdn.com/latest.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{roald-arbøl2024,
+  author = {Roald-Arbøl, Mikkel},
+  title = {Use \{Renv\} to Manage Dependencies Per Blog Post},
+  date = {2024-10-04},
+  url = {https://roald-arboel.com/blog/posts/2024/10/04/renv-blog/},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-roald-arbøl2024" class="csl-entry quarto-appendix-citeas">
+Roald-Arbøl, Mikkel. 2024. <span>“Use {Renv} to Manage Dependencies Per
+Blog Post.”</span> October 4, 2024. <a href="https://roald-arboel.com/blog/posts/2024/10/04/renv-blog/">https://roald-arboel.com/blog/posts/2024/10/04/renv-blog/</a>.
+</div></div></section></div> ]]></description>
+  <category>r</category>
+  <category>quarto</category>
+  <category>blog</category>
+  <guid>https://roald-arboel.com/blog/posts/2024/10/04/renv-blog/</guid>
+  <pubDate>Thu, 03 Oct 2024 22:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Benchmarking rolling window functions in R</title>
+  <dc:creator>Mikkel Roald-Arbøl</dc:creator>
+  <link>https://roald-arboel.com/blog/posts/2024/10/03/Benchmark-rolling/</link>
+  <description><![CDATA[ <div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="https://roald-arboel.com/blog/posts/2024/10/03/Benchmark-rolling/pretty-r.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%" alt="Two fuzzy monsters decorating the R logo."></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="gray-italic center-text">
+<p>Art by <a href="https://allisonhorst.com/">Allison Horst</a></p>
+</div>
+<hr>
+<p>Rolling functions are widely used in science, especially when working with smoothing and/or time series. They also form the basis of feature extraction from time series, used for many classification methods in machine learning. Simply put, they take a window of <code>k</code> values at a time and perform some mathematical operation on them. When I started out using rolling functions for smoothing animal movement paths, I used <a href="https://zoo.R-Forge.R-project.org/">zoo</a>’s <code>rollmean()</code>. With large data sets, this step always took a long time. Only much later did I realise that many packages exist that tackle this issue. I’ve used a number of them in my work, but now I decided to put them to the test! Which package is fastest?! Of course it’s a little more nuanced than that: There are many different types of rolling functions, and extra functionality that one might need. Although we try to narrow the tests to avoid them getting out of hand, it does mean it will be a long post with lots of numbers, but hopefully it will prove useful for both you and me. :-)</p>
+<section id="which-functions" class="level2"><h2 class="anchored" data-anchor-id="which-functions">Which functions?</h2>
+<p>Rolling functions can in principle be used with any function that produces a single value from a vector (see custom functions below). But some are common and have their own functions with optimised algorithms have been developed for them. We are considering the following computations:</p>
+<ul>
+<li>Mean</li>
+<li>Median</li>
+<li>Min</li>
+<li>Max</li>
+<li>Sum</li>
+<li>Product (<strong>TODO</strong>)</li>
+<li>SD</li>
+<li>MAD (<strong>TODO</strong>)</li>
+<li>Correlation (<strong>TODO</strong>)</li>
+<li>Covariance (<strong>TODO</strong>)</li>
+<li>Skew (<strong>TODO</strong>)</li>
+<li>Custom functions</li>
+</ul></section><section id="which-features" class="level2"><h2 class="anchored" data-anchor-id="which-features">Which features?</h2>
+<p>There are a lot of features available in many of the packages. It is outside the scope of this benchmark to test them all, as we will just test with standard settings, but do check out some of the packages that have more advanced features. For now, the two most important features are:</p>
+<p><strong>NA handling</strong>. The standard should be to have a constant window width, and if <code>NA</code>s are present to (1) exclude the <code>NA</code>s and compute the metric from the remaining values, or (2) return <code>NA</code>. This distinction is often reflected in a parameter called <code>complete</code> or something similar. Although are more ways to deal with this, e.g.&nbsp;adaptive window widths.</p>
+<p><strong>Alignment</strong>. Alignment is one of the most important features of a rolling function. There are (at least) three ways they can be aligned:</p>
+<ul>
+<li>
+<strong>Left</strong>: [*——], will cause the returned vector to have NA values at the right end.</li>
+<li>
+<strong>Center</strong>: [—*—], will cause the returned vector to have NA values at either end.</li>
+<li>
+<strong>Right</strong>: [——*], will cause the returned vector to have NA values at the left end.</li>
+</ul></section><section id="which-packages" class="level2"><h2 class="anchored" data-anchor-id="which-packages">Which packages?</h2>
+<p>There are quite a lot of packages that have written functions for this; not all packages have functions for each metric. Here are the packages under consideration (if you have additions, please open an issue on Github):</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead><tr class="header">
+<th>Package name</th>
+<th>Comment</th>
+<th>Installation</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>data.table</td>
+<td>Installed from the <code>rollingmedian</code> branch on Github</td>
+<td><code>devtools::install_github("Rdatatable/data.table", ref = "rollmedian")</code></td>
+</tr>
+<tr class="even">
+<td>RcppRoll</td>
+<td></td>
+<td><code>renv::install("RcppRoll")</code></td>
+</tr>
+<tr class="odd">
+<td>roll</td>
+<td>Installed from Github</td>
+<td><code>devtools::install_github("jasonjfoster/roll")</code></td>
+</tr>
+<tr class="even">
+<td>RollingWindow</td>
+<td>Installed from Github</td>
+<td><code>devtools::install_github("andrewuhl/RollingWindow")</code></td>
+</tr>
+<tr class="odd">
+<td>runner</td>
+<td></td>
+<td><code>renv::install("runner")</code></td>
+</tr>
+<tr class="even">
+<td>runstats</td>
+<td>Requires additional installation of <code>lib3</code>
+</td>
+<td><code>renv::install("runstats")</code></td>
+</tr>
+<tr class="odd">
+<td>slider</td>
+<td></td>
+<td><code>renv::install("slider")</code></td>
+</tr>
+<tr class="even">
+<td>zoo</td>
+<td></td>
+<td><code>renv::install("zoo")</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Notes</strong>: Because the test has to run on a normal vector <em>in memory</em>, I am not including <code>{polars}</code>. If it is possible to run rolling functions <em>in memory</em> with <code>{polars}</code>, please leave a comment below or raise an issue.</p>
+</section><section id="benchmarks" class="level1"><h1>Benchmarks</h1>
+<section id="the-rules" class="level2"><h2 class="anchored" data-anchor-id="the-rules">The rules</h2>
+<p>Let’s start by setting up some ground rules; mostly to rear in all the potential scenarios I <em>could</em> try to cover, but also to save some computation time.</p>
+<ul>
+<li>Test on a 1.000.000 element vector</li>
+<li>Vector is right-aligned</li>
+<li>Output vector same length as input vector</li>
+<li>If <code>NA</code>s are present, return <code>NA</code>
+</li>
+<li>Default window width (51)</li>
+<li>(<strong>TODO</strong> Range of window widths to assess scaling)</li>
+</ul>
+<p>Let’s get started! First we’ll import all the packages we need. I use the <a href="https://github.com/joshuaulrich/microbenchmark/">microbenchmark</a> package for the tests and <a href="https://ggplot2.tidyverse.org">ggplot2</a> for some graphs of the results.</p>
+<div class="cell">
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;"><a href="https://scales.r-lib.org">scales</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;"><a href="https://mjskay.github.io/ggdist/">ggdist</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;"><a href="https://github.com/joshuaulrich/microbenchmark/">microbenchmark</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;"><a href="https://github.com/r-lib/slider">slider</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">runner</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;"><a href="https://zoo.R-Forge.R-project.org/">zoo</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">RollingWindow</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">RcppRoll</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;"><a href="https://github.com/jasonjfoster/roll">roll</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;"><a href="https://r-datatable.com">data.table</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;"><a href="https://github.com/martakarass/runstats">runstats</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+</div>
+</section><section id="set-variables" class="level2"><h2 class="anchored" data-anchor-id="set-variables">Set variables</h2>
+<p>For the benchmark we’ll make a vector of a million values, all drawn from a Gaussian distribution (doesn’t really matter where there come from), but the important thing is that they are <em>floating numbers</em>, not <em>integers</em>. Initially we’ll set the window width to 51 - the width needs to be an uneven number. And we set the number of times to run each test to 10.</p>
+<div class="cell">
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12345</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tibble</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000000</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">51</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n_times</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n_half</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Round.html">floor</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+</div>
+<div class="cell">
+<details class="code-fold"><summary>Just making the plotting function here</summary><div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">plot_benchmark_single</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">function</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">microbenchmark_output</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span>  <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">microbenchmark_output</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">microbenchmark_output</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> </span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as_tibble</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> </span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">separate_wider_delim</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">expr</span>, delim <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"::"</span>, names <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"package_name"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"function_name"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> </span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>time <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">time</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000000</span>,</span>
+<span>           pkg_fct <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">package_name</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">function_name</span>, sep <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">" "</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>  </span>
+<span>  <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">med_time</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">microbenchmark_output</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> </span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">group_by</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pkg_fct</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> </span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summarise</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>time <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">time</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> </span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>time <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">time</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ms"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>  </span>
+<span>  <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">microbenchmark_output</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> </span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">fct_reorder</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pkg_fct</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">time</span>, .desc <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">time</span>, fill <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pkg_fct</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span>    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># ggdist::stat_interval() +</span></span>
+<span>    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># geom_boxplot(outliers = FALSE) +</span></span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggdist</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_weave</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>position <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"dodge"</span>, alpha <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span>    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># geom_jitter(height = 0, width = 0.1, alpha = 0.3) +</span></span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_text</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>data <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">med_time</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">pkg_fct</span>, y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">Inf</span>, label <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">time</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, hjust <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_y_log10</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>breaks<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">trans_breaks</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"log10"</span>, <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">function</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, n<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_x_discrete</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>labels <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">label_wrap</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">annotation_logticks</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>sides <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"b"</span>, colour <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"grey70"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">guides</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>fill <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"none"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">coord_flip</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ylab</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Time (ms)"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">xlab</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">""</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggdist</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_ggdist</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span>    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span></span>
+<span>      panel.grid.major.x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_line</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>colour <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"grey70"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>      panel.grid.minor.x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_line</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>colour <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"grey90"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span></code></pre></div>
+</details>
+</div>
+</section><section id="mean" class="level2"><h2 class="anchored" data-anchor-id="mean">Mean</h2>
+<div class="cell">
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">bm_mean</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">microbenchmark</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span></span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"data.table::frollmean"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.table</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">frollmean</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span>, align <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"right"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"roll::roll_mean"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">roll</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">roll_mean</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, width <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RollingWindow::RollingMean"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">RollingWindow</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">RollingMean</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"runstats::RunningMean"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">runstats</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">RunningMean</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, W <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"slider::slide_mean"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">slider</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">slide_mean</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, before <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, complete <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RcppRoll::roll_meanr"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">RcppRoll</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">roll_meanr</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, n <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span>, fill <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"zoo::rollmeanr"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">zoo</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rollmeanr</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, k <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span>, fill <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"runner::mean_run"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">runner</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mean_run</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, k <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span>, na_pad <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  times <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n_times</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">bm_mean</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> </span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot_benchmark_single</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="https://roald-arboel.com/blog/posts/2024/10/03/Benchmark-rolling/index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="median" class="level2"><h2 class="anchored" data-anchor-id="median">Median</h2>
+<div class="cell">
+<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">bm_median</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">microbenchmark</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span></span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"data.table::frollmedian"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.table</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">frollmedian</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RcppRoll::roll_median"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">RcppRoll</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">roll_median</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, n <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span>, fill <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"roll::roll_median"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">roll</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">roll_median</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, width <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RollingWindow::RollingMedian"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">RollingWindow</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">RollingMedian</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"zoo::rollmedianr"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">zoo</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rollmedianr</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, k <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span>, fill <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  times <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n_times</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">bm_median</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> </span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot_benchmark_single</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="https://roald-arboel.com/blog/posts/2024/10/03/Benchmark-rolling/index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="min" class="level2"><h2 class="anchored" data-anchor-id="min">Min</h2>
+<div class="cell">
+<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">bm_min</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">microbenchmark</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span></span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"data.table::frollmin"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.table</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">frollmin</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RcppRoll::roll_min"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">RcppRoll</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">roll_min</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, n <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span>, fill <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"roll::roll_min"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">roll</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">roll_min</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, width <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RollingWindow::RollingMin"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">RollingWindow</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">RollingMin</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"slider::slide_min"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">slider</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">slide_min</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, before <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, complete <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"runner::min_run"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">runner</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">min_run</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, k <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span>, na_pad <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  times <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n_times</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">bm_min</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> </span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot_benchmark_single</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="https://roald-arboel.com/blog/posts/2024/10/03/Benchmark-rolling/index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="max" class="level2"><h2 class="anchored" data-anchor-id="max">Max</h2>
+<div class="cell">
+<div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">bm_max</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">microbenchmark</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span></span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"data.table::frollmax"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.table</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">frollmax</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RcppRoll::roll_max"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">RcppRoll</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">roll_max</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, n <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span>, fill <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"roll::roll_max"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">roll</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">roll_max</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, width <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RollingWindow::RollingMax"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">RollingWindow</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">RollingMax</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"runner::max_run"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">runner</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">max_run</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, k <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span>, na_pad <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"slider::slide_max"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">slider</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">slide_max</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, before <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, complete <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"zoo::rollmax"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">zoo</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rollmax</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, k <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span>, fill <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  times <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n_times</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">bm_max</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> </span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot_benchmark_single</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="https://roald-arboel.com/blog/posts/2024/10/03/Benchmark-rolling/index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="sum" class="level2"><h2 class="anchored" data-anchor-id="sum">Sum</h2>
+<div class="cell">
+<div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">bm_sum</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">microbenchmark</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span></span>
+<span>    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"data.table::frollsum, exact"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.table</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">frollsum</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span>, algo <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"exact"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"data.table::frollsum, fast"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.table</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">frollsum</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span>, algo <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"fast"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RcppRoll::roll_sum"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">RcppRoll</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">roll_sum</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, n <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span>, fill <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"roll::roll_sum"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">roll</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">roll_sum</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, width <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RollingWindow::RollingSum"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">RollingWindow</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">RollingSum</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"runner::sum_run"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">runner</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sum_run</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, k <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span>, na_pad <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"slider::slide_sum"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">slider</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">slide_sum</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, before <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, complete <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"zoo::rollsum"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">zoo</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rollsum</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span>, fill <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>    times <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n_times</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">bm_sum</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> </span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot_benchmark_single</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="https://roald-arboel.com/blog/posts/2024/10/03/Benchmark-rolling/index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="sd" class="level2"><h2 class="anchored" data-anchor-id="sd">SD</h2>
+<div class="cell">
+<div class="sourceCode" id="cb9" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">bm_sd</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">microbenchmark</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span></span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RcppRoll::roll_sd"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">RcppRoll</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">roll_sd</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, n <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span>, fill <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"roll::roll_sd"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">roll</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">roll_sd</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, width <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RollingWindow::RollingStd"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">RollingWindow</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">RollingStd</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"runstats::RunningSd"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">runstats</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">RunningSd</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, W <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  times <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n_times</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">bm_sd</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> </span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot_benchmark_single</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="https://roald-arboel.com/blog/posts/2024/10/03/Benchmark-rolling/index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="custom-functions" class="level2"><h2 class="anchored" data-anchor-id="custom-functions">Custom functions</h2>
+<p>These functions are not optimised like the others, so they take a lot longer… so I’ll use fewer iterations here.</p>
+<div class="cell">
+<div class="sourceCode" id="cb10" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">bm_custom</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">microbenchmark</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span></span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"data.table::frollapply"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.table</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">frollapply</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">sum</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"zoo::rollapply"</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">zoo</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rollapply</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">n</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">sum</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  times <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">bm_custom</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> </span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot_benchmark_single</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="https://roald-arboel.com/blog/posts/2024/10/03/Benchmark-rolling/index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section></section><section id="conclusion" class="level1"><h1>Conclusion</h1>
+<p>In conclusion there’s a clear overall winner: <strong>data.table</strong>. It’s fast, flexible, it’s well-maintain and it’s thoroughly tested. However, there are a few cases where you might want something different.</p>
+<ul>
+<li>If you need rolling functions that <em>data.table</em> doesn’t have, I would go with <strong>roll</strong> which covers a range of other functions.</li>
+<li>If you need weighted estimates, I would go with <strong>roll</strong>.</li>
+<li>If you need custom alignment (not right/left/center), I would go with <strong>slider</strong>.</li>
+</ul>
+<p>And if you can in any way get away with it: Do <strong>not</strong> use custom functions! See if it might not be better to compute the constituents from optimised functions.</p>
+
+
+</section><script async="" defer="" src="https://scripts.simpleanalyticscdn.com/latest.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{roald-arbøl2024,
+  author = {Roald-Arbøl, Mikkel},
+  title = {Benchmarking Rolling Window Functions in {R}},
+  date = {2024-10-03},
+  url = {https://roald-arboel.com/blog/posts/2024/10/03/Benchmark-rolling/},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-roald-arbøl2024" class="csl-entry quarto-appendix-citeas">
+Roald-Arbøl, Mikkel. 2024. <span>“Benchmarking Rolling Window Functions
+in R.”</span> October 3, 2024. <a href="https://roald-arboel.com/blog/posts/2024/10/03/Benchmark-rolling/">https://roald-arboel.com/blog/posts/2024/10/03/Benchmark-rolling/</a>.
+</div></div></section></div> ]]></description>
+  <category>r</category>
+  <category>time series</category>
+  <category>stats</category>
+  <guid>https://roald-arboel.com/blog/posts/2024/10/03/Benchmark-rolling/</guid>
+  <pubDate>Wed, 02 Oct 2024 22:00:00 GMT</pubDate>
+  <media:content url="https://roald-arboel.com/blog/posts/2024/10/03/Benchmark-rolling/pretty-r.png" medium="image" type="image/png" height="83" width="144"/>
+</item>
+</channel>
+</rss>

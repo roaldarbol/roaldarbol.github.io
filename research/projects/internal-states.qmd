@@ -16,4 +16,3 @@ toc: true
 # Heading
 
 Some good content goes here...
-
