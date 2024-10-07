@@ -10,7 +10,7 @@
 <atom:link href="https://roald-arboel.com/research/index.xml" rel="self" type="application/rss+xml"/>
 <description>Mikkel Roald-Arbøl is a PhD student at the University of Sussex. My work lies at the intersection of neuroethology, quantitative ethology and behavioural ecology.</description>
 <generator>quarto-1.5.57</generator>
-<lastBuildDate>Sun, 06 Oct 2024 14:17:44 GMT</lastBuildDate>
+<lastBuildDate>Mon, 07 Oct 2024 17:49:27 GMT</lastBuildDate>
 <item>
   <title>Biologically and Behaviourally relevant Timescales</title>
   <dc:creator>Mikkel Roald-Arbøl</dc:creator>
@@ -30,7 +30,7 @@
 
 <script async="" defer="" src="https://scripts.simpleanalyticscdn.com/latest.js"></script> ]]></description>
   <guid>https://roald-arboel.com/research/projects/timescales.html</guid>
-  <pubDate>Sun, 06 Oct 2024 14:17:44 GMT</pubDate>
+  <pubDate>Mon, 07 Oct 2024 17:49:27 GMT</pubDate>
 </item>
 <item>
   <title>Internal states</title>
@@ -52,7 +52,7 @@
 <script async="" defer="" src="https://scripts.simpleanalyticscdn.com/latest.js"></script> ]]></description>
   <category>animal behaviour</category>
   <guid>https://roald-arboel.com/research/projects/internal-states.html</guid>
-  <pubDate>Sun, 06 Oct 2024 14:17:44 GMT</pubDate>
+  <pubDate>Mon, 07 Oct 2024 17:49:27 GMT</pubDate>
 </item>
 <item>
   <title>Sleep across the Animal Kingdom</title>
@@ -75,7 +75,7 @@
   <category>brain states</category>
   <category>animal behaviour</category>
   <guid>https://roald-arboel.com/research/projects/sleep.html</guid>
-  <pubDate>Sun, 06 Oct 2024 14:17:44 GMT</pubDate>
+  <pubDate>Mon, 07 Oct 2024 17:49:27 GMT</pubDate>
 </item>
 <item>
   <title>animovement</title>
@@ -86,7 +86,7 @@
   <category>animal movement</category>
   <category>software</category>
   <guid>https://roald-arboel.com/</guid>
-  <pubDate>Sun, 06 Oct 2024 14:17:44 GMT</pubDate>
+  <pubDate>Mon, 07 Oct 2024 17:49:27 GMT</pubDate>
 </item>
 <item>
   <title>LaPreprint</title>
@@ -98,7 +98,7 @@
   <category>preprint</category>
   <category>software</category>
   <guid>https://roald-arboel.com/</guid>
-  <pubDate>Sun, 06 Oct 2024 14:17:44 GMT</pubDate>
+  <pubDate>Mon, 07 Oct 2024 17:49:27 GMT</pubDate>
 </item>
 <item>
   <title>rpix</title>
@@ -110,7 +110,7 @@
   <category>r</category>
   <category>software</category>
   <guid>https://roald-arboel.com/</guid>
-  <pubDate>Sun, 06 Oct 2024 14:17:44 GMT</pubDate>
+  <pubDate>Mon, 07 Oct 2024 17:49:27 GMT</pubDate>
   <media:content url="https://roald-arboel.com/images/rpix.png" medium="image" type="image/png"/>
 </item>
 <item>
@@ -122,7 +122,7 @@
   <category>microcontroller</category>
   <category>micropython</category>
   <guid>https://roald-arboel.com/</guid>
-  <pubDate>Sun, 06 Oct 2024 14:17:44 GMT</pubDate>
+  <pubDate>Mon, 07 Oct 2024 17:49:27 GMT</pubDate>
 </item>
 </channel>
 </rss>

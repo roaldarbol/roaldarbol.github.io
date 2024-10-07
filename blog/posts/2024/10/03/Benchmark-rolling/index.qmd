@@ -6,9 +6,7 @@ categories:
     - time series
     - stats
 date: 2024-10-03
-date-modified: 2024-10-04
-image: "pretty-r.png"
-image-alt: Two fuzzy monsters decorating the R logo.
+date-modified: 2024-10-07
 draft: false
 ---
 
@@ -19,6 +17,7 @@ draft: false
 renv::activate(profile = "2024-Rolling-Functions")
 
 renv::install(
+  "here",
   "knitr",
   "microbenchmark",
   "zoo",
@@ -28,7 +27,10 @@ renv::install(
   "runstats",
   "tidyverse",
   "ggdist",
+  "ggtext",
   "scales",
+  "paletteer",
+  "patchwork",
   "Rdatatable/data.table@rollmedian",
   "jasonjfoster/roll",
   "andrewuhl/RollingWindow"
@@ -36,6 +38,7 @@ renv::install(
 
 renv::snapshot(
   packages = c(
+    "here",
     "knitr",
     "microbenchmark",
     "zoo",
@@ -45,7 +48,10 @@ renv::snapshot(
     "runstats",
     "tidyverse",
     "ggdist",
+    "ggtext",
     "scales",
+    "paletteer",
+    "patchwork",
     "data.table",
     "roll",
     "RollingWindow"
@@ -58,22 +64,6 @@ renv::snapshot(
 lock_path <- paste(here::here(), "renv/profiles/2024-Rolling-Functions/renv.lock", sep = "/")
 renv::use(lockfile = lock_path)
 ```
-
-
-```{r}
-#| eval: true 
-#| echo: false
-#| fig-align: "center"
-#| out-width: "75%" 
-#| fig-alt: "Two fuzzy monsters decorating the R logo."
-knitr::include_graphics("pretty-r.png")
-```
-
-::: {.gray-italic .center-text}
-Art by [Allison Horst](https://allisonhorst.com/)
-:::
-
-------------------------------------------------------------------------
 
 Rolling functions are widely used in science, especially when working with smoothing and/or time series. They also form the basis of feature extraction from time series, used for many classification methods in machine learning. Simply put, they take a window of `k` values at a time and perform some mathematical operation on them. When I started out using rolling functions for smoothing animal movement paths, I used `{zoo}`'s `rollmean()`. With large data sets, this step always took a long time. Only much later did I realise that many packages exist that tackle this issue. I've used a number of them in my work, but now I decided to put them to the test! Which package is fastest?! Of course it's a little more nuanced than that: There are many different types of rolling functions, and extra functionality that one might need. Although we try to narrow the tests to avoid them getting out of hand, it does mean it will be a long post with lots of numbers, but hopefully it will prove useful for both you and me. :-)
 
@@ -135,10 +125,11 @@ Let's start by setting up some ground rules; mostly to rear in all the potential
 
 Let's get started! First we'll import all the packages we need. I use the `{microbenchmark}` package for the tests and `{ggplot2}` for some graphs of the results.
 
-```{r message=FALSE, warning=FALSE}
+```{r dependencies}
+#| include: false
+#| message: false
+#| warning: false
 library(tidyverse)
-library(scales)
-library(ggdist)
 library(microbenchmark)
 
 library(slider)
@@ -158,28 +149,35 @@ For the benchmark we'll make a vector of a million values, all drawn from a Gaus
 ```{r}
 set.seed(12345)
 df <- tibble(x = rnorm(1000000))
-n <- 51
 n_times <- 20
-n_half <- floor(n/2)
+window_widths <- c(11, 101, 1001)
 ```
 
 ```{r}
 #| code-fold: true
-#| code-summary: "Just making the plotting function here"
+#| code-summary: "Just making the plotting functions here"
+#| message: false
+#| warning: false
+library(scales)
+library(ggdist)
+library(paletteer)
+library(patchwork)
 
-plot_benchmark_single <- function(microbenchmark_output){
-  microbenchmark_output <- microbenchmark_output |> 
-    as_tibble() |> 
-    separate_wider_delim(expr, delim = "::", names = c("package_name", "function_name")) |> 
-    mutate(time = time / 1000000,
-           pkg_fct = paste(package_name, function_name, sep = " "))
+plot_benchmark_single <- function(microbenchmark_output, width){
   
-  med_time <- microbenchmark_output |> 
+  df <- microbenchmark_output |>
+    ungroup() |> 
+    dplyr::filter(.data$window_width > width) |> 
+      separate_wider_delim(expr, delim = "::", names = c("package_name", "function_name")) |> 
+      mutate(time = time / 1000000,
+             pkg_fct = paste(package_name, function_name, sep = " "))
+  
+  med_time <- df |> 
     group_by(pkg_fct) |> 
     summarise(time = round(median(time), 2)) |> 
     mutate(time = paste(time, "ms"))
   
-  microbenchmark_output |> 
+  df |> 
     ggplot(aes(x = fct_reorder(pkg_fct, time, .desc = TRUE), y = time, fill = pkg_fct)) +
     # ggdist::stat_interval() +
     # geom_boxplot(outliers = FALSE) +
@@ -196,78 +194,176 @@ plot_benchmark_single <- function(microbenchmark_output){
     ggdist::theme_ggdist() +
     theme(
       panel.grid.major.x = element_line(colour = "grey70"),
-      panel.grid.minor.x = element_line(colour = "grey90")
+      panel.grid.minor.x = element_line(colour = "grey90"),
+      text = element_text('mono')
     )
+}
+
+plot_benchmark_multi <- function(microbenchmark_output){
+  
+  microbenchmark_output <- microbenchmark_output |> 
+      separate_wider_delim(expr, delim = "::", names = c("package_name", "function_name")) |> 
+      mutate(time = time / 1000000,
+             pkg_fct = paste(package_name, function_name, sep = " "))
+  
+  med_time <- microbenchmark_output |> 
+    group_by(pkg_fct, window_width) |> 
+    filter(window_width == 101) |>
+    summarise(time = round(median(time), 2)) |> 
+    mutate(time = paste(time, "ms"))
+  
+  microbenchmark_output |> 
+    ggplot(aes(x = fct_reorder(pkg_fct, time, .desc = TRUE), y = time, color = factor(window_width))) +
+    stat_interval(aes(color_ramp = after_stat(level)), position = "dodge", .width = c(0.25, 0.5, 0.8, 0.95)) +
+    geom_text(
+      data = med_time, 
+      aes(x = pkg_fct, y = Inf, label = time), 
+      hjust = 1,
+      show.legend = FALSE
+      ) +
+    scale_y_log10(breaks=trans_breaks("log10", function(x) 10^x, n=4)) +
+    scale_x_discrete(labels = label_wrap(10)) +
+    scale_colour_paletteer_d("ltc::trio3", direction = -1) +
+    coord_flip() +
+    ylab("Time (ms)") +
+    guides(colour = guide_legend("Window width (n)"),
+           color_ramp = guide_legend("Probability intervals")
+           ) +
+    xlab("") +
+    ggdist::theme_ggdist() +
+    theme(
+      panel.grid.major.x = element_line(colour = "grey70"),
+      panel.grid.minor.x = element_line(colour = "grey90"),
+      text = element_text('mono')
+    )
+}
+
+plot_benchmark <- function(microbenchmark_output, ref_width, title){
+  a <- plot_benchmark_multi(microbenchmark_output)
+  # b <- plot_benchmark_single(microbenchmark_output, ref_width)
+  # (a / b)
+  a + plot_annotation(title = paste("<strong>Benchmark for: Rolling", title, "</strong>"),
+                            subtitle = "We test the speed and scaling. We use window sizes of <span style='color:#009E73FF;'><strong>11</strong></span>, <span style='color:#56B4E9FF;'><strong>101</strong></span> and <span style='color:#E69F00FF;'><strong>1001</strong></span>. <br>To the right is the **median** time for the <span style='color:#56B4E9FF;'><strong>101</strong></span> window.",
+                            theme = theme(text = element_text('mono'),
+                                          plot.title = ggtext::element_markdown(lineheight = 1.1),
+                                          plot.subtitle = ggtext::element_markdown(lineheight = 1.1)
+                                          )
+                      )
 }
 ```
 
 
 ## Mean
 
-```{r}
-bm_mean <- microbenchmark(
-  "data.table::frollmean" = data.table::frollmean(df$x, n, align = "right"),
-  "roll::roll_mean" = roll::roll_mean(df$x, width = n),
-  "RollingWindow::RollingMean" = RollingWindow::RollingMean(df$x, n),
-  "runstats::RunningMean" = runstats::RunningMean(df$x, W = n),
-  "slider::slide_mean" = slider::slide_mean(df$x, before = n-1, complete = TRUE),
-  "RcppRoll::roll_meanr" = RcppRoll::roll_meanr(df$x, n = n, fill = NA),
-  "zoo::rollmeanr" = zoo::rollmeanr(df$x, k = n, fill = NA),
-  "runner::mean_run" = runner::mean_run(df$x, k = n, na_pad = TRUE),
-  times = n_times)
-bm_mean |> 
-  plot_benchmark_single()
+```{r mean}
+#| code-fold: true
+#| code-summary: "Benchmarking code"
+#| message: false
+bm_mean <- data.frame()
 
+for (n in window_widths){
+  bm_mean <- microbenchmark(
+    "data.table::frollmean" = data.table::frollmean(df$x, n, align = "right"),
+    "roll::roll_mean" = roll::roll_mean(df$x, width = n),
+    "RollingWindow::RollingMean" = RollingWindow::RollingMean(df$x, n),
+    "runstats::RunningMean" = runstats::RunningMean(df$x, W = n),
+    "slider::slide_mean" = slider::slide_mean(df$x, before = n-1, complete = TRUE),
+    "RcppRoll::roll_meanr" = RcppRoll::roll_meanr(df$x, n = n, fill = NA),
+    "zoo::rollmeanr" = zoo::rollmeanr(df$x, k = n, fill = NA),
+    "runner::mean_run" = runner::mean_run(df$x, k = n, na_pad = TRUE),
+    times = n_times) |> 
+    mutate(window_width = n) |> 
+    bind_rows(bm_mean)
+}
+
+bm_mean |> 
+  plot_benchmark(101, "mean")
 ```
 
 ## Median
 
-```{r}
-bm_median <- microbenchmark(
-  "data.table::frollmedian" = data.table::frollmedian(df$x, n),
-  "RcppRoll::roll_median" = RcppRoll::roll_median(df$x, n = n, fill = NA),
-  "roll::roll_median" = roll::roll_median(df$x, width = n),
-  "RollingWindow::RollingMedian" = RollingWindow::RollingMedian(df$x, n),
-  "zoo::rollmedianr" = zoo::rollmedianr(df$x, k = n, fill = NA),
-  times = n_times)
+```{r median}
+#| code-fold: true
+#| code-summary: "Benchmarking code"
+#| message: false
+bm_median <- data.frame()
+
+for (n in window_widths){
+  bm_median <- microbenchmark(
+    "data.table::frollmedian" = data.table::frollmedian(df$x, n),
+    "RcppRoll::roll_median" = RcppRoll::roll_median(df$x, n = n, fill = NA),
+    "roll::roll_median" = roll::roll_median(df$x, width = n),
+    "RollingWindow::RollingMedian" = RollingWindow::RollingMedian(df$x, n),
+    "zoo::rollmedianr" = zoo::rollmedianr(df$x, k = n, fill = NA),
+    times = n_times) |> 
+    mutate(window_width = n) |> 
+    bind_rows(bm_median)
+}
+
 bm_median |> 
-  plot_benchmark_single()
+  plot_benchmark(101, "median")
 ```
 
 ## Min
 
-```{r}
-bm_min <- microbenchmark(
-  "data.table::frollmin" = data.table::frollmin(df$x, n),
-  "RcppRoll::roll_min" = RcppRoll::roll_min(df$x, n = n, fill = NA),
-  "roll::roll_min" = roll::roll_min(df$x, width = n),
-  "RollingWindow::RollingMin" = RollingWindow::RollingMin(df$x, n),
-  "slider::slide_min" = slider::slide_min(df$x, before = n-1, complete = TRUE),
-  "runner::min_run" = runner::min_run(df$x, k = n, na_pad = TRUE),
-  times = n_times)
+```{r min}
+#| code-fold: true
+#| code-summary: "Benchmarking code"
+#| message: false
+bm_min <- data.frame()
+
+for (n in window_widths){
+  bm_min <- microbenchmark(
+    "data.table::frollmin" = data.table::frollmin(df$x, n),
+    "RcppRoll::roll_min" = RcppRoll::roll_min(df$x, n = n, fill = NA),
+    "roll::roll_min" = roll::roll_min(df$x, width = n),
+    "RollingWindow::RollingMin" = RollingWindow::RollingMin(df$x, n),
+    "slider::slide_min" = slider::slide_min(df$x, before = n-1, complete = TRUE),
+    "runner::min_run" = runner::min_run(df$x, k = n, na_pad = TRUE),
+    times = n_times) |> 
+    mutate(window_width = n) |> 
+    bind_rows(bm_min)
+}
+
 bm_min |> 
-  plot_benchmark_single()
+  plot_benchmark(101, "min")
 ```
 
 ## Max
 
-```{r}
-bm_max <- microbenchmark(
-  "data.table::frollmax" = data.table::frollmax(df$x, n),
-  "RcppRoll::roll_max" = RcppRoll::roll_max(df$x, n = n, fill = NA),
-  "roll::roll_max" = roll::roll_max(df$x, width = n),
-  "RollingWindow::RollingMax" = RollingWindow::RollingMax(df$x, n),
-  "runner::max_run" = runner::max_run(df$x, k = n, na_pad = TRUE),
-  "slider::slide_max" = slider::slide_max(df$x, before = n-1, complete = TRUE),
-  "zoo::rollmax" = zoo::rollmax(df$x, k = n, fill = NA),
-  times = n_times)
+```{r max}
+#| code-fold: true
+#| code-summary: "Benchmarking code"
+#| message: false
+bm_max <- data.frame()
+
+for (n in window_widths){
+  bm_max <- microbenchmark(
+    "data.table::frollmax" = data.table::frollmax(df$x, n),
+    "RcppRoll::roll_max" = RcppRoll::roll_max(df$x, n = n, fill = NA),
+    "roll::roll_max" = roll::roll_max(df$x, width = n),
+    "RollingWindow::RollingMax" = RollingWindow::RollingMax(df$x, n),
+    "runner::max_run" = runner::max_run(df$x, k = n, na_pad = TRUE),
+    "slider::slide_max" = slider::slide_max(df$x, before = n-1, complete = TRUE),
+    "zoo::rollmax" = zoo::rollmax(df$x, k = n, fill = NA),
+    times = n_times) |> 
+    mutate(window_width = n) |> 
+    bind_rows(bm_max)
+}
+
 bm_max |> 
-  plot_benchmark_single()
+  plot_benchmark(101, "max")
 ```
 
 ## Sum
 
-```{r}
+```{r sum}
+#| code-fold: true
+#| code-summary: "Benchmarking code"
+#| message: false
+bm_sum <- data.frame()
+
+for (n in window_widths){
 bm_sum <- microbenchmark(
     "data.table::frollsum, exact" = data.table::frollsum(df$x, n, algo = "exact"),
     "data.table::frollsum, fast" = data.table::frollsum(df$x, n, algo = "fast"),
@@ -277,69 +373,66 @@ bm_sum <- microbenchmark(
     "runner::sum_run" = runner::sum_run(df$x, k = n, na_pad = TRUE),
     "slider::slide_sum" = slider::slide_sum(df$x, before = n-1, complete = TRUE),
     "zoo::rollsum" = zoo::rollsum(df$x, n, fill = NA),
-    times = n_times)
+    times = n_times) |> 
+    mutate(window_width = n) |> 
+    bind_rows(bm_sum)
+}
+
 bm_sum |> 
-  plot_benchmark_single()
+  plot_benchmark(101, "sum")
 ```
 
 ## SD
 
-```{r}
+```{r sd}
+#| code-fold: true
+#| code-summary: "Benchmarking code"
+#| message: false
+bm_sd <- data.frame()
+
+for (n in window_widths){
 bm_sd <- microbenchmark(
   "RcppRoll::roll_sd" = RcppRoll::roll_sd(df$x, n = n, fill = NA),
   "roll::roll_sd" = roll::roll_sd(df$x, width = n),
   "RollingWindow::RollingStd" = RollingWindow::RollingStd(df$x, n),
   "runstats::RunningSd" = runstats::RunningSd(df$x, W = n),
-  times = n_times)
+  times = n_times) |> 
+    mutate(window_width = n) |> 
+    bind_rows(bm_sd)
+}
+
 bm_sd |> 
-  plot_benchmark_single()
+  plot_benchmark(101, "sd")
 ```
 
 ## Custom functions
 
-These functions are not optimised like the others, so they take a lot longer... so I'll use fewer iterations here.
+These functions are not optimised like the others, so they take a lot longer... so I'll use fewer iterations here. To test it, I've simply implemented a `sum_custom` function that is *not* optimised.
 
-```{r}
-bm_custom <- microbenchmark(
-  "data.table::frollapply" = data.table::frollapply(df$x, n, sum),
-  "zoo::rollapply" = zoo::rollapply(df$x, n, sum),
-  times = 5)
-bm_custom |> 
-  plot_benchmark_single()
-```
+```{r custom}
+#| code-fold: true
+#| code-summary: "Benchmarking code"
+#| message: false
+bm_custom <- data.frame()
 
-```{r eval=FALSE, include=FALSE}
-
-df_sum <- tibble()
-windows <- c(3, 5, 11, 21, 31, 41, 51, 61, 71, 81, 91, 101)
-for (n in windows){
-  n_half <- floor(n/2)
-  res <- microbenchmark(
-    "data.table::frollsum, fast" = data.table::frollsum(df$x, n, algo = "fast"),
-    "roll::roll_sum" = roll::roll_sum(df$x, width = n),
-    "RollingWindow::RollingSum" = RollingWindow::RollingSum(df$x, n),
-    "slider::slide_sum" = slider::slide_sum(df$x, before = n_half, after = n_half),
-    "data.table::frollsum, exact" = data.table::frollsum(df$x, n, algo = "exact"),
-    "RcppRoll::roll_sum" = RcppRoll::roll_sum(df$x, n = n, fill = NA),
-    "zoo::rollsum" = zoo::rollsum(df$x, n, fill = NA),
-    "runner::sum_run" = runner::sum_run(df$x, k = n, na_pad = TRUE),
-    times = 5) |> 
-    mutate(window = n)
-  
-  df_sum <- dplyr::bind_rows(df_sum, res)
+sum_custom <- function(v){
+  s <- 0
+  for (i in v){
+    s <- s+i
+  }
 }
 
-library(ggplot2)
-df_sum_summarised <- df_sum |> 
-  # filter(expr != "runner::sum_run") |> 
-  group_by(expr, window) |>
-  summarise(time = median(time) / 1000000)
-df_sum |> 
-  # filter(expr != "runner::sum_run") |> 
-  mutate(time = time / 1000000) |> 
-ggplot(aes(window, time, colour =  expr)) +
-  geom_jitter(alpha = 0.1) +
-  geom_line(data = df_sum_summarised)
+for (n in window_widths){
+bm_custom <- microbenchmark(
+  "data.table::frollapply" = data.table::frollapply(df$x, n, sum_custom),
+  "zoo::rollapply" = zoo::rollapply(df$x, n, sum_custom),
+  times = 5) |> 
+    mutate(window_width = n) |> 
+    bind_rows(bm_custom)
+}
+
+bm_custom |> 
+  plot_benchmark(101, "custom function")
 ```
 
 # Conclusion

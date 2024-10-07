@@ -30,7 +30,7 @@ renv::snapshot(
 
 ```{r}
 #| include: false
-lock_path <- paste(here::here(), "renv/profiles/2024-renv-blog/renv.lock", sep = "/")
+lock_path <- paste(renv::project(), "renv/profiles/2024-renv-blog/renv.lock", sep = "/")
 renv::use(lockfile = lock_path)
 ```
 

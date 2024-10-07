@@ -104,11 +104,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 <meta property="og:title" content="Benchmarking rolling window functions in R | Mikkel Roald-Arbøl">
 <meta property="og:description" content="Rolling, running or sliding window functions; there are many names, for these powerful tools. Here I benchmark the speed of rolling functions from a range of R packages.">
-<meta property="og:image" content="https://roald-arboel.com/blog/posts/2024/10/03/Benchmark-rolling/pretty-r.png">
+<meta property="og:image" content="https://roald-arboel.com/blog/posts/2024/10/03/Benchmark-rolling/data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg==">
 <meta property="og:site_name" content="Mikkel Roald-Arbøl">
-<meta property="og:image:height" content="1102">
-<meta property="og:image:width" content="1920">
-<meta property="og:image:alt" content="Two fuzzy monsters decorating the R logo.">
 </head>
 <body class="nav-fixed">
 
@@ -214,7 +211,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Modified</div>
       <div class="quarto-title-meta-contents">
-        <p class="date-modified">October 4, 2024</p>
+        <p class="date-modified">October 7, 2024</p>
       </div>
     </div>
       
@@ -249,19 +246,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul><div class="toc-actions"><ul><li><a href="https://github.com/roaldarbol/roaldarbol.github.io/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content"><div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="pretty-r.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%" alt="Two fuzzy monsters decorating the R logo."></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="gray-italic center-text">
-<p>Art by <a href="https://allisonhorst.com/">Allison Horst</a></p>
-</div>
-<hr>
-<p>Rolling functions are widely used in science, especially when working with smoothing and/or time series. They also form the basis of feature extraction from time series, used for many classification methods in machine learning. Simply put, they take a window of <code>k</code> values at a time and perform some mathematical operation on them. When I started out using rolling functions for smoothing animal movement paths, I used <a href="https://zoo.R-Forge.R-project.org/">zoo</a>’s <code>rollmean()</code>. With large data sets, this step always took a long time. Only much later did I realise that many packages exist that tackle this issue. I’ve used a number of them in my work, but now I decided to put them to the test! Which package is fastest?! Of course it’s a little more nuanced than that: There are many different types of rolling functions, and extra functionality that one might need. Although we try to narrow the tests to avoid them getting out of hand, it does mean it will be a long post with lots of numbers, but hopefully it will prove useful for both you and me. :-)</p>
+<main class="content quarto-banner-title-block" id="quarto-document-content"><p>Rolling functions are widely used in science, especially when working with smoothing and/or time series. They also form the basis of feature extraction from time series, used for many classification methods in machine learning. Simply put, they take a window of <code>k</code> values at a time and perform some mathematical operation on them. When I started out using rolling functions for smoothing animal movement paths, I used <a href="https://zoo.R-Forge.R-project.org/">zoo</a>’s <code>rollmean()</code>. With large data sets, this step always took a long time. Only much later did I realise that many packages exist that tackle this issue. I’ve used a number of them in my work, but now I decided to put them to the test! Which package is fastest?! Of course it’s a little more nuanced than that: There are many different types of rolling functions, and extra functionality that one might need. Although we try to narrow the tests to avoid them getting out of hand, it does mean it will be a long post with lots of numbers, but hopefully it will prove useful for both you and me. :-)</p>
 <section id="which-functions" class="level2"><h2 class="anchored" data-anchor-id="which-functions">Which functions?</h2>
 <p>Rolling functions can in principle be used with any function that produces a single value from a vector (see custom functions below). But some are common and have their own functions with optimised algorithms have been developed for them. We are considering the following computations:</p>
 <ul>
@@ -359,44 +344,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>(<strong>TODO</strong> Range of window widths to assess scaling)</li>
 </ul>
 <p>Let’s get started! First we’ll import all the packages we need. I use the <a href="https://github.com/joshuaulrich/microbenchmark/">microbenchmark</a> package for the tests and <a href="https://ggplot2.tidyverse.org">ggplot2</a> for some graphs of the results.</p>
-<div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://scales.r-lib.org">scales</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://mjskay.github.io/ggdist/">ggdist</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/joshuaulrich/microbenchmark/">microbenchmark</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-lib/slider">slider</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">runner</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://zoo.R-Forge.R-project.org/">zoo</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">RollingWindow</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">RcppRoll</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jasonjfoster/roll">roll</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/martakarass/runstats">runstats</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
 </section><section id="set-variables" class="level2"><h2 class="anchored" data-anchor-id="set-variables">Set variables</h2>
 <p>For the benchmark we’ll make a vector of a million values, all drawn from a Gaussian distribution (doesn’t really matter where there come from), but the important thing is that they are <em>floating numbers</em>, not <em>integers</em>. Initially we’ll set the window width to 51 - the width needs to be an uneven number. And we set the number of times to run each test to 10.</p>
 <div class="cell">
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">12345</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">12345</span><span class="op">)</span></span>
 <span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">1000000</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">51</span></span>
 <span><span class="va">n_times</span> <span class="op">&lt;-</span> <span class="fl">20</span></span>
-<span><span class="va">n_half</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">floor</a></span><span class="op">(</span><span class="va">n</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">window_widths</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">11</span>, <span class="fl">101</span>, <span class="fl">1001</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<details class="code-fold"><summary>Just making the plotting function here</summary><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">plot_benchmark_single</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">microbenchmark_output</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="va">microbenchmark_output</span> <span class="op">&lt;-</span> <span class="va">microbenchmark_output</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu">as_tibble</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu">separate_wider_delim</span><span class="op">(</span><span class="va">expr</span>, delim <span class="op">=</span> <span class="st">"::"</span>, names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"package_name"</span>, <span class="st">"function_name"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu">mutate</span><span class="op">(</span>time <span class="op">=</span> <span class="va">time</span> <span class="op">/</span> <span class="fl">1000000</span>,</span>
-<span>           pkg_fct <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">package_name</span>, <span class="va">function_name</span>, sep <span class="op">=</span> <span class="st">" "</span><span class="op">)</span><span class="op">)</span></span>
+<details class="code-fold"><summary>Just making the plotting functions here</summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://scales.r-lib.org">scales</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://mjskay.github.io/ggdist/">ggdist</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/EmilHvitfeldt/paletteer">paletteer</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com">patchwork</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">plot_benchmark_single</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">microbenchmark_output</span>, <span class="va">width</span><span class="op">)</span><span class="op">{</span></span>
 <span>  </span>
-<span>  <span class="va">med_time</span> <span class="op">&lt;-</span> <span class="va">microbenchmark_output</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="va">df</span> <span class="op">&lt;-</span> <span class="va">microbenchmark_output</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">ungroup</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu">filter</span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">window_width</span> <span class="op">&gt;</span> <span class="va">width</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>      <span class="fu">separate_wider_delim</span><span class="op">(</span><span class="va">expr</span>, delim <span class="op">=</span> <span class="st">"::"</span>, names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"package_name"</span>, <span class="st">"function_name"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>      <span class="fu">mutate</span><span class="op">(</span>time <span class="op">=</span> <span class="va">time</span> <span class="op">/</span> <span class="fl">1000000</span>,</span>
+<span>             pkg_fct <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">package_name</span>, <span class="va">function_name</span>, sep <span class="op">=</span> <span class="st">" "</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="va">med_time</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu">group_by</span><span class="op">(</span><span class="va">pkg_fct</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu">summarise</span><span class="op">(</span>time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu">mutate</span><span class="op">(</span>time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">time</span>, <span class="st">"ms"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  </span>
-<span>  <span class="va">microbenchmark_output</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="va">df</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="fu">fct_reorder</span><span class="op">(</span><span class="va">pkg_fct</span>, <span class="va">time</span>, .desc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, y <span class="op">=</span> <span class="va">time</span>, fill <span class="op">=</span> <span class="va">pkg_fct</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="co"># ggdist::stat_interval() +</span></span>
 <span>    <span class="co"># geom_boxplot(outliers = FALSE) +</span></span>
@@ -413,92 +389,176 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>    <span class="fu">ggdist</span><span class="fu">::</span><span class="fu">theme_ggdist</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">theme</span><span class="op">(</span></span>
 <span>      panel.grid.major.x <span class="op">=</span> <span class="fu">element_line</span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"grey70"</span><span class="op">)</span>,</span>
-<span>      panel.grid.minor.x <span class="op">=</span> <span class="fu">element_line</span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"grey90"</span><span class="op">)</span></span>
+<span>      panel.grid.minor.x <span class="op">=</span> <span class="fu">element_line</span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"grey90"</span><span class="op">)</span>,</span>
+<span>      text <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span><span class="st">'mono'</span><span class="op">)</span></span>
 <span>    <span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">plot_benchmark_multi</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">microbenchmark_output</span><span class="op">)</span><span class="op">{</span></span>
+<span>  </span>
+<span>  <span class="va">microbenchmark_output</span> <span class="op">&lt;-</span> <span class="va">microbenchmark_output</span> <span class="op">|&gt;</span> </span>
+<span>      <span class="fu">separate_wider_delim</span><span class="op">(</span><span class="va">expr</span>, delim <span class="op">=</span> <span class="st">"::"</span>, names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"package_name"</span>, <span class="st">"function_name"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>      <span class="fu">mutate</span><span class="op">(</span>time <span class="op">=</span> <span class="va">time</span> <span class="op">/</span> <span class="fl">1000000</span>,</span>
+<span>             pkg_fct <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">package_name</span>, <span class="va">function_name</span>, sep <span class="op">=</span> <span class="st">" "</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="va">med_time</span> <span class="op">&lt;-</span> <span class="va">microbenchmark_output</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">group_by</span><span class="op">(</span><span class="va">pkg_fct</span>, <span class="va">window_width</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">window_width</span> <span class="op">==</span> <span class="fl">101</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">summarise</span><span class="op">(</span>time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">time</span>, <span class="st">"ms"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="va">microbenchmark_output</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="fu">fct_reorder</span><span class="op">(</span><span class="va">pkg_fct</span>, <span class="va">time</span>, .desc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, y <span class="op">=</span> <span class="va">time</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">window_width</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">stat_interval</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>color_ramp <span class="op">=</span> <span class="fu">after_stat</span><span class="op">(</span><span class="va">level</span><span class="op">)</span><span class="op">)</span>, position <span class="op">=</span> <span class="st">"dodge"</span>, .width <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span>, <span class="fl">0.95</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">geom_text</span><span class="op">(</span></span>
+<span>      data <span class="op">=</span> <span class="va">med_time</span>, </span>
+<span>      <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">pkg_fct</span>, y <span class="op">=</span> <span class="cn">Inf</span>, label <span class="op">=</span> <span class="va">time</span><span class="op">)</span>, </span>
+<span>      hjust <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>      show.legend <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>      <span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">scale_y_log10</span><span class="op">(</span>breaks<span class="op">=</span><span class="fu">trans_breaks</span><span class="op">(</span><span class="st">"log10"</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fl">10</span><span class="op">^</span><span class="va">x</span>, n<span class="op">=</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">scale_x_discrete</span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">label_wrap</span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">scale_colour_paletteer_d</span><span class="op">(</span><span class="st">"ltc::trio3"</span>, direction <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">coord_flip</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">ylab</span><span class="op">(</span><span class="st">"Time (ms)"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">guides</span><span class="op">(</span>colour <span class="op">=</span> <span class="fu">guide_legend</span><span class="op">(</span><span class="st">"Window width (n)"</span><span class="op">)</span>,</span>
+<span>           color_ramp <span class="op">=</span> <span class="fu">guide_legend</span><span class="op">(</span><span class="st">"Probability intervals"</span><span class="op">)</span></span>
+<span>           <span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">xlab</span><span class="op">(</span><span class="st">""</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">ggdist</span><span class="fu">::</span><span class="fu">theme_ggdist</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">theme</span><span class="op">(</span></span>
+<span>      panel.grid.major.x <span class="op">=</span> <span class="fu">element_line</span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"grey70"</span><span class="op">)</span>,</span>
+<span>      panel.grid.minor.x <span class="op">=</span> <span class="fu">element_line</span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"grey90"</span><span class="op">)</span>,</span>
+<span>      text <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span><span class="st">'mono'</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">plot_benchmark</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">microbenchmark_output</span>, <span class="va">ref_width</span>, <span class="va">title</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="va">a</span> <span class="op">&lt;-</span> <span class="fu">plot_benchmark_multi</span><span class="op">(</span><span class="va">microbenchmark_output</span><span class="op">)</span></span>
+<span>  <span class="co"># b &lt;- plot_benchmark_single(microbenchmark_output, ref_width)</span></span>
+<span>  <span class="co"># (a / b)</span></span>
+<span>  <span class="va">a</span> <span class="op">+</span> <span class="fu">plot_annotation</span><span class="op">(</span>title <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"&lt;strong&gt;Benchmark for: Rolling"</span>, <span class="va">title</span>, <span class="st">"&lt;/strong&gt;"</span><span class="op">)</span>,</span>
+<span>                            subtitle <span class="op">=</span> <span class="st">"We test the speed and scaling. We use window sizes of &lt;span style='color:#009E73FF;'&gt;&lt;strong&gt;11&lt;/strong&gt;&lt;/span&gt;, &lt;span style='color:#56B4E9FF;'&gt;&lt;strong&gt;101&lt;/strong&gt;&lt;/span&gt; and &lt;span style='color:#E69F00FF;'&gt;&lt;strong&gt;1001&lt;/strong&gt;&lt;/span&gt;. &lt;br&gt;To the right is the **median** time for the &lt;span style='color:#56B4E9FF;'&gt;&lt;strong&gt;101&lt;/strong&gt;&lt;/span&gt; window."</span>,</span>
+<span>                            theme <span class="op">=</span> <span class="fu">theme</span><span class="op">(</span>text <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span><span class="st">'mono'</span><span class="op">)</span>,</span>
+<span>                                          plot.title <span class="op">=</span> <span class="fu">ggtext</span><span class="fu">::</span><span class="fu">element_markdown</span><span class="op">(</span>lineheight <span class="op">=</span> <span class="fl">1.1</span><span class="op">)</span>,</span>
+<span>                                          plot.subtitle <span class="op">=</span> <span class="fu">ggtext</span><span class="fu">::</span><span class="fu">element_markdown</span><span class="op">(</span>lineheight <span class="op">=</span> <span class="fl">1.1</span><span class="op">)</span></span>
+<span>                                          <span class="op">)</span></span>
+<span>                      <span class="op">)</span></span>
 <span><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section><section id="mean" class="level2"><h2 class="anchored" data-anchor-id="mean">Mean</h2>
 <div class="cell">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bm_mean</span> <span class="op">&lt;-</span> <span class="fu">microbenchmark</span><span class="op">(</span></span>
-<span>  <span class="st">"data.table::frollmean"</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu">frollmean</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span>, align <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span>,</span>
-<span>  <span class="st">"roll::roll_mean"</span> <span class="op">=</span> <span class="fu">roll</span><span class="fu">::</span><span class="fu">roll_mean</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, width <span class="op">=</span> <span class="va">n</span><span class="op">)</span>,</span>
-<span>  <span class="st">"RollingWindow::RollingMean"</span> <span class="op">=</span> <span class="fu">RollingWindow</span><span class="fu">::</span><span class="fu">RollingMean</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span><span class="op">)</span>,</span>
-<span>  <span class="st">"runstats::RunningMean"</span> <span class="op">=</span> <span class="fu">runstats</span><span class="fu">::</span><span class="fu">RunningMean</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, W <span class="op">=</span> <span class="va">n</span><span class="op">)</span>,</span>
-<span>  <span class="st">"slider::slide_mean"</span> <span class="op">=</span> <span class="fu">slider</span><span class="fu">::</span><span class="fu">slide_mean</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, before <span class="op">=</span> <span class="va">n</span><span class="op">-</span><span class="fl">1</span>, complete <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>  <span class="st">"RcppRoll::roll_meanr"</span> <span class="op">=</span> <span class="fu">RcppRoll</span><span class="fu">::</span><span class="fu">roll_meanr</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, n <span class="op">=</span> <span class="va">n</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
-<span>  <span class="st">"zoo::rollmeanr"</span> <span class="op">=</span> <span class="fu">zoo</span><span class="fu">::</span><span class="fu">rollmeanr</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, k <span class="op">=</span> <span class="va">n</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
-<span>  <span class="st">"runner::mean_run"</span> <span class="op">=</span> <span class="fu">runner</span><span class="fu">::</span><span class="fu">mean_run</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, k <span class="op">=</span> <span class="va">n</span>, na_pad <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>  times <span class="op">=</span> <span class="va">n_times</span><span class="op">)</span></span>
+<details class="code-fold"><summary>Benchmarking code</summary><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bm_mean</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">n</span> <span class="kw">in</span> <span class="va">window_widths</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="va">bm_mean</span> <span class="op">&lt;-</span> <span class="fu">microbenchmark</span><span class="op">(</span></span>
+<span>    <span class="st">"data.table::frollmean"</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu">frollmean</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span>, align <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span>,</span>
+<span>    <span class="st">"roll::roll_mean"</span> <span class="op">=</span> <span class="fu">roll</span><span class="fu">::</span><span class="fu">roll_mean</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, width <span class="op">=</span> <span class="va">n</span><span class="op">)</span>,</span>
+<span>    <span class="st">"RollingWindow::RollingMean"</span> <span class="op">=</span> <span class="fu">RollingWindow</span><span class="fu">::</span><span class="fu">RollingMean</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span><span class="op">)</span>,</span>
+<span>    <span class="st">"runstats::RunningMean"</span> <span class="op">=</span> <span class="fu">runstats</span><span class="fu">::</span><span class="fu">RunningMean</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, W <span class="op">=</span> <span class="va">n</span><span class="op">)</span>,</span>
+<span>    <span class="st">"slider::slide_mean"</span> <span class="op">=</span> <span class="fu">slider</span><span class="fu">::</span><span class="fu">slide_mean</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, before <span class="op">=</span> <span class="va">n</span><span class="op">-</span><span class="fl">1</span>, complete <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    <span class="st">"RcppRoll::roll_meanr"</span> <span class="op">=</span> <span class="fu">RcppRoll</span><span class="fu">::</span><span class="fu">roll_meanr</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, n <span class="op">=</span> <span class="va">n</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>    <span class="st">"zoo::rollmeanr"</span> <span class="op">=</span> <span class="fu">zoo</span><span class="fu">::</span><span class="fu">rollmeanr</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, k <span class="op">=</span> <span class="va">n</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>    <span class="st">"runner::mean_run"</span> <span class="op">=</span> <span class="fu">runner</span><span class="fu">::</span><span class="fu">mean_run</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, k <span class="op">=</span> <span class="va">n</span>, na_pad <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    times <span class="op">=</span> <span class="va">n_times</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>window_width <span class="op">=</span> <span class="va">n</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">bind_rows</span><span class="op">(</span><span class="va">bm_mean</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
 <span><span class="va">bm_mean</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">plot_benchmark_single</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
+<span>  <span class="fu">plot_benchmark</span><span class="op">(</span><span class="fl">101</span>, <span class="st">"mean"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="index_files/figure-html/mean-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 </section><section id="median" class="level2"><h2 class="anchored" data-anchor-id="median">Median</h2>
 <div class="cell">
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bm_median</span> <span class="op">&lt;-</span> <span class="fu">microbenchmark</span><span class="op">(</span></span>
-<span>  <span class="st">"data.table::frollmedian"</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu">frollmedian</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span><span class="op">)</span>,</span>
-<span>  <span class="st">"RcppRoll::roll_median"</span> <span class="op">=</span> <span class="fu">RcppRoll</span><span class="fu">::</span><span class="fu">roll_median</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, n <span class="op">=</span> <span class="va">n</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
-<span>  <span class="st">"roll::roll_median"</span> <span class="op">=</span> <span class="fu">roll</span><span class="fu">::</span><span class="fu">roll_median</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, width <span class="op">=</span> <span class="va">n</span><span class="op">)</span>,</span>
-<span>  <span class="st">"RollingWindow::RollingMedian"</span> <span class="op">=</span> <span class="fu">RollingWindow</span><span class="fu">::</span><span class="fu">RollingMedian</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span><span class="op">)</span>,</span>
-<span>  <span class="st">"zoo::rollmedianr"</span> <span class="op">=</span> <span class="fu">zoo</span><span class="fu">::</span><span class="fu">rollmedianr</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, k <span class="op">=</span> <span class="va">n</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
-<span>  times <span class="op">=</span> <span class="va">n_times</span><span class="op">)</span></span>
+<details class="code-fold"><summary>Benchmarking code</summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bm_median</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">n</span> <span class="kw">in</span> <span class="va">window_widths</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="va">bm_median</span> <span class="op">&lt;-</span> <span class="fu">microbenchmark</span><span class="op">(</span></span>
+<span>    <span class="st">"data.table::frollmedian"</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu">frollmedian</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span><span class="op">)</span>,</span>
+<span>    <span class="st">"RcppRoll::roll_median"</span> <span class="op">=</span> <span class="fu">RcppRoll</span><span class="fu">::</span><span class="fu">roll_median</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, n <span class="op">=</span> <span class="va">n</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>    <span class="st">"roll::roll_median"</span> <span class="op">=</span> <span class="fu">roll</span><span class="fu">::</span><span class="fu">roll_median</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, width <span class="op">=</span> <span class="va">n</span><span class="op">)</span>,</span>
+<span>    <span class="st">"RollingWindow::RollingMedian"</span> <span class="op">=</span> <span class="fu">RollingWindow</span><span class="fu">::</span><span class="fu">RollingMedian</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span><span class="op">)</span>,</span>
+<span>    <span class="st">"zoo::rollmedianr"</span> <span class="op">=</span> <span class="fu">zoo</span><span class="fu">::</span><span class="fu">rollmedianr</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, k <span class="op">=</span> <span class="va">n</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>    times <span class="op">=</span> <span class="va">n_times</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>window_width <span class="op">=</span> <span class="va">n</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">bind_rows</span><span class="op">(</span><span class="va">bm_median</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
 <span><span class="va">bm_median</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">plot_benchmark_single</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
+<span>  <span class="fu">plot_benchmark</span><span class="op">(</span><span class="fl">101</span>, <span class="st">"median"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="index_files/figure-html/median-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 </section><section id="min" class="level2"><h2 class="anchored" data-anchor-id="min">Min</h2>
 <div class="cell">
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bm_min</span> <span class="op">&lt;-</span> <span class="fu">microbenchmark</span><span class="op">(</span></span>
-<span>  <span class="st">"data.table::frollmin"</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu">frollmin</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span><span class="op">)</span>,</span>
-<span>  <span class="st">"RcppRoll::roll_min"</span> <span class="op">=</span> <span class="fu">RcppRoll</span><span class="fu">::</span><span class="fu">roll_min</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, n <span class="op">=</span> <span class="va">n</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
-<span>  <span class="st">"roll::roll_min"</span> <span class="op">=</span> <span class="fu">roll</span><span class="fu">::</span><span class="fu">roll_min</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, width <span class="op">=</span> <span class="va">n</span><span class="op">)</span>,</span>
-<span>  <span class="st">"RollingWindow::RollingMin"</span> <span class="op">=</span> <span class="fu">RollingWindow</span><span class="fu">::</span><span class="fu">RollingMin</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span><span class="op">)</span>,</span>
-<span>  <span class="st">"slider::slide_min"</span> <span class="op">=</span> <span class="fu">slider</span><span class="fu">::</span><span class="fu">slide_min</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, before <span class="op">=</span> <span class="va">n</span><span class="op">-</span><span class="fl">1</span>, complete <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>  <span class="st">"runner::min_run"</span> <span class="op">=</span> <span class="fu">runner</span><span class="fu">::</span><span class="fu">min_run</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, k <span class="op">=</span> <span class="va">n</span>, na_pad <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>  times <span class="op">=</span> <span class="va">n_times</span><span class="op">)</span></span>
+<details class="code-fold"><summary>Benchmarking code</summary><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bm_min</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">n</span> <span class="kw">in</span> <span class="va">window_widths</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="va">bm_min</span> <span class="op">&lt;-</span> <span class="fu">microbenchmark</span><span class="op">(</span></span>
+<span>    <span class="st">"data.table::frollmin"</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu">frollmin</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span><span class="op">)</span>,</span>
+<span>    <span class="st">"RcppRoll::roll_min"</span> <span class="op">=</span> <span class="fu">RcppRoll</span><span class="fu">::</span><span class="fu">roll_min</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, n <span class="op">=</span> <span class="va">n</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>    <span class="st">"roll::roll_min"</span> <span class="op">=</span> <span class="fu">roll</span><span class="fu">::</span><span class="fu">roll_min</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, width <span class="op">=</span> <span class="va">n</span><span class="op">)</span>,</span>
+<span>    <span class="st">"RollingWindow::RollingMin"</span> <span class="op">=</span> <span class="fu">RollingWindow</span><span class="fu">::</span><span class="fu">RollingMin</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span><span class="op">)</span>,</span>
+<span>    <span class="st">"slider::slide_min"</span> <span class="op">=</span> <span class="fu">slider</span><span class="fu">::</span><span class="fu">slide_min</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, before <span class="op">=</span> <span class="va">n</span><span class="op">-</span><span class="fl">1</span>, complete <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    <span class="st">"runner::min_run"</span> <span class="op">=</span> <span class="fu">runner</span><span class="fu">::</span><span class="fu">min_run</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, k <span class="op">=</span> <span class="va">n</span>, na_pad <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    times <span class="op">=</span> <span class="va">n_times</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>window_width <span class="op">=</span> <span class="va">n</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">bind_rows</span><span class="op">(</span><span class="va">bm_min</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
 <span><span class="va">bm_min</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">plot_benchmark_single</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
+<span>  <span class="fu">plot_benchmark</span><span class="op">(</span><span class="fl">101</span>, <span class="st">"min"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="index_files/figure-html/min-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 </section><section id="max" class="level2"><h2 class="anchored" data-anchor-id="max">Max</h2>
 <div class="cell">
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bm_max</span> <span class="op">&lt;-</span> <span class="fu">microbenchmark</span><span class="op">(</span></span>
-<span>  <span class="st">"data.table::frollmax"</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu">frollmax</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span><span class="op">)</span>,</span>
-<span>  <span class="st">"RcppRoll::roll_max"</span> <span class="op">=</span> <span class="fu">RcppRoll</span><span class="fu">::</span><span class="fu">roll_max</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, n <span class="op">=</span> <span class="va">n</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
-<span>  <span class="st">"roll::roll_max"</span> <span class="op">=</span> <span class="fu">roll</span><span class="fu">::</span><span class="fu">roll_max</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, width <span class="op">=</span> <span class="va">n</span><span class="op">)</span>,</span>
-<span>  <span class="st">"RollingWindow::RollingMax"</span> <span class="op">=</span> <span class="fu">RollingWindow</span><span class="fu">::</span><span class="fu">RollingMax</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span><span class="op">)</span>,</span>
-<span>  <span class="st">"runner::max_run"</span> <span class="op">=</span> <span class="fu">runner</span><span class="fu">::</span><span class="fu">max_run</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, k <span class="op">=</span> <span class="va">n</span>, na_pad <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>  <span class="st">"slider::slide_max"</span> <span class="op">=</span> <span class="fu">slider</span><span class="fu">::</span><span class="fu">slide_max</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, before <span class="op">=</span> <span class="va">n</span><span class="op">-</span><span class="fl">1</span>, complete <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>  <span class="st">"zoo::rollmax"</span> <span class="op">=</span> <span class="fu">zoo</span><span class="fu">::</span><span class="fu">rollmax</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, k <span class="op">=</span> <span class="va">n</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
-<span>  times <span class="op">=</span> <span class="va">n_times</span><span class="op">)</span></span>
+<details class="code-fold"><summary>Benchmarking code</summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bm_max</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">n</span> <span class="kw">in</span> <span class="va">window_widths</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="va">bm_max</span> <span class="op">&lt;-</span> <span class="fu">microbenchmark</span><span class="op">(</span></span>
+<span>    <span class="st">"data.table::frollmax"</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu">frollmax</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span><span class="op">)</span>,</span>
+<span>    <span class="st">"RcppRoll::roll_max"</span> <span class="op">=</span> <span class="fu">RcppRoll</span><span class="fu">::</span><span class="fu">roll_max</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, n <span class="op">=</span> <span class="va">n</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>    <span class="st">"roll::roll_max"</span> <span class="op">=</span> <span class="fu">roll</span><span class="fu">::</span><span class="fu">roll_max</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, width <span class="op">=</span> <span class="va">n</span><span class="op">)</span>,</span>
+<span>    <span class="st">"RollingWindow::RollingMax"</span> <span class="op">=</span> <span class="fu">RollingWindow</span><span class="fu">::</span><span class="fu">RollingMax</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span><span class="op">)</span>,</span>
+<span>    <span class="st">"runner::max_run"</span> <span class="op">=</span> <span class="fu">runner</span><span class="fu">::</span><span class="fu">max_run</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, k <span class="op">=</span> <span class="va">n</span>, na_pad <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    <span class="st">"slider::slide_max"</span> <span class="op">=</span> <span class="fu">slider</span><span class="fu">::</span><span class="fu">slide_max</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, before <span class="op">=</span> <span class="va">n</span><span class="op">-</span><span class="fl">1</span>, complete <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    <span class="st">"zoo::rollmax"</span> <span class="op">=</span> <span class="fu">zoo</span><span class="fu">::</span><span class="fu">rollmax</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, k <span class="op">=</span> <span class="va">n</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>    times <span class="op">=</span> <span class="va">n_times</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>window_width <span class="op">=</span> <span class="va">n</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">bind_rows</span><span class="op">(</span><span class="va">bm_max</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
 <span><span class="va">bm_max</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">plot_benchmark_single</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
+<span>  <span class="fu">plot_benchmark</span><span class="op">(</span><span class="fl">101</span>, <span class="st">"max"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="index_files/figure-html/max-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 </section><section id="sum" class="level2"><h2 class="anchored" data-anchor-id="sum">Sum</h2>
 <div class="cell">
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bm_sum</span> <span class="op">&lt;-</span> <span class="fu">microbenchmark</span><span class="op">(</span></span>
+<details class="code-fold"><summary>Benchmarking code</summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bm_sum</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">n</span> <span class="kw">in</span> <span class="va">window_widths</span><span class="op">)</span><span class="op">{</span></span>
+<span><span class="va">bm_sum</span> <span class="op">&lt;-</span> <span class="fu">microbenchmark</span><span class="op">(</span></span>
 <span>    <span class="st">"data.table::frollsum, exact"</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu">frollsum</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span>, algo <span class="op">=</span> <span class="st">"exact"</span><span class="op">)</span>,</span>
 <span>    <span class="st">"data.table::frollsum, fast"</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu">frollsum</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span>, algo <span class="op">=</span> <span class="st">"fast"</span><span class="op">)</span>,</span>
 <span>    <span class="st">"RcppRoll::roll_sum"</span> <span class="op">=</span> <span class="fu">RcppRoll</span><span class="fu">::</span><span class="fu">roll_sum</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, n <span class="op">=</span> <span class="va">n</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
@@ -507,45 +567,70 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>    <span class="st">"runner::sum_run"</span> <span class="op">=</span> <span class="fu">runner</span><span class="fu">::</span><span class="fu">sum_run</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, k <span class="op">=</span> <span class="va">n</span>, na_pad <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    <span class="st">"slider::slide_sum"</span> <span class="op">=</span> <span class="fu">slider</span><span class="fu">::</span><span class="fu">slide_sum</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, before <span class="op">=</span> <span class="va">n</span><span class="op">-</span><span class="fl">1</span>, complete <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    <span class="st">"zoo::rollsum"</span> <span class="op">=</span> <span class="fu">zoo</span><span class="fu">::</span><span class="fu">rollsum</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
-<span>    times <span class="op">=</span> <span class="va">n_times</span><span class="op">)</span></span>
+<span>    times <span class="op">=</span> <span class="va">n_times</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>window_width <span class="op">=</span> <span class="va">n</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">bind_rows</span><span class="op">(</span><span class="va">bm_sum</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
 <span><span class="va">bm_sum</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">plot_benchmark_single</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
+<span>  <span class="fu">plot_benchmark</span><span class="op">(</span><span class="fl">101</span>, <span class="st">"sum"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="index_files/figure-html/sum-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 </section><section id="sd" class="level2"><h2 class="anchored" data-anchor-id="sd">SD</h2>
 <div class="cell">
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bm_sd</span> <span class="op">&lt;-</span> <span class="fu">microbenchmark</span><span class="op">(</span></span>
+<details class="code-fold"><summary>Benchmarking code</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bm_sd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">n</span> <span class="kw">in</span> <span class="va">window_widths</span><span class="op">)</span><span class="op">{</span></span>
+<span><span class="va">bm_sd</span> <span class="op">&lt;-</span> <span class="fu">microbenchmark</span><span class="op">(</span></span>
 <span>  <span class="st">"RcppRoll::roll_sd"</span> <span class="op">=</span> <span class="fu">RcppRoll</span><span class="fu">::</span><span class="fu">roll_sd</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, n <span class="op">=</span> <span class="va">n</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
 <span>  <span class="st">"roll::roll_sd"</span> <span class="op">=</span> <span class="fu">roll</span><span class="fu">::</span><span class="fu">roll_sd</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, width <span class="op">=</span> <span class="va">n</span><span class="op">)</span>,</span>
 <span>  <span class="st">"RollingWindow::RollingStd"</span> <span class="op">=</span> <span class="fu">RollingWindow</span><span class="fu">::</span><span class="fu">RollingStd</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span><span class="op">)</span>,</span>
 <span>  <span class="st">"runstats::RunningSd"</span> <span class="op">=</span> <span class="fu">runstats</span><span class="fu">::</span><span class="fu">RunningSd</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, W <span class="op">=</span> <span class="va">n</span><span class="op">)</span>,</span>
-<span>  times <span class="op">=</span> <span class="va">n_times</span><span class="op">)</span></span>
+<span>  times <span class="op">=</span> <span class="va">n_times</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>window_width <span class="op">=</span> <span class="va">n</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">bind_rows</span><span class="op">(</span><span class="va">bm_sd</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
 <span><span class="va">bm_sd</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">plot_benchmark_single</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
+<span>  <span class="fu">plot_benchmark</span><span class="op">(</span><span class="fl">101</span>, <span class="st">"sd"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="index_files/figure-html/sd-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 </section><section id="custom-functions" class="level2"><h2 class="anchored" data-anchor-id="custom-functions">Custom functions</h2>
-<p>These functions are not optimised like the others, so they take a lot longer… so I’ll use fewer iterations here.</p>
+<p>These functions are not optimised like the others, so they take a lot longer… so I’ll use fewer iterations here. To test it, I’ve simply implemented a <code>sum_custom</code> function that is <em>not</em> optimised.</p>
 <div class="cell">
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bm_custom</span> <span class="op">&lt;-</span> <span class="fu">microbenchmark</span><span class="op">(</span></span>
-<span>  <span class="st">"data.table::frollapply"</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu">frollapply</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span>, <span class="va">sum</span><span class="op">)</span>,</span>
-<span>  <span class="st">"zoo::rollapply"</span> <span class="op">=</span> <span class="fu">zoo</span><span class="fu">::</span><span class="fu">rollapply</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span>, <span class="va">sum</span><span class="op">)</span>,</span>
-<span>  times <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<details class="code-fold"><summary>Benchmarking code</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bm_custom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sum_custom</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="va">s</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
+<span>  <span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="va">v</span><span class="op">)</span><span class="op">{</span></span>
+<span>    <span class="va">s</span> <span class="op">&lt;-</span> <span class="va">s</span><span class="op">+</span><span class="va">i</span></span>
+<span>  <span class="op">}</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">n</span> <span class="kw">in</span> <span class="va">window_widths</span><span class="op">)</span><span class="op">{</span></span>
+<span><span class="va">bm_custom</span> <span class="op">&lt;-</span> <span class="fu">microbenchmark</span><span class="op">(</span></span>
+<span>  <span class="st">"data.table::frollapply"</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu">frollapply</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span>, <span class="va">sum_custom</span><span class="op">)</span>,</span>
+<span>  <span class="st">"zoo::rollapply"</span> <span class="op">=</span> <span class="fu">zoo</span><span class="fu">::</span><span class="fu">rollapply</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">x</span>, <span class="va">n</span>, <span class="va">sum_custom</span><span class="op">)</span>,</span>
+<span>  times <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>window_width <span class="op">=</span> <span class="va">n</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">bind_rows</span><span class="op">(</span><span class="va">bm_custom</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
 <span><span class="va">bm_custom</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">plot_benchmark_single</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
+<span>  <span class="fu">plot_benchmark</span><span class="op">(</span><span class="fl">101</span>, <span class="st">"custom function"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="index_files/figure-html/custom-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
